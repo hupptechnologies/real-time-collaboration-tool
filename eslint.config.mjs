@@ -1,24 +1,33 @@
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { FlatCompat } from '@eslint/eslintrc';
+import js from '@eslint/js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const compat = new FlatCompat({
-  baseDirectory: __dirname
+  baseDirectory: __dirname,
+  recommendedConfig: js.configs.recommended,
 });
 
 const eslintConfig = [
   ...compat.config({
     parser: '@typescript-eslint/parser',
+    parserOptions: {
+      project: './tsconfig.json', // Ensure ESLint reads TypeScript settings
+      tsconfigRootDir: __dirname,
+      ecmaFeatures: { jsx: true }
+    },
     extends: [
       'next/core-web-vitals',
       'next/typescript',
+      'plugin:@next/next/recommended',
       'plugin:@typescript-eslint/recommended',
+      'plugin:@typescript-eslint/recommended-requiring-type-checking',
       'prettier'
     ],
-    ignorePatterns: ['**/build/**', '**/dist/**'],
+    ignorePatterns: ['**/build/**', '**/dist/**', 'eslint.config.mjs'],
     plugins: ['@typescript-eslint', 'prettier'],
     rules: {
       'prettier/prettier': ['error'],
@@ -70,7 +79,25 @@ const eslintConfig = [
       'linebreak-style': 'off',
       'react/destructuring-assignment': ['off'],
       'eslint no-useless-escape': 'off',
-      'no-unreachable': 'off'
+      'no-unreachable': 'off',
+      // Enforce explicit return type for functions
+      '@typescript-eslint/explicit-function-return-type': [
+        'error',
+        {
+          allowExpressions: false,
+          allowTypedFunctionExpressions: false,
+          allowHigherOrderFunctions: false
+        }
+      ],
+
+      // Enforce type definitions for parameters
+      '@typescript-eslint/typedef': [
+        'error',
+        {
+          parameter: true,
+          propertyDeclaration: true
+        }
+      ]
     }
   })
 ];

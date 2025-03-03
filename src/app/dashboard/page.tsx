@@ -1,7 +1,7 @@
 import { JSX } from 'react';
 
 const Home = (): JSX.Element => {
-  return <div>Home</div>;
+  return <div>Dashboard Page</div>;
 };
 
 export default Home;
