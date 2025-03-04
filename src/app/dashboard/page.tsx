@@ -1,12 +1,12 @@
 'use client';
 import { useState } from 'react';
 
-const Home = () => {
+const Home: React.FC = () => {
 	const [count, setCount] = useState(0);
-
-	const handleClick = () => {
-		setCount((count): number => count + 1);
+	const handleClick: () => void = () => {
+		setCount((count: number) => count + 1);
 	};
+
 	return (
 		<div>
 			<h1>{count}</h1>

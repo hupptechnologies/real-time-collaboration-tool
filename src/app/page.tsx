@@ -1,6 +1,6 @@
 import { Typography, Container } from '@mui/material';
 
-const Page = () => {
+const Page: React.FC = () => {
 	return (
 		<Container>
 			<Typography variant="h4" gutterBottom>
