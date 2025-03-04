@@ -1,7 +1,11 @@
+import ThemeRegistry from '@/theme/ThemeRegistry';
+
 const RootLayout = ({ children }) => {
 	return (
 		<html lang="en">
-			<body>{children}</body>
+			<body>
+				<ThemeRegistry>{children}</ThemeRegistry>
+			</body>
 		</html>
 	);
 };

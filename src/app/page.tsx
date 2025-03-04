@@ -1,5 +1,13 @@
+import { Typography, Container } from '@mui/material';
+
 const Page = () => {
-	return <h1>Hello, Next.js!</h1>;
+	return (
+		<Container>
+			<Typography variant="h4" gutterBottom>
+				Welcome to Next.js 15 with MUI!
+			</Typography>
+		</Container>
+	);
 };
 
 export default Page;
