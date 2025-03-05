@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+// import Image from 'next/image';
 import {
 	AppBar,
 	Toolbar,
@@ -11,145 +12,85 @@ import {
 	Menu,
 	MenuItem,
 	Box,
-	Drawer,
-	List,
-	ListItem,
-	ListItemText,
-	useTheme,
 	Switch,
+	useTheme,
 	useMediaQuery,
-	Tooltip,
-	ListItemButton
+	Tooltip
 } from '@mui/material';
-import { styled } from '@mui/system';
-import { SearchOffOutlined, NotificationAddOutlined, MenuBookOutlined } from '@mui/icons-material';
-
-const StyledAppBar = styled(AppBar)(({ theme }) => ({
-	background: theme.palette.mode === 'dark' ? '#1a1a1a' : '#ffffff',
-	color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000'
-}));
-
-const SearchWrapper = styled(Box)(({ theme }) => ({
-	position: 'relative',
-	borderRadius: theme.shape.borderRadius,
-	backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
-	marginRight: theme.spacing(2),
-	marginLeft: theme.spacing(2),
-	width: '100%',
-	maxWidth: '400px',
-	[theme.breakpoints.down('sm')]: {
-		display: 'none'
-	}
-}));
+import { Menu as MenuIcon, SearchOutlined, NotificationAddOutlined } from '@mui/icons-material';
+import { appBarStyles, navigationItemText, searchWrapperStyles } from '@/styles';
+// import logo from '../../public/assets/logo.svg';
+// import mobileLogo from '../../public/assets/mobile-logo.svg';
 
 const Header: React.FC = () => {
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-	const [mode, setMode] = useState('light');
-	const [mobileOpen, setMobileOpen] = useState(false);
+	const [mode, setMode] = useState<string>('light');
 	const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-	const [searchValue, setSearchValue] = useState('');
-	const [notifications] = useState(5);
-
-	// const handleSearch = (value: string): void => {};
+	const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
+	const [searchValue, setSearchValue] = useState<string>('');
+	const [notifications] = useState<number>(5);
 
 	const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
 		setSearchValue(event.target.value);
-		// handleSearch(event.target.value);
 	};
 
 	const handleProfileClick = (event: React.MouseEvent<HTMLElement>): void => {
 		setAnchorEl(event.currentTarget);
 	};
 
-	const handleClose = (): void => {
-		setAnchorEl(null);
+	const handleMenuClick = (event: React.MouseEvent<HTMLElement>): void => {
+		setMenuAnchor(event.currentTarget);
 	};
 
-	const handleDrawerToggle = (): void => {
-		setMobileOpen(!mobileOpen);
+	const handleClose = (): void => {
+		setAnchorEl(null);
+		setMenuAnchor(null);
 	};
 
 	const handleModeToggle = (): void => {
 		setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
 	};
 
-	const navigationItems = [{ text: 'Home', active: true }];
-
-	const drawer = (
-		<List>
-			{navigationItems.map((item) => (
-				<ListItem key={item.text} disablePadding>
-					<ListItemButton
-						selected={item.active}
-						sx={{
-							'&.Mui-selected': {
-								backgroundColor: theme.palette.primary.main,
-								color: 'white'
-							}
-						}}>
-						<ListItemText primary={item.text} />
-					</ListItemButton>
-				</ListItem>
-			))}
-		</List>
-	);
+	// Navigation menu items
+	const navigationItems = [{ text: 'Home' }, { text: 'Recent' }, { text: 'Spaces' }];
 
 	return (
 		<>
-			<StyledAppBar position="sticky" elevation={2}>
+			<AppBar sx={appBarStyles} position="sticky" elevation={2}>
 				<Toolbar>
-					{isMobile && (
-						<IconButton
-							color="inherit"
-							aria-label="open drawer"
-							edge="start"
-							onClick={handleDrawerToggle}
-							sx={{ mr: 2 }}>
-							<MenuBookOutlined />
+					{/* {isMobile ? (
+						<Image src={mobileLogo} alt="logo" />
+					) : (
+						<Box sx={{ maxHeight: '24px' }}>
+							<Image src={logo} alt="logo" />
+						</Box>
+					)} */}
+					{/* Mobile View - Show Menu Icon */}
+					{isMobile ? (
+						<IconButton color="inherit" onClick={handleMenuClick} sx={{ ml: 2 }}>
+							<MenuIcon />
 						</IconButton>
-					)}
-
-					<Box
-						component="img"
-						src="https://images.unsplash.com/photo-1599305445671-ac291c95aaa9"
-						alt="Logo"
-						sx={{ height: 40, width: 40, cursor: 'pointer', mr: 2 }}
-					/>
-					<Typography
-						variant="h6"
-						noWrap
-						component="div"
-						sx={{ display: { xs: 'none', sm: 'block' } }}>
-						Confluence
-					</Typography>
-
-					{!isMobile && (
+					) : (
+						/* Desktop View - Show Navigation Items */
 						<Box sx={{ display: 'flex', ml: 4 }}>
 							{navigationItems.map((item) => (
-								<Typography
-									key={item.text}
-									sx={{
-										mx: 2,
-										cursor: 'pointer',
-										color: item.active ? theme.palette.primary.main : 'inherit',
-										'&:hover': { color: theme.palette.primary.main }
-									}}>
+								<Typography key={item.text} sx={navigationItemText}>
 									{item.text}
 								</Typography>
 							))}
 						</Box>
 					)}
 					<Box sx={{ flexGrow: 1 }} />
-					<SearchWrapper>
+					<Box sx={searchWrapperStyles}>
 						<InputBase
 							placeholder="Search..."
 							value={searchValue}
 							onChange={handleSearchChange}
-							startAdornment={<SearchOffOutlined style={{ marginRight: 8 }} />}
+							startAdornment={<SearchOutlined style={{ marginRight: 8 }} />}
 							sx={{ ml: 2, flex: 1 }}
 						/>
-					</SearchWrapper>
+					</Box>
 					<Switch checked={mode === 'dark'} onChange={handleModeToggle} color="primary" />
 					<Tooltip title="Notifications">
 						<IconButton color="inherit">
@@ -174,7 +115,21 @@ const Header: React.FC = () => {
 						</IconButton>
 					</Tooltip>
 				</Toolbar>
-			</StyledAppBar>
+			</AppBar>
+			{/* Mobile Menu */}
+			<Menu
+				anchorEl={menuAnchor}
+				open={Boolean(menuAnchor)}
+				onClose={handleClose}
+				transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+				anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
+				{navigationItems.map((item) => (
+					<MenuItem key={item.text} onClick={handleClose}>
+						{item.text}
+					</MenuItem>
+				))}
+			</Menu>
+			{/* Account Menu */}
 			<Menu
 				anchorEl={anchorEl}
 				id="account-menu"
@@ -187,14 +142,6 @@ const Header: React.FC = () => {
 				<MenuItem>My account</MenuItem>
 				<MenuItem>Logout</MenuItem>
 			</Menu>
-			<Drawer
-				variant="temporary"
-				anchor="left"
-				open={mobileOpen}
-				onClose={handleDrawerToggle}
-				ModalProps={{ keepMounted: true }}>
-				{drawer}
-			</Drawer>
 		</>
 	);
 };

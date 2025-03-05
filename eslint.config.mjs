@@ -105,6 +105,17 @@ const eslintConfig = [
           argsIgnorePattern: '^_', // Allow unused args prefixed with _
         },
       ],
+      "no-restricted-syntax": [
+        "error",
+        {
+          "selector": "JSXAttribute[name.name='style'] JSXExpressionContainer > ObjectExpression[properties.length>2]",
+          "message": "Inline styles should have a maximum of 2 properties."
+        },
+        {
+          "selector": "JSXAttribute[name.name='sx'] > JSXExpressionContainer > ObjectExpression[properties.length>2]",
+          "message": "MUI sx prop should have a maximum of 2 properties."
+        }
+      ],
       'react-hooks/rules-of-hooks': 'error', // Ensure hooks are used correctly
       'react-hooks/exhaustive-deps': 'warn', // Warn about missing dependencies in hooks
     }

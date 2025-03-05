@@ -20,8 +20,8 @@ import {
 	Description as DescriptionIcon,
 	Settings as SettingsIcon
 } from '@mui/icons-material';
+import { ArrowIconStyle, DrawerMenuStyle } from '@/styles';
 
-const drawerWidth = 300;
 const DrawerLeft: React.FC<TComponent> = ({ children }: TComponent) => {
 	const [open, setOpen] = useState(true);
 	const toggleDrawer = (): void => {
@@ -34,21 +34,7 @@ const DrawerLeft: React.FC<TComponent> = ({ children }: TComponent) => {
 				onClick={toggleDrawer}
 				aria-label="open drawer"
 				edge="end"
-				sx={{
-					position: 'absolute',
-					top: 72,
-					left: open ? 286 : 4,
-					zIndex: 1100,
-					transition: '0.3s all ease-in-out',
-					border: '1px solid #ddd',
-					boxShadow: 1,
-					width: 24,
-					height: 24,
-					borderRadius: '50%',
-					':hover': {
-						backgroundColor: 'primary'
-					}
-				}}>
+				sx={ArrowIconStyle(open)}>
 				{open ? (
 					<Tooltip title="Collaspe">
 						<ChevronLeft />
@@ -59,20 +45,7 @@ const DrawerLeft: React.FC<TComponent> = ({ children }: TComponent) => {
 					</Tooltip>
 				)}
 			</IconButton>
-			<Drawer
-				variant="permanent"
-				open={open}
-				sx={{
-					width: open ? drawerWidth : 15,
-					flexShrink: 0,
-					zIndex: 1000,
-					transition: '0.3s all ease-in-out',
-					'& .MuiDrawer-paper': {
-						width: open ? drawerWidth : 15,
-						overflowX: 'hidden',
-						transition: '0.3s all ease-in-out'
-					}
-				}}>
+			<Drawer variant="permanent" open={open} sx={DrawerMenuStyle(open)}>
 				<Toolbar />
 				<List>
 					{[

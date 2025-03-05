@@ -32,7 +32,8 @@
       "@/components/*": ["components/*"],
       "@/theme/*": ["theme/*"],
       "@/redux/*": ["redux/*"],
-      "@/types": ["types/index"]
+      "@/types": ["types/index"],
+      "@/styles": ["styles/index"]
     }
   },
   "include": [
