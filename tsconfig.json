@@ -10,6 +10,8 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
+    "noImplicitAny": true,
+    "strictPropertyInitialization": true,
     "strictFunctionTypes": true,
     "strictNullChecks": true,
     "noEmit": true,
@@ -29,6 +31,7 @@
       "@/*": ["./src"],
       "@/components/*": ["components/*"],
       "@/theme/*": ["theme/*"],
+      "@/redux/*": ["redux/*"],
       "@/types": ["types/index"]
     }
   },

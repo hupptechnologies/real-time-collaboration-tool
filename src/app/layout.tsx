@@ -1,11 +1,11 @@
-import ThemeRegistry from '@/theme/ThemeRegistry';
+import ProviderLayout from '@/components/providerLayout';
 import { TComponent } from '@/types';
 
 const RootLayout: React.FC<TComponent> = ({ children }: TComponent) => {
 	return (
 		<html lang="en">
 			<body>
-				<ThemeRegistry>{children}</ThemeRegistry>
+				<ProviderLayout>{children}</ProviderLayout>
 			</body>
 		</html>
 	);

@@ -95,17 +95,7 @@ const eslintConfig = [
         'error',
         { allowNullableObject: false }
       ], // Avoid implicit boolean coercions
-      '@typescript-eslint/typedef': [
-        'error',
-        {
-          variableDeclaration: true, // Enforce type definitions on variables
-          variableDeclarationIgnoreFunction: false, // Also enforce for function variables
-          parameter: true, // Require explicit types for function parameters
-          propertyDeclaration: true, // Require explicit types for class properties
-          memberVariableDeclaration: true, // Require explicit types for class members
-          arrowParameter: true, // Enforce types on arrow function parameters
-        }
-      ],
+      '@typescript-eslint/typedef':'error',
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
