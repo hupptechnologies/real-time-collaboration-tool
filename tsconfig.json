@@ -10,10 +10,7 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
-    "noImplicitAny": true,
-    "strictFunctionTypes": true,
     "noEmit": true,
-    "incremental": true,
     "module": "esnext",
     "esModuleInterop": true,
     "moduleResolution": "node",
@@ -26,15 +23,32 @@
       }
     ],
     "paths": {
-      "@/*": ["./src"],
-      "@/assets/*": ["assets/*"],
-      "@/components/*": ["components/*"],
-      "@/context/*": ["context/*"],
-      "@/theme/*": ["theme/*"],
-      "@/redux/*": ["redux/*"],
-      "@/types": ["types/index"],
-      "@/styles": ["styles/index"],
-    }
+      "@/*": [
+        "./src"
+      ],
+      "@/assets/*": [
+        "assets/*"
+      ],
+      "@/components/*": [
+        "components/*"
+      ],
+      "@/context/*": [
+        "context/*"
+      ],
+      "@/theme/*": [
+        "theme/*"
+      ],
+      "@/redux/*": [
+        "redux/*"
+      ],
+      "@/types": [
+        "types/index"
+      ],
+      "@/styles": [
+        "styles/index"
+      ]
+    },
+    "incremental": true
   },
   "include": [
     "new-types.d.ts",

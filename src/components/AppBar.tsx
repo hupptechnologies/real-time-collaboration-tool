@@ -104,9 +104,9 @@ const Header: React.FC = () => {
 							onClick={handleProfileClick}
 							size="small"
 							sx={{ ml: 2 }}
-							aria-controls={Boolean(anchorEl) ? 'account-menu' : undefined}
+							aria-controls={anchorEl ? 'account-menu' : undefined}
 							aria-haspopup="true"
-							aria-expanded={Boolean(anchorEl) ? 'true' : undefined}>
+							aria-expanded={anchorEl ? 'true' : undefined}>
 							<Avatar
 								alt="User Profile"
 								src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
