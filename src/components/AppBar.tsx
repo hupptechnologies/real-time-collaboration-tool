@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-// import Image from 'next/image';
+import Image from 'next/image';
 import {
 	AppBar,
 	Toolbar,
@@ -19,8 +19,6 @@ import {
 } from '@mui/material';
 import { Menu as MenuIcon, SearchOutlined, NotificationAddOutlined } from '@mui/icons-material';
 import { appBarStyles, navigationItemText, searchWrapperStyles } from '@/styles';
-// import logo from '../../public/assets/logo.svg';
-// import mobileLogo from '../../public/assets/mobile-logo.svg';
 
 const Header: React.FC = () => {
 	const theme = useTheme();
@@ -59,13 +57,11 @@ const Header: React.FC = () => {
 		<>
 			<AppBar sx={appBarStyles} position="sticky" elevation={2}>
 				<Toolbar>
-					{/* {isMobile ? (
-						<Image src={mobileLogo} alt="logo" />
+					{isMobile ? (
+						<Image src="/assets/mobile-logo.svg" alt="Mobile Logo" width={100} height={30} />
 					) : (
-						<Box sx={{ maxHeight: '24px' }}>
-							<Image src={logo} alt="logo" />
-						</Box>
-					)} */}
+						<Image src="/assets/logo.svg" alt="Logo" width={120} height={50} />
+					)}
 					{/* Mobile View - Show Menu Icon */}
 					{isMobile ? (
 						<IconButton color="inherit" onClick={handleMenuClick} sx={{ ml: 2 }}>

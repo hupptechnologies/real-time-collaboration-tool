@@ -29,6 +29,7 @@
     ],
     "paths": {
       "@/*": ["./src"],
+      "@/assets/*": ["assets/*"],
       "@/components/*": ["components/*"],
       "@/theme/*": ["theme/*"],
       "@/redux/*": ["redux/*"],
