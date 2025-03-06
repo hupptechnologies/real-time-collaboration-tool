@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
-import { CssBaseline, Theme } from '@mui/material';
-import { TComponent, TThemeContextType } from '@/types';
+import { CssBaseline } from '@mui/material';
 import darkTheme from './darkTheme';
 import lightTheme from './lightTheme';
 import { ThemeContext } from '../utils/context';
 
-const ThemeProviderWrapper: React.FC<TComponent> = ({ children }) => {
-	const [mode, setMode] = useState<'light' | 'dark'>('dark');
+const ThemeProviderWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+	const [mode, setMode] = useState<'light' | 'dark'>('dark'); // Default mode is 'dark'
+	const [isMounted, setIsMounted] = useState(false); // Prevent flickering
 
 	useEffect(() => {
 		const storedTheme = localStorage.getItem('mode') as 'light' | 'dark' | null;
 		if (storedTheme) {
 			setMode(storedTheme);
 		}
+		setIsMounted(true); // Mark that hydration is complete
 	}, []);
 
 	const toggleThemeMode = (): void => {
@@ -24,17 +25,13 @@ const ThemeProviderWrapper: React.FC<TComponent> = ({ children }) => {
 		});
 	};
 
-	const getThemeColor = (mode: 'light' | 'dark'): Theme =>
-		mode === 'dark' ? darkTheme : lightTheme;
-
-	const themeContextValue: TThemeContextType = {
-		mode,
-		toggleThemeMode
-	};
+	if (!isMounted) {
+		return null;
+	} // Prevent incorrect SSR theme before hydration
 
 	return (
-		<ThemeContext.Provider value={themeContextValue}>
-			<ThemeProvider theme={getThemeColor(mode)}>
+		<ThemeContext.Provider value={{ mode, toggleThemeMode }}>
+			<ThemeProvider theme={mode === 'dark' ? darkTheme : lightTheme}>
 				<CssBaseline />
 				{children}
 			</ThemeProvider>

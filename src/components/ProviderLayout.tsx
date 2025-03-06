@@ -8,12 +8,12 @@ import { TComponent } from '@/types';
 
 const ProviderLayout: React.FC<TComponent> = ({ children }) => {
 	return (
-		<ThemeProviderWrapper>
-			<Provider store={store}>
+		<Provider store={store}>
+			<ThemeProviderWrapper>
 				<AppBar />
 				<DrawerLeft>{children}</DrawerLeft>
-			</Provider>
-		</ThemeProviderWrapper>
+			</ThemeProviderWrapper>
+		</Provider>
 	);
 };
 
