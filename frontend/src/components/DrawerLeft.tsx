@@ -12,7 +12,7 @@ import {
 	IconButton,
 	Tooltip
 } from '@mui/material';
-import { TComponent } from '@/types';
+import { TProps } from '@/types';
 import {
 	ChevronLeft,
 	ChevronRight,
@@ -22,7 +22,7 @@ import {
 } from '@mui/icons-material';
 import { ArrowIconStyle, DrawerMenuStyle } from '@/styles';
 
-const DrawerLeft: React.FC<TComponent> = ({ children }: TComponent) => {
+const DrawerLeft: React.FC<TProps> = ({ children }) => {
 	const [open, setOpen] = useState(true);
 	const toggleDrawer = (): void => {
 		setOpen((prev) => !prev);

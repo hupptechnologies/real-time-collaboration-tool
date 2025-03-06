@@ -23,30 +23,14 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./src"
-      ],
-      "@/assets/*": [
-        "assets/*"
-      ],
-      "@/components/*": [
-        "components/*"
-      ],
-      "@/context/*": [
-        "context/*"
-      ],
-      "@/theme/*": [
-        "theme/*"
-      ],
-      "@/redux/*": [
-        "redux/*"
-      ],
-      "@/types": [
-        "types/index"
-      ],
-      "@/styles": [
-        "styles/index"
-      ]
+      "@/*": ["./src/*"],
+      "@/assets/*": ["assets/*"],
+      "@/components/*": ["components/*"],
+      "@/context/*": ["context/*"],
+      "@/theme/*": ["theme/*"],
+      "@/redux/*": ["redux/*"],
+      "@/types": ["types/index"],
+      "@/styles": ["styles/index"]
     },
     "incremental": true
   },

@@ -1,9 +1,9 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { TComponent } from 'types/common';
+import { TProps } from '@/types';
 import { AuthContext } from './AuthContext';
 
-const AuthProvider: React.FC<TComponent> = ({ children }: TComponent) => {
+const AuthProvider: React.FC<TProps> = ({ children }) => {
 	const [user, setUser] = useState<string | null>(null);
 	const router = useRouter();
 

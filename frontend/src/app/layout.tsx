@@ -1,7 +1,7 @@
 import ProviderLayout from '@/components/ProviderLayout';
-import { TComponent } from '@/types';
+import { TProps } from '@/types';
 
-const RootLayout: React.FC<TComponent> = ({ children }: TComponent) => {
+const RootLayout: React.FC<TProps> = ({ children }) => {
 	return (
 		<html lang="en">
 			<body>
