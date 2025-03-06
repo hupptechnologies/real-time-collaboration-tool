@@ -11,9 +11,7 @@
     "skipLibCheck": true,
     "strict": true,
     "noImplicitAny": true,
-    "strictPropertyInitialization": true,
     "strictFunctionTypes": true,
-    "strictNullChecks": true,
     "noEmit": true,
     "incremental": true,
     "module": "esnext",
@@ -31,11 +29,11 @@
       "@/*": ["./src"],
       "@/assets/*": ["assets/*"],
       "@/components/*": ["components/*"],
+      "@/context/*": ["context/*"],
       "@/theme/*": ["theme/*"],
       "@/redux/*": ["redux/*"],
       "@/types": ["types/index"],
       "@/styles": ["styles/index"],
-      "@/utils/*": ["utils/*"]
     }
   },
   "include": [

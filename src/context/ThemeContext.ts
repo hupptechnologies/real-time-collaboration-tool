@@ -3,7 +3,7 @@ import { TThemeContextType } from '@/types';
 
 // Create the context with an explicit default value
 export const ThemeContext = createContext<TThemeContextType>({
-	mode: 'dark',
+	mode: 'light',
 	toggleThemeMode: () => {}
 });
 

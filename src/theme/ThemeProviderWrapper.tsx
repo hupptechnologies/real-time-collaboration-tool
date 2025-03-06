@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
+import { ThemeContext } from '@/context/ThemeContext';
 import darkTheme from './darkTheme';
 import lightTheme from './lightTheme';
-import { ThemeContext } from '../utils/context';
 
 const ThemeProviderWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-	const [mode, setMode] = useState<'light' | 'dark'>('dark'); // Default mode is 'dark'
+	const [mode, setMode] = useState<'light' | 'dark'>('light'); // Default mode is 'dark'
 	const [isMounted, setIsMounted] = useState(false); // Prevent flickering
 
 	useEffect(() => {

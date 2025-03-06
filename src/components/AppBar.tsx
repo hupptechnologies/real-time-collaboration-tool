@@ -18,11 +18,13 @@ import {
 	Tooltip
 } from '@mui/material';
 import { Menu as MenuIcon, SearchOutlined, NotificationAddOutlined } from '@mui/icons-material';
+import { useThemeContext } from '@/context/ThemeContext';
 import { appBarStyles, navigationItemText, searchWrapperStyles } from '@/styles';
-import { useThemeContext } from '@/utils/context';
+import { useAuth } from '@/context/AuthContext';
 
 const Header: React.FC = () => {
 	const theme = useTheme();
+	const { logout } = useAuth();
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 	const { mode, toggleThemeMode } = useThemeContext();
 	const [themeMode, setThemeMode] = useState<'light' | 'dark'>('light');
@@ -54,9 +56,7 @@ const Header: React.FC = () => {
 		setMenuAnchor(null);
 	};
 
-	// Navigation menu items
 	const navigationItems = [{ text: 'Home' }, { text: 'Recent' }, { text: 'Spaces' }];
-
 	return (
 		<>
 			<AppBar sx={appBarStyles} position="sticky" elevation={2}>
@@ -140,7 +140,7 @@ const Header: React.FC = () => {
 				anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
 				<MenuItem>Profile</MenuItem>
 				<MenuItem>My account</MenuItem>
-				<MenuItem>Logout</MenuItem>
+				<MenuItem onClick={logout}>Logout</MenuItem>
 			</Menu>
 		</>
 	);
