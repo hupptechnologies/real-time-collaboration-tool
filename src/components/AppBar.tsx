@@ -1,6 +1,6 @@
 'use client';
-import React, { useState } from 'react';
-import Image from 'next/image';
+import React, { useEffect, useState } from 'react';
+// import Image from 'next/image';
 import {
 	AppBar,
 	Toolbar,
@@ -19,15 +19,23 @@ import {
 } from '@mui/material';
 import { Menu as MenuIcon, SearchOutlined, NotificationAddOutlined } from '@mui/icons-material';
 import { appBarStyles, navigationItemText, searchWrapperStyles } from '@/styles';
+import { useThemeContext } from '@/utils/context';
 
 const Header: React.FC = () => {
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-	const [mode, setMode] = useState<string>('light');
+	const { mode, toggleThemeMode } = useThemeContext();
+	const [themeMode, setThemeMode] = useState<'light' | 'dark'>('light');
 	const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 	const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
 	const [searchValue, setSearchValue] = useState<string>('');
 	const [notifications] = useState<number>(5);
+
+	useEffect(() => {
+		if (mode === 'light' || mode === 'dark') {
+			setThemeMode(mode);
+		}
+	}, [mode]);
 
 	const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
 		setSearchValue(event.target.value);
@@ -46,10 +54,6 @@ const Header: React.FC = () => {
 		setMenuAnchor(null);
 	};
 
-	const handleModeToggle = (): void => {
-		setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
-	};
-
 	// Navigation menu items
 	const navigationItems = [{ text: 'Home' }, { text: 'Recent' }, { text: 'Spaces' }];
 
@@ -57,11 +61,11 @@ const Header: React.FC = () => {
 		<>
 			<AppBar sx={appBarStyles} position="sticky" elevation={2}>
 				<Toolbar>
-					{isMobile ? (
+					{/* {isMobile ? (
 						<Image src="/assets/mobile-logo.svg" alt="Mobile Logo" width={100} height={30} />
 					) : (
 						<Image src="/assets/logo.svg" alt="Logo" width={120} height={50} />
-					)}
+					)} */}
 					{/* Mobile View - Show Menu Icon */}
 					{isMobile ? (
 						<IconButton color="inherit" onClick={handleMenuClick} sx={{ ml: 2 }}>
@@ -87,7 +91,7 @@ const Header: React.FC = () => {
 							sx={{ ml: 2, flex: 1 }}
 						/>
 					</Box>
-					<Switch checked={mode === 'dark'} onChange={handleModeToggle} color="primary" />
+					<Switch checked={themeMode === 'dark'} onChange={toggleThemeMode} color="primary" />
 					<Tooltip title="Notifications">
 						<IconButton color="inherit">
 							<Badge badgeContent={notifications} color="error">

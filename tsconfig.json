@@ -34,7 +34,8 @@
       "@/theme/*": ["theme/*"],
       "@/redux/*": ["redux/*"],
       "@/types": ["types/index"],
-      "@/styles": ["styles/index"]
+      "@/styles": ["styles/index"],
+      "@/utils/*": ["utils/*"]
     }
   },
   "include": [
