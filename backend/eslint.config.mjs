@@ -1,25 +1,36 @@
-import pluginJs from '@eslint/js';
+import js from '@eslint/js';
 import tseslint from '@typescript-eslint/eslint-plugin';
 import tsparser from '@typescript-eslint/parser';
 import prettierConfig from 'eslint-config-prettier';
 import prettierPlugin from 'eslint-plugin-prettier';
 
-/** @type {import('eslint').Linter.Config[]} */
+/** @type {import('eslint').FlatConfig[]} */
 export default [
-	{ ignores: ['node_modules/', 'dist/', 'bulid/'] },
-	pluginJs.configs.recommended,
 	{
-		files: ['**/*.{js,cjs,ts}'],
+		ignores: [
+			'node_modules/',
+			'dist/',
+			'build/',
+			'src/migrations/*',
+			'src/config/*',
+		],
+	},
+	js.configs.recommended,
+	{
+		files: ['**/*.ts', '**/*.tsx'],
 		languageOptions: {
 			parser: tsparser,
 			parserOptions: {
 				project: './tsconfig.json',
+				ecmaVersion: 'latest',
 				sourceType: 'module',
 			},
 		},
 		plugins: { '@typescript-eslint': tseslint },
 		rules: {
 			...tseslint.configs.recommended.rules,
+			'@typescript-eslint/no-unused-vars': ['error'],
+			'@typescript-eslint/no-explicit-any': 'warn',
 		},
 	},
 	{
@@ -29,30 +40,13 @@ export default [
 			quotes: ['error', 'single', { avoidEscape: true }],
 			semi: ['error', 'always'],
 			'comma-spacing': ['error', { before: false, after: true }],
-			'no-var': ['error'],
+			'no-var': 'error',
 			'prefer-const': 'error',
 			'no-console': ['error'],
-			'no-unused-vars': [
-				'error',
-				{
-					vars: 'all',
-					args: 'all',
-					ignoreRestSiblings: false,
-					argsIgnorePattern: '^_',
-				},
-			],
-			'space-before-function-paren': [
-				'error',
-				{
-					anonymous: 'always',
-					named: 'always',
-					asyncArrow: 'always',
-				},
-			],
+			'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
 			'keyword-spacing': ['error', { before: true, after: true }],
 			'arrow-spacing': ['error', { before: true, after: true }],
-			'no-trailing-spaces': ['error'],
-			'react-hooks/exhaustive-deps': 'off',
+			'no-trailing-spaces': 'error',
 			'no-mixed-spaces-and-tabs': ['error', 'smart-tabs'],
 			'prettier/prettier': ['error', { useTabs: true, tabWidth: 2 }],
 			'@typescript-eslint/no-explicit-any': 'off',
