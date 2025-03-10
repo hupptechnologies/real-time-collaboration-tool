@@ -20,14 +20,18 @@
   "license": "ISC",
   "dependencies": {
     "@fastify/cors": "^11.0.0",
+    "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",
     "fastify": "^5.2.1",
+    "jsonwebtoken": "^9.0.2",
     "pg": "^8.13.3",
     "sequelize": "^6.37.6",
     "sequelize-typescript": "^2.1.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
+    "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.13.9",
     "@typescript-eslint/eslint-plugin": "^8.26.0",
     "@typescript-eslint/parser": "^8.26.0",

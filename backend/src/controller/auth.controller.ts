@@ -1,7 +1,14 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { models } from '../models';
 import { TUsers } from '../interface';
-import { message, statusCodes, Response } from '../utils';
+import {
+	message,
+	statusCodes,
+	Response,
+	generateResponseTokens,
+	generateEncryptedPassword,
+	comparePassWord,
+} from '../utils';
 
 const { Users } = models;
 
@@ -37,18 +44,17 @@ class UserContorller {
 			}
 
 			Object.assign(userData, {
-				// password: await generateEncryptedPassword(userData.password),
+				password: await generateEncryptedPassword(userData.password),
 				role: req.url.includes('admin') ? 'admin' : 'user',
 			});
 
 			const newUser = await Users.create(userData);
-			// const token = await generateResponseTokens({
-			// 	id: newUser.dataValues.id,
-			// 	email: newUser.dataValues.email,
-			// 	role: newUser.dataValues.role,
-			// });
-			// res.header('token', token);
-
+			const token = await generateResponseTokens({
+				id: newUser.dataValues.id,
+				email: newUser.dataValues.email,
+				role: newUser.dataValues.role,
+			});
+			res.header('token', token);
 			delete newUser.dataValues.password;
 
 			Response.send(res, {
@@ -65,6 +71,61 @@ class UserContorller {
 					error?.message === 'Validation error'
 						? message.EMAIL_ALREADY_IN_USE
 						: error.message,
+			});
+		}
+	}
+
+	async login(req: FastifyRequest, res: FastifyReply) {
+		try {
+			const userData = req.body as TUsers;
+			const existingUser = await Users.findOne({
+				where: {
+					email: userData.email?.toLowerCase(),
+					isDeleted: false,
+				},
+			});
+			if (!existingUser) {
+				Response.send(res, {
+					status: statusCodes.BAD_REQUEST,
+					success: false,
+					message: message.LOGIN_INVALID,
+				});
+				return;
+			}
+
+			const isMatched = await comparePassWord(
+				userData.password,
+				existingUser?.dataValues.password,
+			);
+
+			if (!isMatched) {
+				Response.send(res, {
+					status: statusCodes.BAD_REQUEST,
+					success: false,
+					message: message.LOGIN_INVALID,
+				});
+				return;
+			}
+
+			const token = await generateResponseTokens({
+				id: existingUser.dataValues.id,
+				email: existingUser.dataValues.email,
+				role: existingUser.dataValues.role,
+			});
+			res.header('token', token);
+			delete existingUser.dataValues.password;
+
+			Response.send(res, {
+				status: statusCodes.SUCCESS,
+				success: true,
+				message: message.LOGIN_SUCCESS,
+				data: existingUser,
+			});
+		} catch (error: any) {
+			return Response.send(res, {
+				status: statusCodes.BAD_REQUEST,
+				success: false,
+				message: error.message,
 			});
 		}
 	}

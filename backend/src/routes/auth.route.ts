@@ -16,6 +16,12 @@ const authRoutes = async (
 		url: '/admin/signup',
 		handler: AuthController.signup,
 	});
+
+	fastify.route({
+		method: 'POST',
+		url: '/login',
+		handler: AuthController.login,
+	});
 };
 
 export default authRoutes;
