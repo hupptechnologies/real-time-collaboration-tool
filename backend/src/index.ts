@@ -1,7 +1,7 @@
-/* eslint-disable no-undef */
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import dotenv from 'dotenv';
+import process from 'node:process';
 
 dotenv.config();
 const fastify = Fastify({ logger: true });
