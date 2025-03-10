@@ -10,20 +10,23 @@ import {
 	Typography
 } from '@mui/material';
 import { useFormik } from 'formik';
+import { useRouter } from 'next/navigation';
 // import { useAuth } from '@/context/AuthContext';
 import { IFormValues } from '@/types';
 import { cardStyles, emailBoxStyles } from '@/styles';
 import { loginValidationSchema } from '@/utils/validation';
 
 const LoginForm: React.FC = () => {
+	const router = useRouter();
 	// const { login } = useAuth();
 
 	const formik = useFormik<IFormValues>({
 		initialValues: { email: '', password: '' },
 		validationSchema: loginValidationSchema,
 		onSubmit: (values) => {
-			localStorage.setItem('user', values.email);
+			localStorage.setItem('token', values.email);
 			console.log('Submitted:', values);
+			router.push('/dashboard');
 			// await login(email, password);
 		}
 	});

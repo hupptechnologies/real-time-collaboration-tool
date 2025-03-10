@@ -1,5 +1,4 @@
 'use client';
-import { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import AppBar from '@/components/AppBar';
 import DrawerLeft from '@/components/DrawerLeft';
@@ -9,7 +8,6 @@ import { useAuth } from '@/context/AuthContext';
 import { store } from '@/redux/store';
 import ThemeProviderWrapper from '@/theme/ThemeProviderWrapper';
 import { TProps } from '@/types';
-import { useRouter } from 'next/navigation';
 
 const ProviderLayout: React.FC<TProps> = ({ children }) => {
 	return (
@@ -17,7 +15,7 @@ const ProviderLayout: React.FC<TProps> = ({ children }) => {
 			<AuthProvider>
 				<ThemeProviderWrapper>
 					<ToasterProvider>
-						<AuthContent>{children}</AuthContent>
+						<Auth>{children}</Auth>
 					</ToasterProvider>
 				</ThemeProviderWrapper>
 			</AuthProvider>
@@ -25,25 +23,13 @@ const ProviderLayout: React.FC<TProps> = ({ children }) => {
 	);
 };
 
-const AuthContent: React.FC<TProps> = ({ children }) => {
+const Auth: React.FC<TProps> = ({ children }) => {
 	const { user } = useAuth();
-	const router = useRouter();
-	const isValid = user === undefined || user === null;
-
-	useEffect(() => {
-		if (isValid) {
-			router.push('/login');
-		} else {
-			router.push('/dashboard');
-		}
-	}, [isValid, router]);
-
 	return (
 		<>
-			{!isValid && <AppBar />}
-			{!isValid ? <DrawerLeft>{children}</DrawerLeft> : children}
+			{user && <AppBar />}
+			{user ? <DrawerLeft>{children}</DrawerLeft> : children}
 		</>
 	);
 };
-
 export default ProviderLayout;

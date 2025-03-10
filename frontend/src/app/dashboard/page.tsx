@@ -1,4 +1,5 @@
 'use client';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import { useState } from 'react';
 
 const Home: React.FC = () => {
@@ -15,4 +16,4 @@ const Home: React.FC = () => {
 	);
 };
 
-export default Home;
+export default ProtectedRoute(Home);

@@ -8,7 +8,7 @@ const AuthProvider: React.FC<TProps> = ({ children }) => {
 	const router = useRouter();
 
 	useEffect(() => {
-		const storedUser = localStorage.getItem('user');
+		const storedUser = localStorage.getItem('token');
 		if (storedUser !== null) {
 			setUser(storedUser);
 		}
@@ -26,7 +26,7 @@ const AuthProvider: React.FC<TProps> = ({ children }) => {
 			// 	throw new Error('Invalid credentials');
 			// }
 
-			localStorage.setItem('user', email);
+			localStorage.setItem('token', email);
 			setUser(email);
 			router.push('/dashboard');
 		} catch (error) {
@@ -35,7 +35,7 @@ const AuthProvider: React.FC<TProps> = ({ children }) => {
 	};
 
 	const logout = (): void => {
-		localStorage.removeItem('user');
+		localStorage.removeItem('token');
 		setUser(null);
 		router.push('/login');
 	};
