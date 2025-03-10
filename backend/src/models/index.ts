@@ -1,12 +1,10 @@
 import { Sequelize } from 'sequelize-typescript';
 import { Dialect } from 'sequelize';
 import process from 'node:process';
-import path from 'path';
 import config from '../config/config';
 import { TConfigEnvironments } from '../interface';
 const env = (process.env.NODE_ENV as TConfigEnvironments) || 'development';
 const dbConfig = config[env];
-const __dirname = path.resolve();
 const dialect = (dbConfig.dialect as Dialect) || 'postgres';
 
 const sequelize = new Sequelize({
