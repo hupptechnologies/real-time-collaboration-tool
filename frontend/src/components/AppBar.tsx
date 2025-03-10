@@ -1,6 +1,5 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-// import Image from 'next/image';
 import {
 	AppBar,
 	Toolbar,
@@ -19,8 +18,8 @@ import {
 } from '@mui/material';
 import { Menu as MenuIcon, SearchOutlined, NotificationAddOutlined } from '@mui/icons-material';
 import { useThemeContext } from '@/context/ThemeContext';
-import { appBarStyles, navigationItemText, searchWrapperStyles } from '@/styles';
 import { useAuth } from '@/context/AuthContext';
+import { appBarStyles, navigationItemText, searchWrapperStyles } from '@/styles';
 
 const Header: React.FC = () => {
 	const theme = useTheme();
@@ -61,18 +60,11 @@ const Header: React.FC = () => {
 		<>
 			<AppBar sx={appBarStyles} position="sticky" elevation={2}>
 				<Toolbar>
-					{/* {isMobile ? (
-						<Image src="/assets/mobile-logo.svg" alt="Mobile Logo" width={100} height={30} />
-					) : (
-						<Image src="/assets/logo.svg" alt="Logo" width={120} height={50} />
-					)} */}
-					{/* Mobile View - Show Menu Icon */}
 					{isMobile ? (
 						<IconButton color="inherit" onClick={handleMenuClick} sx={{ ml: 2 }}>
 							<MenuIcon />
 						</IconButton>
 					) : (
-						/* Desktop View - Show Navigation Items */
 						<Box sx={{ display: 'flex', ml: 4 }}>
 							{navigationItems.map((item) => (
 								<Typography key={item.text} sx={navigationItemText}>
@@ -116,7 +108,6 @@ const Header: React.FC = () => {
 					</Tooltip>
 				</Toolbar>
 			</AppBar>
-			{/* Mobile Menu */}
 			<Menu
 				anchorEl={menuAnchor}
 				open={Boolean(menuAnchor)}
@@ -129,7 +120,6 @@ const Header: React.FC = () => {
 					</MenuItem>
 				))}
 			</Menu>
-			{/* Account Menu */}
 			<Menu
 				anchorEl={anchorEl}
 				id="account-menu"

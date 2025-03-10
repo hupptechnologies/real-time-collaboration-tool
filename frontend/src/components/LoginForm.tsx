@@ -1,73 +1,32 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
 	Box,
 	Button,
-	Checkbox,
 	Card,
 	FormLabel,
 	FormControl,
-	FormControlLabel,
 	Link,
 	TextField,
 	Typography
 } from '@mui/material';
+import { useFormik } from 'formik';
 // import { useAuth } from '@/context/AuthContext';
+import { IFormValues } from '@/types';
 import { cardStyles, emailBoxStyles } from '@/styles';
+import { loginValidationSchema } from '@/utils/validation';
 
 const LoginForm: React.FC = () => {
 	// const { login } = useAuth();
-	const [emailError, setEmailError] = useState(false);
-	const [emailErrorMessage, setEmailErrorMessage] = useState('');
-	const [passwordError, setPasswordError] = useState(false);
-	const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
-	// const [open, setOpen] = useState(false);
 
-	// const handleClickOpen = (): void => {
-	// 	setOpen(true);
-	// };
-
-	// const handleClose = (): void => {
-	// 	setOpen(false);
-	// };
-
-	const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
-		if (emailError || passwordError) {
-			event.preventDefault();
-			return;
+	const formik = useFormik<IFormValues>({
+		initialValues: { email: '', password: '' },
+		validationSchema: loginValidationSchema,
+		onSubmit: (values) => {
+			localStorage.setItem('user', values.email);
+			console.log('Submitted:', values);
+			// await login(email, password);
 		}
-		const data = new FormData(event.currentTarget);
-		const email = (data.get('email') as string) ?? '';
-		const password = (data.get('password') as string) ?? '';
-		localStorage.setItem('user', email);
-		console.log('email', email, password);
-		// await login(email, password);
-	};
-
-	const validateInputs = (): boolean => {
-		const email = document.getElementById('email') as HTMLInputElement;
-		const password = document.getElementById('password') as HTMLInputElement;
-
-		let isValid = true;
-
-		if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-			setEmailError(true);
-			setEmailErrorMessage('Please enter a valid email address.');
-			isValid = false;
-		} else {
-			setEmailError(false);
-			setEmailErrorMessage('');
-		}
-
-		if (!password.value || password.value.length < 6) {
-			setPasswordError(true);
-			setPasswordErrorMessage('Password must be at least 6 characters long.');
-			isValid = false;
-		} else {
-			setPasswordError(false);
-			setPasswordErrorMessage('');
-		}
-		return isValid;
-	};
+	});
 
 	return (
 		<Card sx={cardStyles} variant="outlined">
@@ -77,12 +36,14 @@ const LoginForm: React.FC = () => {
 				sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}>
 				Sign In
 			</Typography>
-			<Box component="form" onSubmit={handleSubmit} noValidate sx={emailBoxStyles}>
+			<Box component="form" onSubmit={formik.handleSubmit} noValidate sx={emailBoxStyles}>
 				<FormControl>
 					<FormLabel htmlFor="email">Email</FormLabel>
 					<TextField
-						error={emailError}
-						helperText={emailErrorMessage}
+						value={formik.values.email}
+						onChange={formik.handleChange}
+						error={formik.touched.email && !!formik.errors.email}
+						helperText={formik.touched.email && formik.errors.email}
 						id="email"
 						type="email"
 						name="email"
@@ -92,24 +53,16 @@ const LoginForm: React.FC = () => {
 						required
 						fullWidth
 						variant="outlined"
-						color={emailError ? 'error' : 'primary'}
+						color={formik.touched.email && !!formik.errors.email ? 'error' : 'primary'}
 					/>
 				</FormControl>
 				<FormControl>
-					{/* <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-						<FormLabel htmlFor="password">Password</FormLabel>
-						<Link
-							component="button"
-							type="button"
-							onClick={handleClickOpen}
-							variant="body2"
-							sx={{ alignSelf: 'baseline' }}>
-							Forgot your password?
-						</Link>
-					</Box> */}
+					<FormLabel htmlFor="password">Password</FormLabel>
 					<TextField
-						error={passwordError}
-						helperText={passwordErrorMessage}
+						value={formik.values.password}
+						onChange={formik.handleChange}
+						error={formik.touched.password && !!formik.errors.password}
+						helperText={formik.touched.password && formik.errors.password}
 						name="password"
 						placeholder="••••••"
 						type="password"
@@ -119,15 +72,10 @@ const LoginForm: React.FC = () => {
 						required
 						fullWidth
 						variant="outlined"
-						color={passwordError ? 'error' : 'primary'}
+						color={formik.touched.password && !!formik.errors.password ? 'error' : 'primary'}
 					/>
 				</FormControl>
-				<FormControlLabel
-					control={<Checkbox value="remember" color="primary" />}
-					label="Remember me"
-				/>
-				{/* <ForgotPassword open={open} handleClose={handleClose} /> */}
-				<Button type="submit" fullWidth variant="contained" onClick={validateInputs}>
+				<Button type="submit" fullWidth variant="contained">
 					Sign in
 				</Button>
 				<Typography sx={{ textAlign: 'center' }}>

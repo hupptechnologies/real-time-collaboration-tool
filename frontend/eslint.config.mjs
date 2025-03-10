@@ -10,12 +10,12 @@ export default tseslint.config(
 	prettierConfig,
 	{
 		// config with just ignores is the replacement for `.eslintignore`
-		ignores: ['**/build/**', '**/dist/**'],
+		ignores: ['**/build/**', '**/dist/**']
 	},
 	{
 		plugins: {
 			prettier: prettierPlugin,
-			'@next/next': nextPlugin,
+			'@next/next': nextPlugin
 		},
 		rules: {
 			'@typescript-eslint/no-explicit-any': 'off',
@@ -31,12 +31,12 @@ export default tseslint.config(
 					vars: 'all',
 					args: 'all',
 					ignoreRestSiblings: false,
-					argsIgnorePattern: '^_',
-				},
+					argsIgnorePattern: '^_'
+				}
 			],
 			eqeqeq: 'error',
 			curly: 'error',
-			'no-duplicate-imports': 'error',
-		},
+			'no-duplicate-imports': 'error'
+		}
 	}
 );

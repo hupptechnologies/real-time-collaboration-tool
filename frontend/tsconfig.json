@@ -29,6 +29,7 @@
       "@/context/*": ["context/*"],
       "@/theme/*": ["theme/*"],
       "@/redux/*": ["redux/*"],
+      "@/utils/*": ["utils/*"],
       "@/types": ["types/index"],
       "@/styles": ["styles/index"]
     },
