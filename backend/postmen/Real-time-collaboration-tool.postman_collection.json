@@ -1,0 +1,124 @@
+{
+	"info": {
+		"_postman_id": "44f96fc9-7156-472c-a9aa-f67445964072",
+		"name": "Real-time-collaboration-tool",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24875280"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"rtctuser@yopmail.com\",\n    \"password\":\"rtct@123\",\n    \"username\": \"rtct user 1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASEPATH}}/api/auth/signup",
+							"host": [
+								"{{BASEPATH}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let token = pm.response.headers.get(\"token\");",
+									"if (token) {",
+									"    pm.collectionVariables.set(\"token\", token);",
+									"    console.log(\"Token stored successfully:\", token);",
+									"} else {",
+									"    console.log(\"Token not found in response headers\");",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"rtctuser@yopmail.com\",\n    \"password\":\"rtct@123\"\n}       ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASEPATH}}/api/auth/login",
+							"host": [
+								"{{BASEPATH}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BASEPATH",
+			"value": "http://127.0.0.1:3001",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJydGN0dXNlckB5b3BtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQxNTk3NzcxLCJleHAiOjE3NzMxNTUzNzF9.oOMCpVg8ZwgtVBkoshGSioLj5g7OJ-r4uQlM5Lp5Wd4",
+			"type": "string"
+		}
+	]
+}
