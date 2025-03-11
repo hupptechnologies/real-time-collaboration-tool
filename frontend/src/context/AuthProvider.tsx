@@ -16,21 +16,12 @@ const AuthProvider: React.FC<TProps> = ({ children }) => {
 
 	const login = async (email: string, password: string): Promise<void> => {
 		try {
-			const res = await fetch('/api/auth/login', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ email, password })
-			});
-			console.log('### res ###', res);
-			// if (!res.ok) {
-			// 	throw new Error('Invalid credentials');
-			// }
-
+			console.info(password);
 			localStorage.setItem('token', email);
 			setUser(email);
 			router.push('/dashboard');
 		} catch (error) {
-			console.error((error as Error).message);
+			console.info((error as Error).message);
 		}
 	};
 

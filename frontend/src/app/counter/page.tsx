@@ -1,4 +1,5 @@
 'use client';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import { decrement, increment, incrementByAmount } from '@/redux/counter/slice';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 
@@ -15,4 +16,4 @@ const Counter: React.FC = () => {
 	);
 };
 
-export default Counter;
+export default ProtectedRoute(Counter);

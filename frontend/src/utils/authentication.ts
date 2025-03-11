@@ -1,6 +1,6 @@
 import { useAuth } from '@/context/AuthContext';
 import { NextResponse } from 'next/server';
-const protectedRoutes = ['/dashboard'];
+const protectedRoutes = ['/dashboard', '/counter'];
 
 const authentication = (req: any) => {
 	const { user } = useAuth();
