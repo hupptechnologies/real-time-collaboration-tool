@@ -12,13 +12,13 @@ import { TProps } from '@/types';
 const ProviderLayout: React.FC<TProps> = ({ children }) => {
 	return (
 		<Provider store={store}>
-			<AuthProvider>
-				<ThemeProviderWrapper>
-					<ToasterProvider>
+			<ToasterProvider>
+				<AuthProvider>
+					<ThemeProviderWrapper>
 						<Auth>{children}</Auth>
-					</ToasterProvider>
-				</ThemeProviderWrapper>
-			</AuthProvider>
+					</ThemeProviderWrapper>
+				</AuthProvider>
+			</ToasterProvider>
 		</Provider>
 	);
 };

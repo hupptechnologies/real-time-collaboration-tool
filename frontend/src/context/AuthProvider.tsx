@@ -1,37 +1,39 @@
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { TProps } from '@/types';
+import { useState } from 'react';
 import { AuthContext } from './AuthContext';
+import { useToaster } from './ToasterContext';
+import { TProps } from '@/types';
+import { login } from '@/services/auth';
 
 const AuthProvider: React.FC<TProps> = ({ children }) => {
 	const [user, setUser] = useState<string | null>(null);
 	const router = useRouter();
+	const { showToaster } = useToaster();
 
-	useEffect(() => {
-		const storedUser = localStorage.getItem('token');
-		if (storedUser !== null) {
-			setUser(storedUser);
-		}
-	}, []);
-
-	const login = async (email: string, password: string): Promise<void> => {
+	const handleLogin = async (email: string, password: string): Promise<void> => {
 		try {
-			console.info(password);
-			localStorage.setItem('token', email);
-			setUser(email);
+			const res = await login(email, password, showToaster);
+			console.info(res);
+			localStorage.setItem('token', res.headers.token);
+			setUser(res.data.data);
 			router.push('/dashboard');
-		} catch (error) {
-			console.info((error as Error).message);
+		} catch (error: any) {
+			showToaster(error.message, 'error');
 		}
 	};
 
-	const logout = (): void => {
+	const handleLogout = (): void => {
 		localStorage.removeItem('token');
 		setUser(null);
 		router.push('/login');
+		showToaster('Logout...', 'success');
 	};
 
-	return <AuthContext.Provider value={{ user, login, logout }}>{children}</AuthContext.Provider>;
+	return (
+		<AuthContext.Provider value={{ user, login: handleLogin, logout: handleLogout }}>
+			{children}
+		</AuthContext.Provider>
+	);
 };
 
 export default AuthProvider;
