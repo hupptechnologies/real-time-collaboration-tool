@@ -20,3 +20,23 @@ export const login = async (
 		throw error;
 	}
 };
+
+export const signup = async (
+	username: string,
+	email: string,
+	password: string,
+	showToaster: (_message: string, _severity: 'success' | 'error') => void
+) => {
+	try {
+		const response = await axios.post(`${API_URL}/auth/signup`, {
+			username,
+			email,
+			password
+		});
+		return response;
+	} catch (error) {
+		const axiosError = error as AxiosError<TErrorResponse>;
+		showToaster(axiosError.response?.data?.message || 'Login failed', 'error');
+		throw error;
+	}
+};
