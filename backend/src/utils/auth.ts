@@ -11,7 +11,7 @@ export const generateResponseTokens = (detail: TTokenDetail) =>
 	new Promise((resolve, reject) => {
 		try {
 			const token = jwt.sign(detail, secretKey, {
-				expiresIn: '1y',
+				expiresIn: '1d',
 			});
 			resolve(token);
 		} catch (error: any) {

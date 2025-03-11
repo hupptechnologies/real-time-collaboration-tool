@@ -10,7 +10,11 @@ declare module 'fastify' {
 }
 export interface ITokenDetail {
 	id: number;
+	username: string;
 	role: string;
 	email: string;
 }
-export type TTokenDetail = Optional<ITokenDetail, 'id' | 'role' | 'email'>;
+export type TTokenDetail = Optional<
+	ITokenDetail,
+	'id' | 'role' | 'email' | 'username'
+>;

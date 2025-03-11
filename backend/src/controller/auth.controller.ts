@@ -104,6 +104,7 @@ class UserContorller {
 
 			const token = await generateResponseTokens({
 				id: existingUser.dataValues.id,
+				username: existingUser.dataValues.username,
 				email: existingUser.dataValues.email,
 				role: existingUser.dataValues.role,
 			});
