@@ -49,13 +49,8 @@ class UserContorller {
 			});
 
 			const newUser = await Users.create(userData);
-			const token = await generateResponseTokens({
-				id: newUser.dataValues.id,
-				email: newUser.dataValues.email,
-				role: newUser.dataValues.role,
-			});
-			res.header('token', token);
 			delete newUser.dataValues.password;
+			delete newUser.dataValues.isDeleted;
 
 			Response.send(res, {
 				status: statusCodes.SUCCESS,
@@ -114,6 +109,7 @@ class UserContorller {
 			});
 			res.header('token', token);
 			delete existingUser.dataValues.password;
+			delete existingUser.dataValues.isDeleted;
 
 			Response.send(res, {
 				status: statusCodes.SUCCESS,
