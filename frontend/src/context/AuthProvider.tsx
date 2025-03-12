@@ -1,5 +1,5 @@
 'use client';
-import { redirect, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { AuthContext } from './AuthContext';
 import { useToaster } from './ToasterContext';
@@ -26,7 +26,6 @@ const AuthProvider: React.FC<TProps> = ({ children }) => {
 			localStorage.setItem('token', res.headers.token);
 			setIsAuthenticated(true);
 			setUser(res.data.data);
-			// redirect('/dashboard');
 			router.push('/dashboard');
 		} catch (error: any) {
 			showToaster(error.message, 'error');

@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { redirect } from 'next/navigation';
+import { Route } from 'next';
+import { useRouter } from 'next/navigation';
 import {
 	AppBar,
 	Toolbar,
@@ -24,6 +25,7 @@ import { appBarStyles, navigationItemText, searchWrapperStyles } from '@/styles'
 
 const Header: React.FC = () => {
 	const theme = useTheme();
+	const router = useRouter();
 	const { logout } = useAuth();
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 	const { mode, toggleThemeMode } = useThemeContext();
@@ -56,7 +58,7 @@ const Header: React.FC = () => {
 		setMenuAnchor(null);
 	};
 
-	const navigationItems = [
+	const navigationItems: { text: string; link: Route }[] = [
 		{ text: 'Home', link: '/dashboard' },
 		{ text: 'Counter', link: '/counter' }
 	];
@@ -76,7 +78,7 @@ const Header: React.FC = () => {
 									key={item.text}
 									sx={navigationItemText}
 									onClick={() => {
-										redirect(item.link);
+										router.push(item.link);
 									}}>
 									{item.text}
 								</Typography>
