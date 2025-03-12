@@ -14,6 +14,7 @@ import {
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { useFormik } from 'formik';
+import PublicRoute from '@/components/PublicRoute';
 import { useToaster } from '@/context/ToasterContext';
 import { signup } from '@/services/auth';
 import { IFormValues } from '@/types';
@@ -126,4 +127,4 @@ const SignUp = () => {
 	);
 };
 
-export default SignUp;
+export default PublicRoute(SignUp);

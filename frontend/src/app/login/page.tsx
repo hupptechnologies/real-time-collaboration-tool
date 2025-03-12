@@ -11,8 +11,9 @@ import {
 	TextField,
 	Typography
 } from '@mui/material';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useFormik } from 'formik';
+import PublicRoute from '@/components/PublicRoute';
 import { useAuth } from '@/context/AuthContext';
 import { IFormValues } from '@/types';
 import { loginValidationSchema } from '@/utils/validation';
@@ -20,9 +21,10 @@ import { MainStackStyle, StackNextStyle, StackStyle, cardStyles, emailBoxStyles 
 
 const Login: React.FC = () => {
 	const { user, login } = useAuth();
+	const router = useRouter();
 	useLayoutEffect(() => {
 		if (user) {
-			redirect('/dashboard');
+			router.push('/dashboard');
 		}
 	}, []);
 
@@ -102,4 +104,4 @@ const Login: React.FC = () => {
 	);
 };
 
-export default Login;
+export default PublicRoute(Login);
