@@ -8,6 +8,7 @@ import { useAuth } from '@/context/AuthContext';
 import { store } from '@/redux/store';
 import ThemeProviderWrapper from '@/theme/ThemeProviderWrapper';
 import { TProps } from '@/types';
+import React from 'react';
 
 const ProviderLayout: React.FC<TProps> = ({ children }) => {
 	return (
@@ -23,13 +24,13 @@ const ProviderLayout: React.FC<TProps> = ({ children }) => {
 	);
 };
 
-const Auth: React.FC<TProps> = ({ children }) => {
-	const { user } = useAuth();
+const Auth: React.FC<TProps> = React.memo(({ children }) => {
+	const { isAuthenticated } = useAuth();
 	return (
 		<>
-			{user && <AppBar />}
-			{user ? <DrawerLeft>{children}</DrawerLeft> : children}
+			{isAuthenticated && <AppBar />}
+			{isAuthenticated ? <DrawerLeft>{children}</DrawerLeft> : children}
 		</>
 	);
-};
+});
 export default ProviderLayout;

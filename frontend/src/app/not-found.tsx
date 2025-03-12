@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 
 const NotFoundPage = () => {
 	const router = useRouter();
-	const handleGoHome = () => router.push('/');
+	const handleGoHome = () => router.push('/login');
 	return (
 		<Box
 			display="flex"

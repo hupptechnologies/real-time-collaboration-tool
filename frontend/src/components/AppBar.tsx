@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import { redirect } from 'next/navigation';
 import {
 	AppBar,
 	Toolbar,
@@ -55,7 +56,10 @@ const Header: React.FC = () => {
 		setMenuAnchor(null);
 	};
 
-	const navigationItems = [{ text: 'Home' }, { text: 'Recent' }, { text: 'Spaces' }];
+	const navigationItems = [
+		{ text: 'Home', link: '/dashboard' },
+		{ text: 'Counter', link: '/counter' }
+	];
 	return (
 		<>
 			<AppBar sx={appBarStyles} position="sticky" elevation={2}>
@@ -67,7 +71,13 @@ const Header: React.FC = () => {
 					) : (
 						<Box sx={{ display: 'flex', ml: 4 }}>
 							{navigationItems.map((item) => (
-								<Typography key={item.text} sx={navigationItemText}>
+								<Typography
+									component={'a'}
+									key={item.text}
+									sx={navigationItemText}
+									onClick={() => {
+										redirect(item.link);
+									}}>
 									{item.text}
 								</Typography>
 							))}

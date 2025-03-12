@@ -1,4 +1,5 @@
 import { AlertColor } from '@mui/material';
+import { TUser } from './common';
 
 export type TThemeContextType = {
 	mode: 'light' | 'dark';
@@ -6,7 +7,9 @@ export type TThemeContextType = {
 };
 
 export type TAuthContextType = {
-	user: string | null;
+	isAuthenticated: boolean;
+	isLoading: boolean;
+	user: TUser | null;
 	login: (_email: string, _password: string) => Promise<void>;
 	logout: () => void;
 };

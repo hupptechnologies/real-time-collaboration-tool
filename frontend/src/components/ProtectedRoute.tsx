@@ -1,18 +1,19 @@
 'use client';
 import { useEffect } from 'react';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 
 const ProtectedRoute = (Component: any) => {
 	const withAuth = (props: any) => {
-		const { user } = useAuth();
+		const { isAuthenticated } = useAuth();
+		const router = useRouter();
 		useEffect(() => {
-			if (!user) {
-				redirect('/');
+			if (!isAuthenticated) {
+				router.push('/login');
 			}
 		}, []);
 
-		if (!user) {
+		if (!isAuthenticated) {
 			return null;
 		}
 
