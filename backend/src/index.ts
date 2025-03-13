@@ -3,6 +3,7 @@ import cors from '@fastify/cors';
 import dotenv from 'dotenv';
 import process from 'node:process';
 import routes from './routes';
+import { intiSocket } from './utils/socket';
 
 dotenv.config();
 const fastify = Fastify({ logger: true });
@@ -10,6 +11,8 @@ const fastify = Fastify({ logger: true });
 fastify.get('/ping', async (_req, res) => {
 	res.send('Hello... I am working fine');
 });
+
+intiSocket(fastify.server);
 
 fastify.register(cors, {
 	origin: '*',

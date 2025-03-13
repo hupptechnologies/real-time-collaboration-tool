@@ -28,6 +28,7 @@ export default [
 			globals: {
 				__dirname: 'readonly',
 				__filename: 'readonly',
+				console: 'readonly',
 			},
 		},
 		plugins: { '@typescript-eslint': tseslint },
@@ -46,7 +47,12 @@ export default [
 			'comma-spacing': ['error', { before: false, after: true }],
 			'no-var': 'error',
 			'prefer-const': 'error',
-			'no-console': ['error'],
+			'no-console': [
+				'error',
+				{
+					allow: ['info'],
+				},
+			],
 			'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
 			'keyword-spacing': ['error', { before: true, after: true }],
 			'arrow-spacing': ['error', { before: true, after: true }],
