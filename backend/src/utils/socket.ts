@@ -12,8 +12,9 @@ export const intiSocket = (server: Server) => {
 	});
 
 	io.on('connection', (socket: Socket) => {
-		socket.on('myEvent', (data: any) => {
-			console.info('myEvent received:', data);
+		console.info('Socket Connected:', socket.id);
+		socket.on('message', (data: any) => {
+			console.info('Message Received:', data);
 		});
 
 		socket.on('disconnect', () => {
