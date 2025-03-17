@@ -59,7 +59,7 @@ const Header: React.FC = () => {
 	};
 
 	const navigationItems: { text: string; link: Route }[] = [
-		{ text: 'Home', link: '/dashboard' },
+		{ text: 'Home', link: '/home' },
 		{ text: 'Counter', link: '/counter' }
 	];
 	return (

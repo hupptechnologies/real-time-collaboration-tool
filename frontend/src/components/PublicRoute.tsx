@@ -9,7 +9,7 @@ const PublicRoute = (Component: any) => {
 		const router = useRouter();
 		useEffect(() => {
 			if (isAuthenticated) {
-				router.push('/dashboard');
+				router.push('/home');
 			}
 		}, []);
 

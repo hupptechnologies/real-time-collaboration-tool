@@ -24,7 +24,7 @@ const Login: React.FC = () => {
 	const router = useRouter();
 	useLayoutEffect(() => {
 		if (user) {
-			router.push('/dashboard');
+			router.push('/home');
 		}
 	}, []);
 

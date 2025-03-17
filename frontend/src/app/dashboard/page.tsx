@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import socket from '@/utils/socket';
 
-const Home: React.FC = () => {
+const Dashboard: React.FC = () => {
 	const [messages, setMessages] = useState<string[]>([]);
 	const [message, setMessage] = useState<string>('');
 
@@ -50,4 +50,4 @@ const Home: React.FC = () => {
 	);
 };
 
-export default ProtectedRoute(Home);
+export default ProtectedRoute(Dashboard);

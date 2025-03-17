@@ -26,7 +26,7 @@ const AuthProvider: React.FC<TProps> = ({ children }) => {
 			localStorage.setItem('token', res.headers.token);
 			setIsAuthenticated(true);
 			setUser(res.data.data);
-			router.push('/dashboard');
+			router.push('/home');
 		} catch (error: any) {
 			showToaster(error.message, 'error');
 		}
