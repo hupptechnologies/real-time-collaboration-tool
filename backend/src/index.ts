@@ -1,5 +1,6 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
+import FastifyAuth from '@fastify/auth';
 import dotenv from 'dotenv';
 import process from 'node:process';
 import routes from './routes';
@@ -18,7 +19,7 @@ fastify.register(cors, {
 	origin: '*',
 	exposedHeaders: 'token',
 });
-
+fastify.register(FastifyAuth);
 fastify.register(routes);
 
 const PORT = Number(process.env.PORT || 3001);

@@ -19,6 +19,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@fastify/auth": "^5.0.2",
     "@fastify/cors": "^11.0.0",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",
