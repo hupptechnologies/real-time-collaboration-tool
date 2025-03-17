@@ -29,7 +29,7 @@ const Auth: React.FC<TProps> = React.memo(({ children }) => {
 	return (
 		<>
 			{isAuthenticated && <AppBar />}
-			{isAuthenticated && children}
+			{children}
 		</>
 	);
 });
