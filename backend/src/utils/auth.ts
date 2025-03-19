@@ -50,21 +50,22 @@ export const verifyAdminToken = (
 	done();
 };
 
-export const verifyToken = (
-	req: FastifyRequest,
-	res: FastifyReply,
-	done: HookHandlerDoneFunction,
-) => {
-	const token: any = req.headers['token'];
-	jwt.verify(token, secretKey, async (err: any, decoded: any) => {
-		if (err) {
-			return Response.send(res, {
-				status: statusCodes.UNAUTHORIZED,
-				message: message.UNAUTHORIZED,
-			});
-		}
+export const verifyToken = async (req: FastifyRequest, res: FastifyReply) => {
+	const authHeader = req.headers['authorization'];
 
+	if (!authHeader || !authHeader.startsWith('Bearer ')) {
+		return Response.send(res, {
+			status: statusCodes.UNAUTHORIZED,
+			message: message.UNAUTHORIZED,
+		});
+	}
+
+	const token = authHeader.split(' ')[1];
+
+	try {
+		const decoded = jwt.verify(token, secretKey) as { id: number };
 		const userExists = await checkIsUserExists(decoded.id);
+
 		if (!userExists) {
 			return Response.send(res, {
 				status: statusCodes.UNAUTHORIZED,
@@ -72,7 +73,11 @@ export const verifyToken = (
 			});
 		}
 		req.user = decoded;
-	});
-
-	done();
+	} catch (error: any) {
+		console.info('Auth error', error);
+		return Response.send(res, {
+			status: statusCodes.UNAUTHORIZED,
+			message: message.UNAUTHORIZED,
+		});
+	}
 };
