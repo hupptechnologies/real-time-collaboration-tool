@@ -1,6 +1,5 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
-import FastifyAuth from '@fastify/auth';
 import dotenv from 'dotenv';
 import process from 'node:process';
 import routes from './routes';
@@ -15,7 +14,6 @@ fastify.get('/ping', async (_req, res) => {
 
 intiSocket(fastify.server);
 
-fastify.register(FastifyAuth);
 fastify.register(cors, {
 	origin: '*',
 	exposedHeaders: 'token',

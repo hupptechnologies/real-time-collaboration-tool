@@ -6,7 +6,7 @@ import spaceController from '../controller/space.controller';
 const spaceRoutes = async (
 	fastify: FastifyInstance<Server, IncomingMessage, ServerResponse>,
 ) => {
-	fastify.addHook('preValidation', fastify.auth([verifyToken]));
+	fastify.addHook('preValidation', verifyToken);
 
 	fastify.route({
 		method: 'POST',
@@ -18,6 +18,24 @@ const spaceRoutes = async (
 		method: 'GET',
 		url: '/list',
 		handler: spaceController.list,
+	});
+
+	fastify.route({
+		method: 'GET',
+		url: '/:id',
+		handler: spaceController.findById,
+	});
+
+	fastify.route({
+		method: 'PUT',
+		url: '/:id',
+		handler: spaceController.update,
+	});
+
+	fastify.route({
+		method: 'DELETE',
+		url: '/:id',
+		handler: spaceController.remove,
 	});
 };
 
