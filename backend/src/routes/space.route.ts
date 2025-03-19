@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import { IncomingMessage, Server, ServerResponse } from 'http';
-import SpaceController from '../controller/space.controller';
 import { verifyToken } from '../utils';
+import spaceController from '../controller/space.controller';
 
 const spaceRoutes = async (
 	fastify: FastifyInstance<Server, IncomingMessage, ServerResponse>,
@@ -11,7 +11,13 @@ const spaceRoutes = async (
 	fastify.route({
 		method: 'POST',
 		url: '/create',
-		handler: SpaceController.create,
+		handler: spaceController.create,
+	});
+
+	fastify.route({
+		method: 'GET',
+		url: '/list',
+		handler: spaceController.list,
 	});
 };
 

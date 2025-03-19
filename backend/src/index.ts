@@ -15,11 +15,11 @@ fastify.get('/ping', async (_req, res) => {
 
 intiSocket(fastify.server);
 
+fastify.register(FastifyAuth);
 fastify.register(cors, {
 	origin: '*',
 	exposedHeaders: 'token',
 });
-fastify.register(FastifyAuth);
 fastify.register(routes);
 
 const PORT = Number(process.env.PORT || 3001);

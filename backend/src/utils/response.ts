@@ -5,6 +5,7 @@ interface ResponseModel {
 	status: number;
 	error?: string;
 	data?: any;
+	totalCount?: number;
 	message?: string;
 }
 
