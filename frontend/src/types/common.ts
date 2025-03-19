@@ -14,3 +14,8 @@ export type TUser = {
 	createdAt?: Date;
 	updatedAt?: Date;
 };
+
+export interface IAuthState {
+	isLoggedIn: boolean;
+	token: string;
+}
