@@ -1,14 +1,27 @@
 'use client';
 import { useEffect } from 'react';
-import { Box, Typography, List, ListItem, ListItemText } from '@mui/material';
+import {
+	Box,
+	Typography,
+	Grid2,
+	Card,
+	CardContent,
+	Avatar,
+	Tooltip,
+	IconButton
+} from '@mui/material';
+import { Edit } from '@mui/icons-material';
 import { RootState } from '@/redux/store';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { fetchSpaceData } from '@/redux/space';
 import { ISpace } from '@/types';
+import { SpaceCard } from '@/styles';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import LoadingIndicator from '@/components/Loader';
 
 const SpacePage = () => {
 	const dispatch = useAppDispatch();
-	const { spaces } = useAppSelector((state: RootState) => state.space);
+	const { spaces, loading } = useAppSelector((state: RootState) => state.space);
 
 	useEffect(() => {
 		dispatch(fetchSpaceData());
@@ -16,18 +29,40 @@ const SpacePage = () => {
 
 	return (
 		<Box sx={{ p: 3 }}>
+			<LoadingIndicator loader={loading} />
 			<Typography variant="h4" gutterBottom>
-				Space Management
+				Projects
 			</Typography>
-			<List>
+			<Grid2 container spacing={2}>
 				{spaces.map((space: ISpace) => (
-					<ListItem key={space.id}>
-						<ListItemText primary={space.name} secondary={space.description} />
-					</ListItem>
+					<Grid2 key={space.name} size={{ xs: 12, sm: 6, md: 4 }}>
+						<Card sx={SpaceCard}>
+							<CardContent>
+								<Box display="flex" alignItems="center" gap={2}>
+									<Avatar src={''} alt={space.name} sx={{ width: 48, height: 48 }} />
+									<Box flex={1}>
+										<Typography variant="h6" fontWeight="bold">
+											{space.name}
+										</Typography>
+										<Typography variant="body2" color="text.secondary">
+											{space.description}
+										</Typography>
+									</Box>
+									<Box>
+										<Tooltip title="Edit">
+											<IconButton>
+												<Edit />
+											</IconButton>
+										</Tooltip>
+									</Box>
+								</Box>
+							</CardContent>
+						</Card>
+					</Grid2>
 				))}
-			</List>
+			</Grid2>
 		</Box>
 	);
 };
 
-export default SpacePage;
+export default ProtectedRoute(SpacePage);

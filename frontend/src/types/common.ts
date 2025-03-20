@@ -25,3 +25,7 @@ export interface IErrorState {
 	message: string;
 	type: string;
 }
+
+export interface LoadingIndicatorProps {
+	loader?: boolean;
+}
