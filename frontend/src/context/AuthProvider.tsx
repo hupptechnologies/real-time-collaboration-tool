@@ -1,7 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import storage from 'redux-persist/lib/storage';
+import { persistor } from '@/redux/store';
 import { AuthContext } from './AuthContext';
 import { useToaster } from './ToasterContext';
 import { resetAuthState, updateAccessToken } from '@/redux/auth/slice';
@@ -37,11 +37,10 @@ const AuthProvider: React.FC<TProps> = ({ children }) => {
 		}
 	};
 
-	console.info('storage', storage);
 	const handleLogout = (): void => {
-		localStorage.removeItem('token');
+		localStorage.clear();
 		dispatch(resetAuthState());
-		storage.removeItem('persist:root');
+		persistor.purge();
 		setIsAuthenticated(false);
 		setUser(null);
 		router.push('/login');
