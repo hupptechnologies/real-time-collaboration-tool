@@ -21,6 +21,7 @@ import {
 import { Menu as MenuIcon, SearchOutlined, NotificationAddOutlined } from '@mui/icons-material';
 import { useThemeContext } from '@/context/ThemeContext';
 import { useAuth } from '@/context/AuthContext';
+import ProtectedRoute from './ProtectedRoute';
 import { appBarStyles, navigationItemText, searchWrapperStyles } from '@/styles';
 
 const Header: React.FC = () => {
@@ -148,4 +149,4 @@ const Header: React.FC = () => {
 	);
 };
 
-export default Header;
+export default ProtectedRoute(Header);
