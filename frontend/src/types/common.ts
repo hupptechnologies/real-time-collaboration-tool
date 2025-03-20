@@ -19,3 +19,9 @@ export interface IAuthState {
 	isLoggedIn: boolean;
 	token: string;
 }
+
+export interface IErrorState {
+	isOpen: boolean;
+	message: string;
+	type: string;
+}

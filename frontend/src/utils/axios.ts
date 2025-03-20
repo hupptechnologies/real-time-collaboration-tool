@@ -22,11 +22,7 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
 	(response: AxiosResponse) => response,
 	(error) => {
-		return Promise.reject(
-			error.response?.data || {
-				message: 'Something went wrong. Please try again.'
-			}
-		);
+		return Promise.reject(error);
 	}
 );
 

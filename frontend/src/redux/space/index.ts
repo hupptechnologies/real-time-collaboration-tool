@@ -1,19 +1,26 @@
 import { getAllSpace } from '@/services/space';
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { updateErrorHandler } from '@/redux/error/slice';
 
 export const fetchSpaceData = createAsyncThunk(
 	'space/getAll',
-	async (_, { fulfillWithValue, rejectWithValue }) => {
+	async (_, { fulfillWithValue, rejectWithValue, dispatch }) => {
 		try {
 			const response = await getAllSpace();
-			console.info(response);
 			if (response.data && response.success) {
 				const { data } = response;
 				return fulfillWithValue(data);
 			}
 			return fulfillWithValue([]);
 		} catch (err: any) {
-			console.info(err);
+			const error = err.response.data;
+			dispatch(
+				updateErrorHandler({
+					isOpen: true,
+					message: error.message,
+					type: 'error'
+				})
+			);
 			return rejectWithValue(null);
 		}
 	}
