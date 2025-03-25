@@ -1,8 +1,17 @@
 import { configureStore, type Action, type ThunkAction } from '@reduxjs/toolkit';
 import { persistReducer, persistStore } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
 import combinedReducers from './rootReducer';
+import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
 
+const createNoopStorage = () => {
+	return {
+		getItem: async () => null,
+		setItem: async () => {},
+		removeItem: async () => {}
+	};
+};
+
+const storage = typeof window !== 'undefined' ? createWebStorage('local') : createNoopStorage();
 const persistConfig = {
 	key: 'root',
 	storage,
