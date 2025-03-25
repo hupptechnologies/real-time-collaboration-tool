@@ -10,14 +10,14 @@ import {
 	Tooltip,
 	IconButton
 } from '@mui/material';
-import { Edit } from '@mui/icons-material';
+import { Edit, Add } from '@mui/icons-material';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import LoadingIndicator from '@/components/Loader';
 import { RootState } from '@/redux/store';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { fetchSpaceData } from '@/redux/space';
 import { ISpace } from '@/types';
 import { SpaceCard } from '@/styles';
-import ProtectedRoute from '@/components/ProtectedRoute';
-import LoadingIndicator from '@/components/Loader';
 
 const SpacePage = () => {
 	const dispatch = useAppDispatch();
@@ -30,9 +30,18 @@ const SpacePage = () => {
 	return (
 		<Box sx={{ p: 3 }}>
 			<LoadingIndicator loader={loading} />
-			<Typography variant="h4" gutterBottom>
-				Projects
-			</Typography>
+			<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+				<Typography variant="h4" gutterBottom>
+					Projects
+				</Typography>
+				<Box>
+					<Tooltip title="Add">
+						<IconButton>
+							<Add />
+						</IconButton>
+					</Tooltip>
+				</Box>
+			</Box>
 			<Grid2 container spacing={2}>
 				{spaces.map((space: ISpace) => (
 					<Grid2 key={space.name} size={{ xs: 12, sm: 6, md: 4 }}>
