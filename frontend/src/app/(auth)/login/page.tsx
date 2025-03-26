@@ -1,5 +1,5 @@
 'use client';
-import React, { useLayoutEffect } from 'react';
+import React from 'react';
 import {
 	Stack,
 	Box,
@@ -11,7 +11,6 @@ import {
 	TextField,
 	Typography
 } from '@mui/material';
-import { useRouter } from 'next/navigation';
 import { useFormik } from 'formik';
 import PublicRoute from '@/components/PublicRoute';
 import { useAuth } from '@/context/AuthContext';
@@ -20,14 +19,7 @@ import { loginValidationSchema } from '@/utils/validation';
 import { MainStackStyle, StackNextStyle, StackStyle, cardStyles, emailBoxStyles } from '@/styles';
 
 const Login: React.FC = () => {
-	const { user, login } = useAuth();
-	const router = useRouter();
-	useLayoutEffect(() => {
-		if (user) {
-			router.push('/home');
-		}
-	}, []);
-
+	const { login } = useAuth();
 	const formik = useFormik<IFormValues>({
 		initialValues: { email: '', password: '' },
 		validationSchema: loginValidationSchema,
