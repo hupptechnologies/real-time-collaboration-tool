@@ -29,3 +29,11 @@ export interface IErrorState {
 export interface LoadingIndicatorProps {
 	loader?: boolean;
 }
+
+export interface ModalProps {
+	open: boolean;
+	onClose: () => void;
+	title?: string;
+	content: React.ReactNode;
+	showCloseButton?: boolean;
+}
