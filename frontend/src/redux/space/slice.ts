@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { ISpaceState } from '@/types';
-import { fetchSpaceData } from '.';
+import { fetchSpaceData, createSpaceAction } from '.';
 
 const initialState: ISpaceState = {
 	spaces: [],
@@ -21,6 +21,16 @@ const spaceSlice = createSlice({
 			state.spaces = action.payload;
 		});
 		builder.addCase(fetchSpaceData.rejected, (state, action) => {
+			state.loading = false;
+			state.error = action.error.message || 'Failed to fetch spaces';
+		});
+		builder.addCase(createSpaceAction.pending, (state) => {
+			state.loading = true;
+		});
+		builder.addCase(createSpaceAction.fulfilled, (state) => {
+			state.loading = false;
+		});
+		builder.addCase(createSpaceAction.rejected, (state, action) => {
 			state.loading = false;
 			state.error = action.error.message || 'Failed to fetch spaces';
 		});

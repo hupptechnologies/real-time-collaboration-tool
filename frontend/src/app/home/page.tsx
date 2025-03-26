@@ -15,14 +15,16 @@ import DynamicModal from '@/components/DynamicModal';
 import LoadingIndicator from '@/components/Loader';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import SpaceForm from '@/components/SpaceForm';
+import { useToaster } from '@/context/ToasterContext';
 import { RootState } from '@/redux/store';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
-import { fetchSpaceData } from '@/redux/space';
-import { ISpace, ISpaceForm } from '@/types';
+import { createSpaceAction, fetchSpaceData } from '@/redux/space';
+import { ISpace } from '@/types';
 import { SpaceCard } from '@/styles';
 
 const SpacePage = () => {
 	const dispatch = useAppDispatch();
+	const { showToaster } = useToaster();
 	const { spaces, loading } = useAppSelector((state: RootState) => state.space);
 	const [open, setOpen] = useState(false);
 
@@ -34,9 +36,16 @@ const SpacePage = () => {
 		dispatch(fetchSpaceData());
 	}, []);
 
-	const handleSubmit = (values: ISpaceForm) => {
-		console.info('Form submitted with values:', values);
+	const handleSubmit = (values: ISpace) => {
+		dispatch(createSpaceAction({ data: values, callback: handleCallback }));
 		setOpen(false);
+	};
+
+	const handleCallback = (data: any) => {
+		if (data.success) {
+			dispatch(fetchSpaceData());
+			showToaster(data.message, 'success');
+		}
 	};
 
 	return (

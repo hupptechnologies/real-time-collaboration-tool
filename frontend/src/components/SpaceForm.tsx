@@ -2,15 +2,15 @@
 import React from 'react';
 import { Box, Button, FormLabel, FormControl, TextField, Container } from '@mui/material';
 import { useFormik } from 'formik';
-import { ISpaceForm, ISpaceFormProps } from '@/types';
+import { ISpace, ISpaceFormProps } from '@/types';
 import { spaceValidationSchema } from '@/utils/validation';
 import { emailBoxStyles, FormButtonBox } from '@/styles';
 
 const SpaceForm: React.FC<ISpaceFormProps> = ({ setOpen, handleSubmit = () => {} }) => {
-	const formik = useFormik<ISpaceForm>({
+	const formik = useFormik<ISpace>({
 		initialValues: { name: '', description: '' },
 		validationSchema: spaceValidationSchema,
-		onSubmit: (values: ISpaceForm) => handleSubmit(values)
+		onSubmit: (values: ISpace) => handleSubmit(values)
 	});
 
 	return (

@@ -2,7 +2,7 @@ import React from 'react';
 export interface ISpace {
 	id?: number;
 	name: string;
-	description: string;
+	description?: string;
 }
 
 export interface ISpaceState {
@@ -11,12 +11,12 @@ export interface ISpaceState {
 	error: string | null;
 }
 
-export interface ISpaceForm {
-	name: string;
-	description?: string;
-}
-
 export interface ISpaceFormProps {
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-	handleSubmit?: (_values: ISpaceForm) => void | Promise<any>;
+	handleSubmit?: (_values: ISpace) => void | Promise<any>;
+}
+
+export interface ISpaceThunkProps {
+	data: ISpace;
+	callback: (_data: any) => void;
 }
