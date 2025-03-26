@@ -10,7 +10,7 @@ export default tseslint.config(
 	prettierConfig,
 	{
 		// config with just ignores is the replacement for `.eslintignore`
-		ignores: ['**/build/**', '**/dist/**']
+		ignores: ['**/build/**', '**/dist/**', '.next']
 	},
 	{
 		plugins: {
