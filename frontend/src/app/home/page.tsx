@@ -1,5 +1,5 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
 	Box,
 	Typography,
@@ -11,21 +11,33 @@ import {
 	IconButton
 } from '@mui/material';
 import { Edit, Add } from '@mui/icons-material';
-import ProtectedRoute from '@/components/ProtectedRoute';
+import DynamicModal from '@/components/DynamicModal';
 import LoadingIndicator from '@/components/Loader';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import SpaceForm from '@/components/SpaceForm';
 import { RootState } from '@/redux/store';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { fetchSpaceData } from '@/redux/space';
-import { ISpace } from '@/types';
+import { ISpace, ISpaceForm } from '@/types';
 import { SpaceCard } from '@/styles';
 
 const SpacePage = () => {
 	const dispatch = useAppDispatch();
 	const { spaces, loading } = useAppSelector((state: RootState) => state.space);
+	const [open, setOpen] = useState(false);
+
+	const handleModelOpen = () => {
+		setOpen(true);
+	};
 
 	useEffect(() => {
 		dispatch(fetchSpaceData());
 	}, []);
+
+	const handleSubmit = (values: ISpaceForm) => {
+		console.info('Form submitted with values:', values);
+		setOpen(false);
+	};
 
 	return (
 		<Box sx={{ p: 3 }}>
@@ -36,7 +48,7 @@ const SpacePage = () => {
 				</Typography>
 				<Box>
 					<Tooltip title="Add">
-						<IconButton>
+						<IconButton onClick={handleModelOpen}>
 							<Add />
 						</IconButton>
 					</Tooltip>
@@ -70,6 +82,12 @@ const SpacePage = () => {
 					</Grid2>
 				))}
 			</Grid2>
+			<DynamicModal
+				title="New Space"
+				open={open}
+				onClose={() => setOpen(false)}
+				content={<SpaceForm handleSubmit={handleSubmit} setOpen={setOpen} />}
+			/>
 		</Box>
 	);
 };

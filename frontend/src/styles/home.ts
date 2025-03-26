@@ -8,3 +8,9 @@ export const SpaceCard: SxProps<Theme> = () => ({
 	width: '100%',
 	maxWidth: 360
 });
+
+export const FormButtonBox: SxProps<Theme> = () => ({
+	display: 'flex',
+	justifyContent: 'center',
+	margin: '30px 0 0 0'
+});

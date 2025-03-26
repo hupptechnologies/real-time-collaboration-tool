@@ -20,3 +20,7 @@ export const signupValidationSchema = Yup.object({
 		.matches(/[0-9]/, 'Password must contain at least one number')
 		.matches(/[!@#$%^&*(),.?":{}|<>]/, 'Password must contain at least one special character')
 });
+
+export const spaceValidationSchema = Yup.object({
+	name: Yup.string().required('Space Name is required')
+});
