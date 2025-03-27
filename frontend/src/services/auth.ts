@@ -36,7 +36,7 @@ export const signup = async (
 		return response;
 	} catch (error) {
 		const axiosError = error as AxiosError<TErrorResponse>;
-		showToaster(axiosError.response?.data?.message || 'Login failed', 'error');
+showToaster(axiosError.response?.data?.message || 'Login failed', 'error');
 		throw error;
 	}
 };
