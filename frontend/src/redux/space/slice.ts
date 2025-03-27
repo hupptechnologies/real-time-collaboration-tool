@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { ISpaceState } from '@/types';
-import { fetchSpaceData, createSpaceAction } from '.';
+import { fetchSpaceDataAction, createSpaceAction, updateSpaceAction, deleteSpaceAction } from '.';
 
 const initialState: ISpaceState = {
 	spaces: [],
@@ -13,14 +13,14 @@ const spaceSlice = createSlice({
 	initialState,
 	reducers: {},
 	extraReducers: (builder) => {
-		builder.addCase(fetchSpaceData.pending, (state) => {
+		builder.addCase(fetchSpaceDataAction.pending, (state) => {
 			state.loading = true;
 		});
-		builder.addCase(fetchSpaceData.fulfilled, (state, action) => {
+		builder.addCase(fetchSpaceDataAction.fulfilled, (state, action) => {
 			state.loading = false;
 			state.spaces = action.payload;
 		});
-		builder.addCase(fetchSpaceData.rejected, (state, action) => {
+		builder.addCase(fetchSpaceDataAction.rejected, (state, action) => {
 			state.loading = false;
 			state.error = action.error.message || 'Failed to fetch spaces';
 		});
@@ -31,6 +31,26 @@ const spaceSlice = createSlice({
 			state.loading = false;
 		});
 		builder.addCase(createSpaceAction.rejected, (state, action) => {
+			state.loading = false;
+			state.error = action.error.message || 'Failed to fetch spaces';
+		});
+		builder.addCase(updateSpaceAction.pending, (state) => {
+			state.loading = true;
+		});
+		builder.addCase(updateSpaceAction.fulfilled, (state) => {
+			state.loading = false;
+		});
+		builder.addCase(updateSpaceAction.rejected, (state, action) => {
+			state.loading = false;
+			state.error = action.error.message || 'Failed to fetch spaces';
+		});
+		builder.addCase(deleteSpaceAction.pending, (state) => {
+			state.loading = true;
+		});
+		builder.addCase(deleteSpaceAction.fulfilled, (state) => {
+			state.loading = false;
+		});
+		builder.addCase(deleteSpaceAction.rejected, (state, action) => {
 			state.loading = false;
 			state.error = action.error.message || 'Failed to fetch spaces';
 		});
