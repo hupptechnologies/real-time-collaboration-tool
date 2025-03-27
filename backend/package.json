@@ -13,7 +13,13 @@
     "migrateStatus": "cd src && ../node_modules/.bin/sequelize db:migrate:status",
     "migrate:undo": "cd src && ../node_modules/.bin/sequelize db:migrate:undo:all",
     "migrate:undo:one": "cd src && ../node_modules/.bin/sequelize db:migrate:undo --name",
-    "migrate:undo:last": "cd src && ../node_modules/.bin/sequelize db:migrate:undo"
+    "migrate:undo:last": "cd src && ../node_modules/.bin/sequelize db:migrate:undo",
+    "prepare": "cd .. && husky backend/.husky"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx}": [
+      "eslint --format stylish"
+    ]
   },
   "keywords": [],
   "author": "",
@@ -39,6 +45,8 @@
     "eslint": "^9.21.0",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-prettier": "^5.2.3",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.0",
     "prettier": "^3.5.3",
     "sequelize-cli": "^6.6.2",
     "ts-node": "^10.9.2",
