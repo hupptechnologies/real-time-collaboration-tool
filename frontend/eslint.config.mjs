@@ -1,32 +1,21 @@
-import eslint from '@eslint/js';
-import prettierConfig from 'eslint-config-prettier';
-import prettierPlugin from 'eslint-plugin-prettier';
-import tseslint from 'typescript-eslint';
-import nextPlugin from '@next/eslint-plugin-next';
-import tsparser from '@typescript-eslint/parser';
+import js from '@eslint/js';
+import { FlatCompat } from '@eslint/eslintrc';
 
-export default tseslint.config(
-	eslint.configs.recommended,
-	tseslint.configs.recommended,
-	prettierConfig,
-	{
-		// config with just ignores is the replacement for `.eslintignore`
-		ignores: ['**/build/**', '**/dist/**', '.next']
-	},
-	{
-		plugins: {
-			prettier: prettierPlugin,
-			'@next/next': nextPlugin
-		},
-		files: ['**/*.ts', '**/*.tsx'],
-    languageOptions: {
-      parser: tsparser,
-      parserOptions: {
-        project: './tsconfig.json',
-        ecmaVersion: 'latest',
-        sourceType: 'module',
-      },
-		},
+const compat = new FlatCompat({
+	baseDirectory: import.meta.dirname,
+	recommendedConfig: js.configs.recommended
+});
+
+const eslintConfig = [
+	...compat.config({
+		extends: [
+			'next/core-web-vitals',
+			'next/typescript',
+			'prettier',
+			'plugin:prettier/recommended',
+			'plugin:@next/next/recommended'
+		],
+		ignorePatterns: ['.next', '.vscode', 'node_modules', 'public'],
 		rules: {
 			'@typescript-eslint/no-explicit-any': 'off',
 			quotes: ['error', 'single', { avoidEscape: true }],
@@ -53,5 +42,7 @@ export default tseslint.config(
 			curly: 'error',
 			'no-duplicate-imports': 'error'
 		}
-	}
-);
+	})
+];
+
+export default eslintConfig;
