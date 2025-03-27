@@ -58,10 +58,7 @@ const Header: React.FC = () => {
 		setMenuAnchor(null);
 	};
 
-	const navigationItems: { text: string; link: Route }[] = [
-		{ text: 'Home', link: '/home' },
-		{ text: 'Counter', link: '/counter' }
-	];
+	const navigationItems: { text: string; link: Route }[] = [{ text: 'Home', link: '/home' }];
 
 	if (!isAuthenticated) {
 		return null;
