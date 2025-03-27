@@ -30,10 +30,17 @@ export interface LoadingIndicatorProps {
 	loader?: boolean;
 }
 
-export interface ModalProps {
+export interface IModalProps {
 	open: boolean;
 	onClose: () => void;
 	title?: string;
 	content: React.ReactNode;
 	showCloseButton?: boolean;
+}
+
+export interface IConfirmModalProps {
+	open: boolean;
+	title?: string;
+	subTitle: string;
+	onClose: (_confirmed: boolean) => void;
 }

@@ -1,10 +1,10 @@
 import React from 'react';
 import { Dialog, DialogTitle, DialogContent, IconButton, Box, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { ModalProps } from '@/types';
+import { IModalProps } from '@/types';
 import { DialogModelTitleStyle } from '@/styles';
 
-const DynamicModal: React.FC<ModalProps> = ({
+const DynamicModal: React.FC<IModalProps> = ({
 	open,
 	onClose,
 	title,
