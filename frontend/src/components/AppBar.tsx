@@ -21,6 +21,7 @@ import {
 import { Menu as MenuIcon, SearchOutlined, NotificationAddOutlined } from '@mui/icons-material';
 import { useThemeContext } from '@/context/ThemeContext';
 import { useAuth } from '@/context/AuthContext';
+import ConfirmModal from './ConfirmModal';
 import { appBarStyles, navigationItemText, searchWrapperStyles } from '@/styles';
 
 const Header: React.FC = () => {
@@ -33,6 +34,7 @@ const Header: React.FC = () => {
 	const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 	const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
 	const [searchValue, setSearchValue] = useState<string>('');
+	const [openModal, setOpenModal] = useState<boolean>(false);
 	const [notifications] = useState<number>(5);
 	const { isAuthenticated } = useAuth();
 	useEffect(() => {
@@ -143,8 +145,19 @@ const Header: React.FC = () => {
 				anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
 				<MenuItem>Profile</MenuItem>
 				<MenuItem>My account</MenuItem>
-				<MenuItem onClick={logout}>Logout</MenuItem>
+				<MenuItem onClick={() => setOpenModal(true)}>Logout</MenuItem>
 			</Menu>
+			<ConfirmModal
+				open={openModal}
+				title={'Logout ?'}
+				subTitle={'are you want to logout user ?'}
+				onClose={(confirmed: boolean) => {
+					if (confirmed) {
+						logout();
+					}
+					setOpenModal(false);
+				}}
+			/>
 		</>
 	);
 };
