@@ -4,6 +4,7 @@ export const message = {
 	LOGIN_SUCCESS: 'Logged in successfully.',
 	LOGIN_INVALID: 'Invalid email or password.',
 	REGISTRATION_SUCCESS: 'Registration completed successfully.',
+	RESET_PASSWORD_SUCCESS: 'Reset password successfully.',
 	SPACE_SUCCESS: 'Space created successfully.',
 	SPACE_ALREADY_EXISTS:
 		'A space with this name already exists. Please choose a unique name.',
@@ -11,5 +12,9 @@ export const message = {
 	SPACE_DETAIL_FETCHED: 'Space details retrieved successfully.',
 	SPACE_UPDATE_SUCCESS: 'Space updated successfully.',
 	SPACE_DELETED_SUCCESS: 'Space deleted successfully.',
+	USER_LIST_SUCCESS: 'User list fetched successfylly',
+	USER_DETAIL_FETCHED: 'User details retrieved successfully.',
+	USER_UPDATE_SUCCESS: 'User name updated successfully',
+	USER_DELETE_SUCCESS: 'User deleted successfully',
 	UNAUTHORIZED: 'Unauthorized access. Permission denied.',
 };
