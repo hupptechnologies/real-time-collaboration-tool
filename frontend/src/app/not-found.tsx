@@ -1,8 +1,9 @@
 'use client';
+import React from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
-const NotFoundPage = () => {
+const NotFoundPage: React.FC = () => {
 	const router = useRouter();
 	const handleGoHome = () => router.push('/login');
 	return (

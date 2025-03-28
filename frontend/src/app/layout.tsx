@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 	keywords: ['Next.js', 'TypeScript', 'SEO']
 };
 
-const RootLayout: React.FC<TProps> = ({ children }) => {
+const RootLayout: React.FC<TProps> = ({ children }: TProps) => {
 	return (
 		<html lang="en">
 			<body>

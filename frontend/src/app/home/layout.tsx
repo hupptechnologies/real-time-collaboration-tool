@@ -5,7 +5,7 @@ export const metadata: Metadata = {
 	title: 'Home'
 };
 
-const HomeLayout: React.FC<TProps> = ({ children }) => {
+const HomeLayout: React.FC<TProps> = ({ children }: TProps) => {
 	return <>{children}</>;
 };
 

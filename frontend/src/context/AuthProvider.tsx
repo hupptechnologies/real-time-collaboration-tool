@@ -9,7 +9,7 @@ import { useAppDispatch } from '@/redux/hook';
 import { login } from '@/services/auth';
 import { TProps, TUser } from '@/types';
 
-const AuthProvider: React.FC<TProps> = ({ children }) => {
+const AuthProvider: React.FC<TProps> = ({ children }: TProps) => {
 	const router = useRouter();
 	const { showToaster } = useToaster();
 	const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);

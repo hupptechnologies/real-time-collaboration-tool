@@ -5,7 +5,7 @@ export const metadata: Metadata = {
 	title: 'Sign Up'
 };
 
-const SignInLayout: React.FC<TProps> = ({ children }) => {
+const SignInLayout: React.FC<TProps> = ({ children }: TProps) => {
 	return <>{children}</>;
 };
 

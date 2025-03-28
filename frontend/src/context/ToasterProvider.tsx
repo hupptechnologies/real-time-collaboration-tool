@@ -5,7 +5,7 @@ import { resetErrorHandler } from '@/redux/error/slice';
 import { ToasterContext } from './ToasterContext';
 import { TProps } from '@/types';
 
-const ToasterProvider: React.FC<TProps> = ({ children }) => {
+const ToasterProvider: React.FC<TProps> = ({ children }: TProps) => {
 	const dispatch = useAppDispatch();
 	const { isOpen, message: error, type } = useAppSelector((state: any) => state.error);
 	const [open, setOpen] = useState(false);

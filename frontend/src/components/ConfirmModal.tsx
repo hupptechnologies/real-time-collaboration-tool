@@ -8,7 +8,12 @@ import {
 } from '@mui/material';
 import { IConfirmModalProps } from '@/types';
 
-const ConfirmModal: React.FC<IConfirmModalProps> = ({ open, title, subTitle, onClose }) => {
+const ConfirmModal: React.FC<IConfirmModalProps> = ({
+	open,
+	title,
+	subTitle,
+	onClose
+}: IConfirmModalProps) => {
 	return (
 		<Dialog open={open} onClose={() => onClose(false)}>
 			<DialogTitle>{title}</DialogTitle>
