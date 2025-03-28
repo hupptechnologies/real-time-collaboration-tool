@@ -85,8 +85,256 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Space",
+			"item": [
+				{
+					"name": "Create Space",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test Space 1\", // required\n    \"description\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASEPATH}}/api/space/create",
+							"host": [
+								"{{BASEPATH}}"
+							],
+							"path": [
+								"api",
+								"space",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Spaces",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASEPATH}}/api/space/list?field={{field}}&sort={{sort}}",
+							"host": [
+								"{{BASEPATH}}"
+							],
+							"path": [
+								"api",
+								"space",
+								"list"
+							],
+							"query": [
+								{
+									"key": "field",
+									"value": "{{field}}"
+								},
+								{
+									"key": "sort",
+									"value": "{{sort}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Space By Id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASEPATH}}/api/space/{{id}}",
+							"host": [
+								"{{BASEPATH}}"
+							],
+							"path": [
+								"api",
+								"space",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Space By Id",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test Space 1\", // required\n    \"description\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASEPATH}}/api/space/{{id}}",
+							"host": [
+								"{{BASEPATH}}"
+							],
+							"path": [
+								"api",
+								"space",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Space By Id",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASEPATH}}/api/space/{{id}}",
+							"host": [
+								"{{BASEPATH}}"
+							],
+							"path": [
+								"api",
+								"space",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get User Detail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASEPATH}}/api/user/detail",
+							"host": [
+								"{{BASEPATH}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"detail"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"Test user 1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASEPATH}}/api/user/update",
+							"host": [
+								"{{BASEPATH}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Password",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"Test@123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASEPATH}}/api/user/reset-password",
+							"host": [
+								"{{BASEPATH}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
 	"event": [
 		{
 			"listen": "prerequest",
@@ -119,6 +367,18 @@
 			"key": "token",
 			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJydGN0dXNlckB5b3BtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQxNTk3NzcxLCJleHAiOjE3NzMxNTUzNzF9.oOMCpVg8ZwgtVBkoshGSioLj5g7OJ-r4uQlM5Lp5Wd4",
 			"type": "string"
+		},
+		{
+			"key": "field",
+			"value": "createdAt"
+		},
+		{
+			"key": "sort",
+			"value": "DESC"
+		},
+		{
+			"key": "id",
+			"value": "1"
 		}
 	]
 }
