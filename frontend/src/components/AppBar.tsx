@@ -143,7 +143,7 @@ const Header: React.FC = () => {
 				onClick={handleClose}
 				transformOrigin={{ horizontal: 'right', vertical: 'top' }}
 				anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
-				<MenuItem>Profile</MenuItem>
+				<MenuItem onClick={() => router.push('/profile')}>Profile</MenuItem>
 				<MenuItem>My account</MenuItem>
 				<MenuItem onClick={() => setOpenModal(true)}>Logout</MenuItem>
 			</Menu>
