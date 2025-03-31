@@ -10,49 +10,49 @@ import {
 	IconButton,
 	Box
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import { useAppDispatch, useAppSelector } from '@/redux/hook';
+import { fetchUserDataAction, updateUserAction } from '@/redux/user';
+import { IAPIResponse, IUser } from '@/types';
+import { ProfileAvatar, ProfileCard, ProfileContainer, ProfileEditBox } from '@/styles';
 
 const Profile: React.FC = () => {
-	const [user, setUser] = useState({
-		id: '123456',
-		name: 'John Doe',
-		email: 'johndoe@example.com',
-		avatar: ''
-	});
-
+	const dispatch = useAppDispatch();
+	const { user } = useAppSelector((state) => state.user);
 	const [editing, setEditing] = useState<boolean>(false);
-	const [newName, setNewName] = useState<string>(user.name);
+	const [newName, setNewName] = useState<string>(user.username || '');
 
-	const handleEdit = () => {
-		setEditing(true);
+	useEffect(() => {
+		fetchUserData();
+	}, []);
+
+	const fetchUserData = () => {
+		dispatch(fetchUserDataAction());
+	};
+
+	const handleCallback = (res: IAPIResponse<IUser>) => {
+		if (res.success) {
+			fetchUserData();
+			setEditing(false);
+		}
 	};
 
 	const handleSave = () => {
-		setUser({ ...user, name: newName });
-		setEditing(false);
+		if (newName.trim() === user.username) {
+			setEditing(false);
+			return;
+		}
+		dispatch(updateUserAction({ data: { username: newName }, callback: handleCallback }));
 	};
 
 	return (
-		<Container maxWidth="sm" sx={{ mt: 5, display: 'flex', justifyContent: 'center' }}>
-			<Card
-				sx={{
-					p: 4,
-					textAlign: 'center',
-					boxShadow: 4,
-					borderRadius: 4,
-					maxWidth: 400,
-					width: '100%',
-					background: 'linear-gradient(135deg, #f3f3f3, #e0e0e0)'
-				}}>
+		<Container maxWidth="sm" sx={ProfileContainer}>
+			<Card sx={ProfileCard}>
 				<CardContent>
-					<Avatar
-						src={user.avatar}
-						alt={user.name}
-						sx={{ width: 100, height: 100, mx: 'auto', mb: 2, border: '3px solid #1976d2' }}
-					/>
+					<Avatar src={''} alt={user.username} sx={ProfileAvatar} />
 					{editing ? (
-						<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
+						<Box sx={ProfileEditBox}>
 							<TextField
 								value={newName}
 								onChange={(e) => setNewName(e.target.value)}
@@ -66,11 +66,11 @@ const Profile: React.FC = () => {
 							</IconButton>
 						</Box>
 					) : (
-						<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
+						<Box sx={ProfileEditBox}>
 							<Typography variant="h5" fontWeight={600}>
-								{user.name}
+								{user.username}
 							</Typography>
-							<IconButton size="small" onClick={handleEdit} sx={{ color: '#1976d2' }}>
+							<IconButton size="small" onClick={() => setEditing(true)} sx={{ color: '#1976d2' }}>
 								<EditOutlined />
 							</IconButton>
 						</Box>

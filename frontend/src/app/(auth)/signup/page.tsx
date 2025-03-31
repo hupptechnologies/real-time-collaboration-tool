@@ -25,9 +25,9 @@ const SignUp = () => {
 	const router = useRouter();
 	const { showToaster } = useToaster();
 
-	const handleSignUp = async (values: any) => {
+	const handleSignUp = async (values: IFormValues) => {
 		try {
-			await signup(values.username, values.email, values.password, showToaster);
+			await signup(values.username as string, values.email, values.password, showToaster);
 			showToaster('Signup successful!', 'success');
 			router.push('/login');
 		} catch (error) {

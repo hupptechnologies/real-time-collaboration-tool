@@ -1,4 +1,5 @@
 import React from 'react';
+import { IAPIResponse } from './common';
 export interface ISpace {
 	id?: number;
 	name: string;
@@ -13,10 +14,10 @@ export interface ISpaceState {
 
 export interface ISpaceFormProps {
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-	handleSubmit?: (_values: ISpace) => void | Promise<any>;
+	handleSubmit?: (_values: ISpace) => void | Promise<void>;
 }
 
 export interface ISpaceThunkProps {
 	data: ISpace;
-	callback: (_data: any) => void;
+	callback: (_data: IAPIResponse<ISpace>) => void;
 }

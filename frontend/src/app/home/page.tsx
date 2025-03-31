@@ -26,7 +26,7 @@ import {
 	updateSpaceAction,
 	deleteSpaceAction
 } from '@/redux/space';
-import { ISpace } from '@/types';
+import { IAPIResponse, ISpace } from '@/types';
 import { SpaceCard } from '@/styles';
 
 const SpacePage = () => {
@@ -52,10 +52,10 @@ const SpacePage = () => {
 		setOpen(false);
 	};
 
-	const handleCallback = (data: any) => {
+	const handleCallback = (data: IAPIResponse<ISpace>) => {
 		if (data.success) {
 			dispatch(fetchSpaceDataAction());
-			showToaster(data.message, 'success');
+			showToaster(data.message || '', 'success');
 		}
 	};
 
@@ -65,7 +65,6 @@ const SpacePage = () => {
 	};
 
 	const handleSaveEdit = (space: ISpace) => {
-		console.info(space);
 		if (editValue.trim() && editValue !== space.name) {
 			dispatch(
 				updateSpaceAction({ data: { id: space.id, name: editValue }, callback: handleCallback })

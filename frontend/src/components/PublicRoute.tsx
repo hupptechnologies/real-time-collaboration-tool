@@ -3,8 +3,8 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 
-const PublicRoute = (Component: React.ComponentType) => {
-	return function WithPublicRoute(props: any) {
+const PublicRoute = <P extends object>(Component: React.ComponentType<P>) => {
+	return function WithPublicRoute(props: P) {
 		const { isAuthenticated } = useAuth();
 		const router = useRouter();
 

@@ -2,12 +2,13 @@ import { SyntheticEvent, useEffect, useState } from 'react';
 import { Alert, AlertColor, Snackbar } from '@mui/material';
 import { useAppSelector, useAppDispatch } from '@/redux/hook';
 import { resetErrorHandler } from '@/redux/error/slice';
+import { RootState } from '@/redux/store';
 import { ToasterContext } from './ToasterContext';
 import { TProps } from '@/types';
 
 const ToasterProvider: React.FC<TProps> = ({ children }: TProps) => {
 	const dispatch = useAppDispatch();
-	const { isOpen, message: error, type } = useAppSelector((state: any) => state.error);
+	const { isOpen, message: error, type } = useAppSelector((state: RootState) => state.error);
 	const [open, setOpen] = useState(false);
 	const [message, setMessage] = useState('');
 	const [severity, setSeverity] = useState<AlertColor>('info');

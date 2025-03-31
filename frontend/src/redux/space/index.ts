@@ -76,7 +76,6 @@ export const updateSpaceAction = createAsyncThunk(
 export const deleteSpaceAction = createAsyncThunk(
 	'space/delete',
 	async ({ data, callback }: ISpaceThunkProps, { fulfillWithValue, rejectWithValue, dispatch }) => {
-		console.info(data);
 		try {
 			const response = await deleteSpace(data);
 			if (response && response.success) {

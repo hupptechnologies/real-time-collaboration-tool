@@ -23,7 +23,7 @@ const Login: React.FC = () => {
 	const formik = useFormik<IFormValues>({
 		initialValues: { email: '', password: '' },
 		validationSchema: loginValidationSchema,
-		onSubmit: async (values: any) => {
+		onSubmit: async (values: IFormValues) => {
 			await login(values.email, values.password);
 		}
 	});

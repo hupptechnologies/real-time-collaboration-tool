@@ -1,3 +1,5 @@
+import { AlertColor } from '@mui/material';
+
 export type TProps = {
 	children: React.ReactNode;
 };
@@ -23,7 +25,7 @@ export interface IAuthState {
 export interface IErrorState {
 	isOpen: boolean;
 	message: string;
-	type: string;
+	type: AlertColor;
 }
 
 export interface LoadingIndicatorProps {
@@ -43,4 +45,11 @@ export interface IConfirmModalProps {
 	title?: string;
 	subTitle: string;
 	onClose: (_confirmed: boolean) => void;
+}
+
+export interface IAPIResponse<T = unknown> {
+	status: number;
+	success: boolean;
+	message?: string;
+	data?: T;
 }

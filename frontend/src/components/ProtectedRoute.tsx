@@ -3,8 +3,8 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 
-const ProtectedRoute = (Component: React.ComponentType) => {
-	return function WithAuth(props: any) {
+const ProtectedRoute = <P extends object>(Component: React.ComponentType<P>) => {
+	return function WithAuth(props: P) {
 		const { isAuthenticated } = useAuth();
 		const router = useRouter();
 
