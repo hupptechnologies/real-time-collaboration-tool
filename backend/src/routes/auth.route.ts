@@ -1,6 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import { IncomingMessage, Server, ServerResponse } from 'http';
 import AuthController from '../controller/auth.controller';
+import { verifyRefeshToken } from '../utils';
 
 const authRoutes = async (
 	fastify: FastifyInstance<Server, IncomingMessage, ServerResponse>,
@@ -21,6 +22,13 @@ const authRoutes = async (
 		method: 'POST',
 		url: '/login',
 		handler: AuthController.login,
+	});
+
+	fastify.route({
+		method: 'GET',
+		url: '/refersh-token',
+		preValidation: verifyRefeshToken,
+		handler: AuthController.refreshToken,
 	});
 };
 

@@ -12,6 +12,7 @@ export const message = {
 	SPACE_DETAIL_FETCHED: 'Space details retrieved successfully.',
 	SPACE_UPDATE_SUCCESS: 'Space updated successfully.',
 	SPACE_DELETED_SUCCESS: 'Space deleted successfully.',
+	REFRESH_TOKEN_SUCCESS: 'Token created successfully',
 	USER_LIST_SUCCESS: 'User list fetched successfylly',
 	USER_DETAIL_FETCHED: 'User details retrieved successfully.',
 	USER_UPDATE_SUCCESS: 'User name updated successfully',

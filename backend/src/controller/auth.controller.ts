@@ -102,13 +102,14 @@ class UserContorller {
 				return;
 			}
 
-			const token = await generateResponseTokens({
+			const { token, refreshToken } = await generateResponseTokens({
 				id: existingUser.dataValues.id,
 				username: existingUser.dataValues.username,
 				email: existingUser.dataValues.email,
 				role: existingUser.dataValues.role,
 			});
 			res.header('token', token);
+			res.header('refershToken', refreshToken);
 			delete existingUser.dataValues.password;
 			delete existingUser.dataValues.isDeleted;
 
@@ -117,6 +118,38 @@ class UserContorller {
 				success: true,
 				message: message.LOGIN_SUCCESS,
 				data: existingUser,
+			});
+		} catch (error: any) {
+			return Response.send(res, {
+				status: statusCodes.BAD_REQUEST,
+				success: false,
+				message: error.message,
+			});
+		}
+	}
+
+	async refreshToken(req: FastifyRequest, res: FastifyReply) {
+		try {
+			const user = req.user;
+			if (!user) {
+				return Response.send(res, {
+					status: statusCodes.UNAUTHORIZED,
+					success: false,
+					message: message.UNAUTHORIZED,
+				});
+			}
+
+			const { token } = await generateResponseTokens({
+				id: user.id,
+				username: user.username,
+				email: user.email,
+				role: user.role,
+			});
+			res.header('token', token);
+			Response.send(res, {
+				status: statusCodes.SUCCESS,
+				success: true,
+				message: message.REFRESH_TOKEN_SUCCESS,
 			});
 		} catch (error: any) {
 			return Response.send(res, {
