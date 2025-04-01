@@ -6,14 +6,19 @@ import { checkIsUserExists } from '../controller/auth.controller';
 import { Response, statusCodes, message } from './index';
 import { TTokenDetail } from '../interface';
 
-const secretKey: string = process.env.JWT_SECRET_KEY || '';
+const tokenSecretKey: string = process.env.JWT_SECRET_KEY || '';
+const refershTokenSecretKey: string = process.env.REFRESH_JWT_SECRET_KEY || '';
+
 export const generateResponseTokens = (detail: TTokenDetail) =>
-	new Promise((resolve, reject) => {
+	new Promise<{ token: string; refreshToken: string }>((resolve, reject) => {
 		try {
-			const token = jwt.sign(detail, secretKey, {
-				expiresIn: '1d',
+			const token = jwt.sign(detail, tokenSecretKey, {
+				expiresIn: '1m',
 			});
-			resolve(token);
+			const refreshToken = jwt.sign(detail, refershTokenSecretKey, {
+				expiresIn: '15m',
+			});
+			resolve({ token, refreshToken });
 		} catch (error: any) {
 			reject(error);
 		}
@@ -31,7 +36,7 @@ export const verifyAdminToken = (
 	done: HookHandlerDoneFunction,
 ) => {
 	const token: any = req.headers['token'];
-	jwt.verify(token, secretKey, (err: any, decoded: any) => {
+	jwt.verify(token, tokenSecretKey, (err: any, decoded: any) => {
 		if (err) {
 			return Response.send(res, {
 				status: statusCodes.UNAUTHORIZED,
@@ -63,7 +68,41 @@ export const verifyToken = async (req: FastifyRequest, res: FastifyReply) => {
 	const token = authHeader.split(' ')[1];
 
 	try {
-		const decoded = jwt.verify(token, secretKey) as { id: number };
+		const decoded = jwt.verify(token, tokenSecretKey) as { id: number };
+		const userExists = await checkIsUserExists(decoded.id);
+
+		if (!userExists) {
+			return Response.send(res, {
+				status: statusCodes.UNAUTHORIZED,
+				message: message.UNAUTHORIZED,
+			});
+		}
+		req.user = decoded;
+	} catch (error: any) {
+		console.info('Auth error', error);
+		return Response.send(res, {
+			status: statusCodes.UNAUTHORIZED,
+			message: message.UNAUTHORIZED,
+		});
+	}
+};
+
+export const verifyRefeshToken = async (
+	req: FastifyRequest,
+	res: FastifyReply,
+) => {
+	const authHeader = req.headers['authorization'];
+
+	if (!authHeader || !authHeader.startsWith('Bearer ')) {
+		return Response.send(res, {
+			status: statusCodes.UNAUTHORIZED,
+			message: message.UNAUTHORIZED,
+		});
+	}
+	const token = authHeader.split(' ')[1];
+
+	try {
+		const decoded = jwt.verify(token, refershTokenSecretKey) as { id: number };
 		const userExists = await checkIsUserExists(decoded.id);
 
 		if (!userExists) {
