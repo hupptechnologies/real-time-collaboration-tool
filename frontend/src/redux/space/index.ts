@@ -1,4 +1,4 @@
-import { getAllSpace, createSpace, updateSpace, deleteSpace } from '@/services/space';
+import { getAllSpace, createSpace, updateSpace, deleteSpace, getSpace } from '@/services/space';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { updateErrorHandler } from '@/redux/error/slice';
 import { ISpaceThunkProps } from '@/types';
@@ -32,7 +32,7 @@ export const createSpaceAction = createAsyncThunk(
 	async ({ data, callback }: ISpaceThunkProps, { fulfillWithValue, rejectWithValue, dispatch }) => {
 		try {
 			const response = await createSpace(data);
-			if (response.data && response.success) {
+			if (response.data && response.success && callback) {
 				callback(response);
 			}
 			return fulfillWithValue([]);
@@ -55,7 +55,7 @@ export const updateSpaceAction = createAsyncThunk(
 	async ({ data, callback }: ISpaceThunkProps, { fulfillWithValue, rejectWithValue, dispatch }) => {
 		try {
 			const response = await updateSpace(data);
-			if (response && response.success) {
+			if (response && response.success && callback) {
 				callback(response);
 			}
 			return fulfillWithValue([]);
@@ -78,10 +78,34 @@ export const deleteSpaceAction = createAsyncThunk(
 	async ({ data, callback }: ISpaceThunkProps, { fulfillWithValue, rejectWithValue, dispatch }) => {
 		try {
 			const response = await deleteSpace(data);
-			if (response && response.success) {
+			if (response && response.success && callback) {
 				callback(response);
 			}
 			return fulfillWithValue([]);
+		} catch (err: any) {
+			const error = err.response.data;
+			dispatch(
+				updateErrorHandler({
+					isOpen: true,
+					message: error.message,
+					type: 'error'
+				})
+			);
+			return rejectWithValue(null);
+		}
+	}
+);
+
+export const fetchSingleSpaceAction = createAsyncThunk(
+	'space/single',
+	async ({ data }: ISpaceThunkProps, { fulfillWithValue, rejectWithValue, dispatch }) => {
+		try {
+			const response = await getSpace(data);
+			if (response.data && response.success) {
+				const { data } = response;
+				return fulfillWithValue(data);
+			}
+			return fulfillWithValue({});
 		} catch (err: any) {
 			const error = err.response.data;
 			dispatch(

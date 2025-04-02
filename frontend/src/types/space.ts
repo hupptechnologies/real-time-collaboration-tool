@@ -2,11 +2,12 @@ import React from 'react';
 import { IAPIResponse } from './common';
 export interface ISpace {
 	id?: number;
-	name: string;
+	name?: string;
 	description?: string;
 }
 
 export interface ISpaceState {
+	space: ISpace;
 	spaces: ISpace[];
 	loading: boolean;
 	error: string | null;
@@ -19,5 +20,5 @@ export interface ISpaceFormProps {
 
 export interface ISpaceThunkProps {
 	data: ISpace;
-	callback: (_data: IAPIResponse<ISpace>) => void;
+	callback?: (_data: IAPIResponse<ISpace>) => void;
 }

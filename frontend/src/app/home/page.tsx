@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import {
 	Box,
@@ -61,7 +62,7 @@ const SpacePage = () => {
 
 	const handleEditClick = (space: ISpace) => {
 		setEditId(space.id);
-		setEditValue(space.name);
+		setEditValue(space.name as string);
 	};
 
 	const handleSaveEdit = (space: ISpace) => {
@@ -75,7 +76,7 @@ const SpacePage = () => {
 
 	const handleDeleteClick = (space: ISpace) => {
 		setDeleteId(space.id);
-		setDeleteValue(space.name);
+		setDeleteValue(space.name as string);
 	};
 
 	const handleConfirm = (confirmed: boolean) => {
@@ -125,7 +126,7 @@ const SpacePage = () => {
 											/>
 										) : (
 											<Typography variant="h6" fontWeight="bold">
-												{space.name}
+												<Link href={`/home/${space.id}`}>{space.name}</Link>
 											</Typography>
 										)}
 									</Box>

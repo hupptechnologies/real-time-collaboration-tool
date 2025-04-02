@@ -6,6 +6,11 @@ export const getAllSpace = async () => {
 	return response.data;
 };
 
+export const getSpace = async (data: ISpace) => {
+	const response = await axiosInstance.get(`/space/${data.id}`);
+	return response.data;
+};
+
 export const createSpace = async (data: ISpace) => {
 	const response = await axiosInstance.post('/space/create', data);
 	return response.data;

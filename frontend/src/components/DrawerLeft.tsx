@@ -10,9 +10,9 @@ import {
 	ListItemText,
 	Toolbar,
 	IconButton,
-	Tooltip
+	Tooltip,
+	Typography
 } from '@mui/material';
-import { TProps } from '@/types';
 import {
 	ChevronLeft,
 	ChevronRight,
@@ -21,8 +21,12 @@ import {
 	Settings as SettingsIcon
 } from '@mui/icons-material';
 import { ArrowIconStyle, DrawerMenuStyle } from '@/styles';
+interface DrawerLeftProps {
+	children?: React.ReactNode;
+	name: string;
+}
 
-const DrawerLeft: React.FC<TProps> = ({ children }) => {
+const DrawerLeft: React.FC<DrawerLeftProps> = ({ name }) => {
 	const [open, setOpen] = useState(true);
 	const toggleDrawer = (): void => {
 		setOpen((prev) => !prev);
@@ -47,6 +51,9 @@ const DrawerLeft: React.FC<TProps> = ({ children }) => {
 			</IconButton>
 			<Drawer variant="permanent" open={open} sx={DrawerMenuStyle(open)}>
 				<Toolbar />
+				<Box>
+					<Typography variant="h4">{name}</Typography>
+				</Box>
 				<List>
 					{[
 						{ text: 'Home', icon: <HomeIcon /> },
@@ -64,7 +71,7 @@ const DrawerLeft: React.FC<TProps> = ({ children }) => {
 			</Drawer>
 			<Box component="main" sx={{ flexGrow: 1, p: 3 }}>
 				<Toolbar />
-				{children}
+				{/* {children} */}
 			</Box>
 		</Box>
 	);
