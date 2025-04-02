@@ -21,7 +21,13 @@ const Profile: React.FC = () => {
 	const dispatch = useAppDispatch();
 	const { user } = useAppSelector((state) => state.user);
 	const [editing, setEditing] = useState<boolean>(false);
-	const [newName, setNewName] = useState<string>(user.username || '');
+	const [newName, setNewName] = useState<string>('');
+
+	useEffect(() => {
+		if (user) {
+			setNewName(user.username as string);
+		}
+	}, [user]);
 
 	useEffect(() => {
 		fetchUserData();

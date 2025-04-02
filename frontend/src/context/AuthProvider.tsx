@@ -28,6 +28,7 @@ const AuthProvider: React.FC<TProps> = ({ children }: TProps) => {
 		try {
 			const res = await login(email, password, showToaster);
 			localStorage.setItem('token', res.headers.token);
+			localStorage.setItem('refreshToken', res.headers['x-refresh-token']);
 			dispatch(updateAccessToken(res.headers.token));
 			setIsAuthenticated(true);
 			setUser(res.data.data);
