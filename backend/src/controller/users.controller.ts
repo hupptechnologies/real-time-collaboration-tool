@@ -77,7 +77,7 @@ const update = async (req: FastifyRequest, res: FastifyReply) => {
 		}
 
 		if (missingKeys.length > 0) {
-			Response.send(res, {
+			return Response.send(res, {
 				status: statusCodes.BAD_REQUEST,
 				success: false,
 				message: `Required Keys: ${missingKeys.join(', ')}`,

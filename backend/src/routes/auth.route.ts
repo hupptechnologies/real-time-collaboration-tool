@@ -26,7 +26,7 @@ const authRoutes = async (
 
 	fastify.route({
 		method: 'GET',
-		url: '/refersh-token',
+		url: '/refresh-token',
 		preValidation: verifyRefeshToken,
 		handler: AuthController.refreshToken,
 	});

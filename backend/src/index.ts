@@ -17,8 +17,8 @@ intiSocket(fastify.server);
 fastify.register(cors, {
 	origin: '*',
 	allowedHeaders: ['Content-Type', 'Authorization'],
+	exposedHeaders: ['x-refresh-token', 'token'],
 	methods: ['POST', 'GET', 'PUT', 'DELETE'],
-	exposedHeaders: 'token',
 });
 fastify.register(routes);
 

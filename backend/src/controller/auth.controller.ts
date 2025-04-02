@@ -109,7 +109,7 @@ class UserContorller {
 				role: existingUser.dataValues.role,
 			});
 			res.header('token', token);
-			res.header('refershToken', refreshToken);
+			res.header('x-refresh-token', refreshToken);
 			delete existingUser.dataValues.password;
 			delete existingUser.dataValues.isDeleted;
 
