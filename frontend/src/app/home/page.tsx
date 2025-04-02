@@ -10,7 +10,8 @@ import {
 	Avatar,
 	Tooltip,
 	IconButton,
-	TextField
+	TextField,
+	useTheme
 } from '@mui/material';
 import { Edit, Add, AssignmentOutlined, Delete, Check } from '@mui/icons-material';
 import ConfirmModal from '@/components/ConfirmModal';
@@ -33,6 +34,7 @@ import { SpaceCard } from '@/styles';
 const SpacePage = () => {
 	const dispatch = useAppDispatch();
 	const { showToaster } = useToaster();
+	const theme = useTheme();
 	const { spaces, loading } = useAppSelector((state: RootState) => state.space);
 	const [open, setOpen] = useState<boolean>(false);
 	const [editId, setEditId] = useState<number | undefined>(undefined);
@@ -110,7 +112,7 @@ const SpacePage = () => {
 						<Card sx={SpaceCard}>
 							<CardContent>
 								<Box display="flex" alignItems="center" gap={2}>
-									<Avatar sx={{ backgroundColor: 'blue' }} variant="rounded">
+									<Avatar sx={{ backgroundColor: theme.palette.primary.main }} variant="rounded">
 										<AssignmentOutlined />
 									</Avatar>
 									<Box flex={1}>
@@ -126,7 +128,11 @@ const SpacePage = () => {
 											/>
 										) : (
 											<Typography variant="h6" fontWeight="bold">
-												<Link href={`/home/${space.id}`}>{space.name}</Link>
+												<Link
+													style={{ color: theme.palette.text.primary, textDecoration: 'none' }}
+													href={`/home/${space.id}`}>
+													{space.name}
+												</Link>
 											</Typography>
 										)}
 									</Box>

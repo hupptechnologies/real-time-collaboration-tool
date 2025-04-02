@@ -35,7 +35,6 @@ const spaceSlice = createSlice({
 			state.loading = true;
 		});
 		builder.addCase(fetchSingleSpaceAction.fulfilled, (state, action) => {
-			console.info('action.payload', action.payload);
 			state.loading = false;
 			state.space = action.payload;
 		});
