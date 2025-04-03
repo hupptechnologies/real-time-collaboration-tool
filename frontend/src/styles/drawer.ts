@@ -24,8 +24,18 @@ export const DrawerMenuStyle = (open: boolean): SxProps<Theme> => ({
 	zIndex: 1000,
 	transition: '0.3s all ease-in-out',
 	'& .MuiDrawer-paper': {
+		padding: 2,
+		boxSizing: 'border-box',
 		width: open ? 300 : 15,
 		overflowX: 'hidden',
 		transition: '0.3s all ease-in-out'
 	}
+});
+
+export const SpaceNameBox: SxProps<Theme> = () => ({
+	cursor: 'pointer',
+	display: 'flex',
+	alignItems: 'center',
+	gap: 1,
+	paddingBottom: 2
 });

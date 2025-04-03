@@ -22,3 +22,22 @@ export interface ISpaceThunkProps {
 	data: ISpace;
 	callback?: (_data: IAPIResponse<ISpace>) => void;
 }
+
+export interface IDrawerLeftProps {
+	children?: React.ReactNode;
+	name: string;
+	description: string;
+	data: IFolder[];
+}
+
+export interface IDocument {
+	name: string;
+	description: string;
+}
+
+export interface IFolder {
+	name: string;
+	description: string;
+	documents?: IDocument[];
+	folders?: IFolder[];
+}
