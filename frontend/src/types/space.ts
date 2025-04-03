@@ -41,3 +41,11 @@ export interface IFolder {
 	documents?: IDocument[];
 	folders?: IFolder[];
 }
+
+export interface FolderListItemProps {
+	folder: IFolder;
+	openFolder: Record<string, boolean>;
+	level?: number;
+	toggleFolder: (_folder: IFolder) => void;
+	openDocument: (_doc: IDocument) => void;
+}

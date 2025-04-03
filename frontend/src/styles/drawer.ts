@@ -5,7 +5,7 @@ export const ArrowIconStyle =
 	(theme) => ({
 		position: 'absolute',
 		top: 72,
-		left: open ? 286 : 4,
+		left: open ? 286 : 20,
 		zIndex: 1100,
 		transition: '0.3s all ease-in-out',
 		border: '1px solid #ddd',
