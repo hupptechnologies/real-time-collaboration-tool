@@ -13,10 +13,10 @@ export const generateResponseTokens = (detail: TTokenDetail) =>
 	new Promise<{ token: string; refreshToken: string }>((resolve, reject) => {
 		try {
 			const token = jwt.sign(detail, tokenSecretKey, {
-				expiresIn: '1m',
+				expiresIn: '1h',
 			});
 			const refreshToken = jwt.sign(detail, refershTokenSecretKey, {
-				expiresIn: '15m',
+				expiresIn: '7d',
 			});
 			resolve({ token, refreshToken });
 		} catch (error: any) {
@@ -87,7 +87,7 @@ export const verifyToken = async (req: FastifyRequest, res: FastifyReply) => {
 	}
 };
 
-export const verifyRefeshToken = async (
+export const verifyRefreshToken = async (
 	req: FastifyRequest,
 	res: FastifyReply,
 ) => {

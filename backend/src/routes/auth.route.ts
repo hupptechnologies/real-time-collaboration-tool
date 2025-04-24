@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import { IncomingMessage, Server, ServerResponse } from 'http';
 import AuthController from '../controller/auth.controller';
-import { verifyRefeshToken } from '../utils';
+import { verifyRefreshToken } from '../utils';
 
 const authRoutes = async (
 	fastify: FastifyInstance<Server, IncomingMessage, ServerResponse>,
@@ -27,7 +27,7 @@ const authRoutes = async (
 	fastify.route({
 		method: 'GET',
 		url: '/refresh-token',
-		preValidation: verifyRefeshToken,
+		preValidation: verifyRefreshToken,
 		handler: AuthController.refreshToken,
 	});
 };
