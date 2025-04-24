@@ -27,7 +27,7 @@ import { appBarStyles, navigationItemText, searchWrapperStyles } from '@/styles'
 const Header: React.FC = () => {
 	const theme = useTheme();
 	const router = useRouter();
-	const { logout } = useAuth();
+	const { logout, isAuthenticated } = useAuth();
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 	const { mode, toggleThemeMode } = useThemeContext();
 	const [themeMode, setThemeMode] = useState<'light' | 'dark'>('light');
@@ -36,7 +36,6 @@ const Header: React.FC = () => {
 	const [searchValue, setSearchValue] = useState<string>('');
 	const [openModal, setOpenModal] = useState<boolean>(false);
 	const [notifications] = useState<number>(5);
-	const { isAuthenticated } = useAuth();
 	useEffect(() => {
 		if (mode === 'light' || mode === 'dark') {
 			setThemeMode(mode);
@@ -91,6 +90,7 @@ const Header: React.FC = () => {
 					<Box sx={{ flexGrow: 1 }} />
 					<Box sx={searchWrapperStyles}>
 						<InputBase
+							aria-label="Search"
 							placeholder="Search..."
 							value={searchValue}
 							onChange={handleSearchChange}
@@ -150,7 +150,7 @@ const Header: React.FC = () => {
 			<ConfirmModal
 				open={openModal}
 				title={'Logout ?'}
-				subTitle={'are you want to logout user ?'}
+				subTitle={'Are you sure you want to logout?'}
 				onClose={(confirmed: boolean) => {
 					if (confirmed) {
 						logout();
