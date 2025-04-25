@@ -52,7 +52,14 @@ const FolderListItem: React.FC<FolderListItemProps> = ({
 					<Folder />
 				</ListItemIcon>
 				<ListItemText primary={folder.name} />
-				{isOpen ? <ExpandLess /> : <ExpandMore />}
+				{(Array.isArray(folder.folders) && folder.folders.length > 0) ||
+				(Array.isArray(folder.documents) && folder.documents.length > 0) ? (
+					isOpen ? (
+						<ExpandLess />
+					) : (
+						<ExpandMore />
+					)
+				) : null}
 			</ListItemButton>
 			<Collapse in={isOpen} timeout="auto" unmountOnExit>
 				<List component="div" disablePadding>

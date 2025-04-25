@@ -19,6 +19,29 @@ import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { fetchSingleSpaceAction } from '@/redux/space';
 import { ArrowIconStyle, DrawerMenuStyle, SpaceNameBox } from '@/styles';
 import { IDocument, IFolder } from '@/types';
+import { folderOptionalData } from '@/utils/data';
+
+const restructureFolders = (folders: IFolder[]): IFolder[] => {
+	const folderMap: { [key: number]: IFolder } = {};
+	const result: IFolder[] = [];
+
+	folders.forEach((folder) => {
+		folderMap[folder.id] = { ...folder, folders: [] };
+	});
+
+	folders.forEach((folder) => {
+		if (folder.parentFolderId === null) {
+			result.push(folderMap[folder.id]);
+		} else {
+			const parentFolder = folderMap[folder.parentFolderId];
+			if (parentFolder && Array.isArray(parentFolder.folders)) {
+				parentFolder.folders.push(folderMap[folder.id]);
+			}
+		}
+	});
+
+	return result;
+};
 
 const SpacePage: React.FC = () => {
 	const params = useParams();
@@ -26,49 +49,13 @@ const SpacePage: React.FC = () => {
 	const { space } = useAppSelector((state: RootState) => state.space);
 	const spaceId = params?.spaceId as string;
 	const [open, setOpen] = useState<boolean>(true);
+	const [folderData, setFolderData] = useState<IFolder[]>([]);
 	const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({});
 	const [selectedItem, setSelectedItem] = useState<{
 		type: 'folder' | 'document' | 'default';
 		name: string;
 		description: string;
 	}>({ type: 'default', name: space.name as string, description: space.description as string });
-
-	const data: IFolder[] = [
-		{
-			name: 'Project A',
-			description: 'This is Project A folder.',
-			documents: [
-				{ name: 'Doc 1', description: 'This is Document 1.' },
-				{ name: 'Doc 2', description: 'This is Document 2.' }
-			],
-			folders: [
-				{
-					name: 'Subfolder 1',
-					description: 'Subfolder 1 inside Project A.',
-					documents: [{ name: 'Doc 3', description: 'Document in Subfolder 1.' }],
-					folders: [
-						{
-							name: 'subFolder 2',
-							description: 'Subfolder 2 inside Project A.'
-						},
-						{
-							name: 'subFolder 2.1',
-							description: 'Subfolder 2.1 inside Project A.',
-							documents: [{ name: 'Doc 4', description: 'Document in Subfolder 2.1.' }]
-						}
-					]
-				}
-			]
-		},
-		{
-			name: 'Project B',
-			description: 'This is Project B folder.',
-			documents: [
-				{ name: 'Doc 4', description: 'This is Document 4.' },
-				{ name: 'Doc 5', description: 'This is Document 5.' }
-			]
-		}
-	];
 
 	useEffect(() => {
 		if (spaceId) {
@@ -78,13 +65,18 @@ const SpacePage: React.FC = () => {
 
 	useEffect(() => {
 		toogleMainDocument();
+		if (Array.isArray(space?.folders) && space?.folders.length > 0) {
+			setFolderData(restructureFolders(space?.folders));
+		} else {
+			setFolderData(folderOptionalData);
+		}
 	}, [space]);
 
 	const toggleDrawer = (): void => {
 		setOpen((prev) => !prev);
 	};
 
-	const toogleMainDocument = () => {
+	const toogleMainDocument = (): void => {
 		setSelectedItem({
 			type: 'default',
 			name: space.name as string,
@@ -92,13 +84,13 @@ const SpacePage: React.FC = () => {
 		});
 	};
 
-	const toggleFolder = (_folder: IFolder) => {
-		setOpenFolders((prev) => ({ ...prev, [_folder.name]: !prev[_folder.name] }));
-		setSelectedItem({ type: 'folder', name: _folder.name, description: _folder.description });
+	const toggleFolder = (folder: IFolder): void => {
+		setOpenFolders((prev) => ({ ...prev, [folder.name]: !prev[folder.name] }));
+		setSelectedItem({ type: 'folder', name: folder.name, description: folder.description });
 	};
 
-	const openDocument = (_doc: IDocument) => {
-		setSelectedItem({ type: 'document', name: _doc.name, description: _doc.description });
+	const openDocument = (doc: IDocument): void => {
+		setSelectedItem({ type: 'document', name: doc.name, description: doc.description });
 	};
 
 	return (
@@ -134,9 +126,9 @@ const SpacePage: React.FC = () => {
 							</Button>
 						</Box>
 						<Divider />
-						{data.length > 0 && (
+						{folderData?.length > 0 && (
 							<List>
-								{data.map((folder, index) => (
+								{folderData.map((folder, index) => (
 									<FolderListItem
 										key={index}
 										folder={folder}
