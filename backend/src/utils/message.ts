@@ -1,5 +1,13 @@
 export const message = {
 	DETAIL_NOT_FOUND: 'No record found for the provided ID.',
+	FOLDER_ALREADY_EXISTS:
+		'A folder with this name already exists. Please choose a unique name.',
+	FOLDER_LIST_SUCCESS: 'Folder list fetched successfully.',
+	FOLDER_SUCCESS: 'Folder created successfully.',
+	FOLDER_DETAIL_FETCHED: 'Folder details retrieved successfully.',
+	FOLDER_UPDATE_SUCCESS: 'Folder updated successfully.',
+	FOLDER_DELETED_SUCCESS: 'Folder deleted successfully.',
+	FOLDER_PARENT_ERROR: 'Folder parent ID record not found .',
 	EMAIL_ALREADY_IN_USE: 'This email address is already in use.',
 	LOGIN_SUCCESS: 'Logged in successfully.',
 	LOGIN_INVALID: 'Invalid email or password.',
@@ -12,6 +20,7 @@ export const message = {
 	SPACE_DETAIL_FETCHED: 'Space details retrieved successfully.',
 	SPACE_UPDATE_SUCCESS: 'Space updated successfully.',
 	SPACE_DELETED_SUCCESS: 'Space deleted successfully.',
+	SPACE_NOT_FOUND: 'No space found matching the provided id.',
 	REFRESH_TOKEN_SUCCESS: 'Token created successfully',
 	USER_LIST_SUCCESS: 'User list fetched successfylly',
 	USER_DETAIL_FETCHED: 'User details retrieved successfully.',

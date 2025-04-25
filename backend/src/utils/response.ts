@@ -15,6 +15,13 @@ export class Response {
 	}
 }
 
+export const sendError = (res: FastifyReply, msg: string) =>
+	Response.send(res, {
+		status: statusCodes.BAD_REQUEST,
+		success: false,
+		message: msg,
+	});
+
 export const statusCodes = {
 	SUCCESS: 200,
 	INTERNAL_SERVER_ERR: 500,
