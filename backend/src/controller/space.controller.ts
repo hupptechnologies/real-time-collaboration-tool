@@ -1,12 +1,15 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { models } from '../models';
 import { TQuery, TSpace } from '../interface';
-import { message, statusCodes, Response } from '../utils';
+import { message, statusCodes, Response, sendError } from '../utils';
 const { Spaces } = models;
 
-const create = async (req: FastifyRequest, res: FastifyReply) => {
+const create = async (
+	req: FastifyRequest<{ Body: TSpace }>,
+	res: FastifyReply,
+) => {
 	try {
-		const spaceData = req.body as TSpace;
+		const spaceData = req.body;
 		const userId = req.user.id;
 		const existingSpace = await Spaces.findOne({
 			where: {
@@ -15,13 +18,9 @@ const create = async (req: FastifyRequest, res: FastifyReply) => {
 			},
 		});
 		if (existingSpace) {
-			Response.send(res, {
-				status: statusCodes.BAD_REQUEST,
-				success: false,
-				message: message.SPACE_ALREADY_EXISTS,
-			});
-			return;
+			return sendError(res, message.SPACE_ALREADY_EXISTS);
 		}
+
 		spaceData.ownerId = userId;
 		const newSpace = await Spaces.create(spaceData);
 		Response.send(res, {
@@ -31,19 +30,17 @@ const create = async (req: FastifyRequest, res: FastifyReply) => {
 			data: newSpace,
 		});
 	} catch (error: any) {
-		return Response.send(res, {
-			status: statusCodes.BAD_REQUEST,
-			success: false,
-			message: error.message,
-		});
+		return sendError(res, error.message);
 	}
 };
 
-const list = async (req: FastifyRequest, res: FastifyReply) => {
+const list = async (
+	req: FastifyRequest<{ Querystring: TQuery }>,
+	res: FastifyReply,
+) => {
 	try {
-		const { field = 'createdAt', sort = 'DESC' } = req.query as TQuery;
+		const { field = 'createdAt', sort = 'DESC' } = req.query;
 		const userId = req.user.id;
-
 		const { count, rows } = await Spaces.findAndCountAll({
 			where: {
 				ownerId: userId,
@@ -59,17 +56,16 @@ const list = async (req: FastifyRequest, res: FastifyReply) => {
 			data: rows,
 		});
 	} catch (error: any) {
-		return Response.send(res, {
-			status: statusCodes.BAD_REQUEST,
-			success: false,
-			message: error.message,
-		});
+		return sendError(res, error.message);
 	}
 };
 
-const findById = async (req: FastifyRequest, res: FastifyReply) => {
+const findById = async (
+	req: FastifyRequest<{ Params: { id: number } }>,
+	res: FastifyReply,
+) => {
 	try {
-		const { id } = req.params as { id: number };
+		const { id } = req.params;
 		const userId = req.user.id;
 
 		const existingSpace = await Spaces.findOne({
@@ -80,11 +76,7 @@ const findById = async (req: FastifyRequest, res: FastifyReply) => {
 		});
 
 		if (!existingSpace) {
-			return Response.send(res, {
-				status: statusCodes.BAD_REQUEST,
-				success: false,
-				message: message.DETAIL_NOT_FOUND,
-			});
+			return sendError(res, message.DETAIL_NOT_FOUND);
 		}
 
 		return Response.send(res, {
@@ -94,18 +86,17 @@ const findById = async (req: FastifyRequest, res: FastifyReply) => {
 			data: existingSpace,
 		});
 	} catch (error: any) {
-		return Response.send(res, {
-			status: statusCodes.BAD_REQUEST,
-			success: false,
-			message: error.message,
-		});
+		return sendError(res, error.message);
 	}
 };
 
-const update = async (req: FastifyRequest, res: FastifyReply) => {
+const update = async (
+	req: FastifyRequest<{ Body: TSpace; Params: { id: number } }>,
+	res: FastifyReply,
+) => {
 	try {
-		const { name, description } = req.body as TSpace;
-		const { id } = req.params as { id: number };
+		const { name, description } = req.body;
+		const { id } = req.params;
 		const userId = req.user.id;
 		const existingSpace = await Spaces.findOne({
 			where: {
@@ -114,11 +105,7 @@ const update = async (req: FastifyRequest, res: FastifyReply) => {
 			},
 		});
 		if (!existingSpace) {
-			return Response.send(res, {
-				status: statusCodes.BAD_REQUEST,
-				success: false,
-				message: message.DETAIL_NOT_FOUND,
-			});
+			return sendError(res, message.DETAIL_NOT_FOUND);
 		}
 		const existingSpaceName = await Spaces.findOne({
 			where: {
@@ -127,12 +114,7 @@ const update = async (req: FastifyRequest, res: FastifyReply) => {
 			},
 		});
 		if (existingSpaceName) {
-			Response.send(res, {
-				status: statusCodes.BAD_REQUEST,
-				success: false,
-				message: message.SPACE_ALREADY_EXISTS,
-			});
-			return;
+			return sendError(res, message.SPACE_ALREADY_EXISTS);
 		}
 
 		await Spaces.update(
@@ -153,17 +135,16 @@ const update = async (req: FastifyRequest, res: FastifyReply) => {
 			message: message.SPACE_UPDATE_SUCCESS,
 		});
 	} catch (error: any) {
-		return Response.send(res, {
-			status: statusCodes.BAD_REQUEST,
-			success: false,
-			message: error.message,
-		});
+		return sendError(res, error.message);
 	}
 };
 
-const remove = async (req: FastifyRequest, res: FastifyReply) => {
+const remove = async (
+	req: FastifyRequest<{ Params: { id: number } }>,
+	res: FastifyReply,
+) => {
 	try {
-		const { id } = req.params as { id: number };
+		const { id } = req.params;
 		const userId = req.user.id;
 		const existingSpace = await Spaces.findOne({
 			where: {
@@ -172,11 +153,7 @@ const remove = async (req: FastifyRequest, res: FastifyReply) => {
 			},
 		});
 		if (!existingSpace) {
-			return Response.send(res, {
-				status: statusCodes.BAD_REQUEST,
-				success: false,
-				message: message.DETAIL_NOT_FOUND,
-			});
+			return sendError(res, message.DETAIL_NOT_FOUND);
 		}
 
 		await Spaces.destroy({
@@ -192,11 +169,7 @@ const remove = async (req: FastifyRequest, res: FastifyReply) => {
 			message: message.SPACE_DELETED_SUCCESS,
 		});
 	} catch (error: any) {
-		return Response.send(res, {
-			status: statusCodes.BAD_REQUEST,
-			success: false,
-			message: error.message,
-		});
+		return sendError(res, error.message);
 	}
 };
 
