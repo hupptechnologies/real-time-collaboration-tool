@@ -5,9 +5,12 @@ import {
 	DataType,
 	ForeignKey,
 	BelongsTo,
+	HasMany,
 } from 'sequelize-typescript';
 import { ISpace, TSpace } from '../interface';
 import Users from './users.model';
+import Folder from './folder.model';
+
 @Table({
 	timestamps: true,
 	tableName: 'spaces',
@@ -21,13 +24,19 @@ export default class Spaces extends Model<ISpace, TSpace> {
 	@Column(DataType.STRING(1024))
 	declare description: string;
 
-	@ForeignKey(() => Users) // Foreign key reference
+	@ForeignKey(() => Users)
 	@Column({
 		type: DataType.INTEGER,
 		allowNull: false,
 	})
 	declare ownerId: number;
 
-	@BelongsTo(() => Users) // Defines relationship
+	@BelongsTo(() => Users)
 	declare owner: Users;
+
+	@HasMany(() => Folder, {
+		foreignKey: 'spaceId',
+		as: 'folders',
+	})
+	declare folders: Folder;
 }

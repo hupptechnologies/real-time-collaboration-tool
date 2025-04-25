@@ -2,7 +2,7 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import { models } from '../models';
 import { TQuery, TSpace } from '../interface';
 import { message, statusCodes, Response, sendError } from '../utils';
-const { Spaces } = models;
+const { Spaces, Folder } = models;
 
 const create = async (
 	req: FastifyRequest<{ Body: TSpace }>,
@@ -73,6 +73,13 @@ const findById = async (
 				id: id,
 				ownerId: userId,
 			},
+			include: [
+				{
+					model: Folder,
+					as: 'folders',
+					required: false,
+				},
+			],
 		});
 
 		if (!existingSpace) {

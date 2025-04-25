@@ -6,6 +6,7 @@ import {
 	Default,
 	Unique,
 	HasMany,
+	BelongsTo,
 } from 'sequelize-typescript';
 import { IFolder, TFloder } from '../interface';
 import Spaces from './spaces.model';
@@ -40,4 +41,10 @@ export default class Folder extends Model<IFolder, TFloder> {
 
 	@HasMany(() => Folder)
 	declare childFolder: Folder;
+
+	@BelongsTo(() => Spaces, {
+		foreignKey: 'spaceId',
+		as: 'spaces',
+	})
+	declare spaces: Spaces;
 }
