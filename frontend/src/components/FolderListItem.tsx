@@ -20,14 +20,21 @@ const FolderListItem: React.FC<FolderListItemProps> = ({
 	openDocument,
 	level = 0
 }: FolderListItemProps) => {
-	const [contextMenu, setContextMenu] = useState<{
-		mouseX: number;
-		mouseY: number;
-		target: 'folder' | 'document';
-		item: IFolder | IDocument;
-	} | null>(null);
+	const [contextMenu, setContextMenu] = useState<
+		| {
+				mouseX: number;
+				mouseY: number;
+				target: 'folder' | 'document';
+				item: IFolder | IDocument;
+		  }
+		| undefined
+	>(undefined);
 
 	const isOpen = openFolder[folder.name] || false;
+
+	const hasSubItems = (folder: IFolder) =>
+		(Array.isArray(folder.folders) && folder.folders.length > 0) ||
+		(Array.isArray(folder.documents) && folder.documents.length > 0);
 
 	const handleContextMenu = (
 		event: MouseEvent,
@@ -38,8 +45,24 @@ const FolderListItem: React.FC<FolderListItemProps> = ({
 		setContextMenu({ mouseX: event.clientX - 2, mouseY: event.clientY - 4, target, item });
 	};
 
-	const handleClose = () => {
-		setContextMenu(null);
+	const handleClose = () => setContextMenu(undefined);
+
+	const renderMenu = () => {
+		if (!contextMenu) {
+			return null;
+		}
+
+		if (contextMenu.target === 'folder') {
+			return (
+				<Box>
+					<MenuItem>New Folder</MenuItem>
+					<MenuItem>New Document</MenuItem>
+					<Divider />
+					<MenuItem>Rename Folder</MenuItem>
+				</Box>
+			);
+		}
+		return <MenuItem>Rename Document</MenuItem>;
 	};
 
 	return (
@@ -52,20 +75,13 @@ const FolderListItem: React.FC<FolderListItemProps> = ({
 					<Folder />
 				</ListItemIcon>
 				<ListItemText primary={folder.name} />
-				{(Array.isArray(folder.folders) && folder.folders.length > 0) ||
-				(Array.isArray(folder.documents) && folder.documents.length > 0) ? (
-					isOpen ? (
-						<ExpandLess />
-					) : (
-						<ExpandMore />
-					)
-				) : null}
+				{hasSubItems(folder) && (isOpen ? <ExpandLess /> : <ExpandMore />)}
 			</ListItemButton>
 			<Collapse in={isOpen} timeout="auto" unmountOnExit>
 				<List component="div" disablePadding>
-					{folder.documents?.map((doc, docIndex) => (
+					{folder.documents?.map((doc) => (
 						<ListItemButton
-							key={docIndex}
+							key={doc.name}
 							sx={{ pl: level + 1 }}
 							onClick={() => openDocument(doc)}
 							onContextMenu={(e) => handleContextMenu(e, doc, 'document')}>
@@ -92,16 +108,7 @@ const FolderListItem: React.FC<FolderListItemProps> = ({
 				anchorPosition={
 					contextMenu ? { top: contextMenu.mouseY, left: contextMenu.mouseX } : undefined
 				}>
-				{contextMenu?.target === 'folder' ? (
-					<Box>
-						<MenuItem>New Folder</MenuItem>
-						<MenuItem>New Document</MenuItem>
-						<Divider />
-						<MenuItem>Rename Folder</MenuItem>
-					</Box>
-				) : (
-					<MenuItem>Rename Document</MenuItem>
-				)}
+				{renderMenu()}
 			</Menu>
 		</Box>
 	);
