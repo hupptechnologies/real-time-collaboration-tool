@@ -1,5 +1,10 @@
 import { useState, MouseEvent } from 'react';
-import { Description, ExpandLess, ExpandMore, Folder } from '@mui/icons-material';
+import {
+	FiberManualRecord,
+	Folder,
+	KeyboardArrowDown,
+	KeyboardArrowRight
+} from '@mui/icons-material';
 import {
 	Box,
 	Collapse,
@@ -31,11 +36,6 @@ const FolderListItem: React.FC<FolderListItemProps> = ({
 	>(undefined);
 
 	const isOpen = openFolder[folder.name] || false;
-
-	const hasSubItems = (folder: IFolder) =>
-		(Array.isArray(folder.folders) && folder.folders.length > 0) ||
-		(Array.isArray(folder.documents) && folder.documents.length > 0);
-
 	const handleContextMenu = (
 		event: MouseEvent,
 		item: IFolder | IDocument,
@@ -71,21 +71,26 @@ const FolderListItem: React.FC<FolderListItemProps> = ({
 				sx={{ pl: level }}
 				onClick={() => toggleFolder(folder)}
 				onContextMenu={(e) => handleContextMenu(e, folder, 'folder')}>
+				{isOpen ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
 				<ListItemIcon>
 					<Folder />
 				</ListItemIcon>
 				<ListItemText primary={folder.name} />
-				{hasSubItems(folder) && (isOpen ? <ExpandLess /> : <ExpandMore />)}
 			</ListItemButton>
 			<Collapse in={isOpen} timeout="auto" unmountOnExit>
 				<List component="div" disablePadding>
+					{folder.folders?.length === 0 && (
+						<Box sx={{ pl: level + 1 }} component="span">
+							There’s nothing in this folder yet.
+						</Box>
+					)}
 					{folder.documents?.map((doc) => (
 						<ListItemButton
 							key={doc.name}
 							sx={{ pl: level + 1 }}
 							onClick={() => openDocument(doc)}
 							onContextMenu={(e) => handleContextMenu(e, doc, 'document')}>
-							<Description sx={{ mr: 1 }} />
+							<FiberManualRecord sx={{ height: '8px', width: '8px', mr: 1 }} />
 							<ListItemText primary={doc.name} />
 						</ListItemButton>
 					))}

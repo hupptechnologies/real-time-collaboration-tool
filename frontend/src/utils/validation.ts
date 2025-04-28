@@ -24,3 +24,7 @@ export const signupValidationSchema = Yup.object({
 export const spaceValidationSchema = Yup.object({
 	name: Yup.string().required('Space Name is required')
 });
+
+export const folderValidationSchema = Yup.object({
+	name: Yup.string().required('folder name is required')
+});

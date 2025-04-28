@@ -1,9 +1,9 @@
 'use client';
 import React from 'react';
-import { Box, Button, FormLabel, FormControl, TextField, Container } from '@mui/material';
+import { Box, Button, FormControl, TextField, Container } from '@mui/material';
 import { useFormik } from 'formik';
 import { IFolderCreationAttribute, IFolderForm } from '@/types';
-import { spaceValidationSchema } from '@/utils/validation';
+import { folderValidationSchema } from '@/utils/validation';
 import { emailBoxStyles, FormButtonBox } from '@/styles';
 
 const FolderForm: React.FC<IFolderForm> = ({
@@ -14,7 +14,7 @@ const FolderForm: React.FC<IFolderForm> = ({
 }) => {
 	const formik = useFormik<IFolderCreationAttribute>({
 		initialValues: { name: '', description: '', parentFolderId: parentFolderId, spaceId: spaceId },
-		validationSchema: spaceValidationSchema,
+		validationSchema: folderValidationSchema,
 		onSubmit: (values: IFolderCreationAttribute) => handleSubmit(values)
 	});
 
@@ -22,12 +22,12 @@ const FolderForm: React.FC<IFolderForm> = ({
 		<Container style={{ padding: 0 }}>
 			<Box component="form" onSubmit={formik.handleSubmit} noValidate sx={emailBoxStyles}>
 				<FormControl>
-					<FormLabel htmlFor="name">Folder Name</FormLabel>
 					<TextField
 						value={formik.values.name}
 						onChange={formik.handleChange}
 						error={formik.touched.name && !!formik.errors.name}
 						helperText={formik.touched.name && formik.errors.name}
+						label="Name"
 						id="name"
 						type="name"
 						name="name"

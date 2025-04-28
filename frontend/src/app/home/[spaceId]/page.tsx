@@ -1,25 +1,31 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import { Box, Drawer, List, Toolbar, IconButton, Tooltip, Typography, Button } from '@mui/material';
 import {
-	Box,
-	Drawer,
-	List,
-	Toolbar,
-	IconButton,
-	Tooltip,
-	Typography,
-	Divider,
-	Button
-} from '@mui/material';
-import { ChevronLeft, ChevronRight, MenuBook } from '@mui/icons-material';
+	Add,
+	ChevronLeft,
+	ChevronRight,
+	KeyboardArrowDown,
+	KeyboardArrowRight,
+	MenuBook
+} from '@mui/icons-material';
 import FolderListItem from '@/components/home/FolderListItem';
 import FolderForm from '@/components/home/FolderForm';
 import DynamicModal from '@/components/DynamicModal';
 import { RootState } from '@/redux/store';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { fetchSingleSpaceAction } from '@/redux/space';
-import { ArrowIconStyle, DrawerMenuStyle, SpaceNameBox } from '@/styles';
+import {
+	AddIconButton,
+	AddIconContentBox,
+	ArrowIconStyle,
+	ContentButton,
+	ContentIconBox,
+	ContentIconInlineBox,
+	DrawerMenuStyle,
+	SpaceNameBox
+} from '@/styles';
 import { IDocument, IFolder } from '@/types';
 import { folderOptionalData } from '@/utils/data';
 
@@ -52,6 +58,7 @@ const SpacePage: React.FC = () => {
 	const spaceId = params?.spaceId as string;
 	const [open, setOpen] = useState<boolean>(true);
 	const [openModal, setOpenModal] = useState<boolean>(false);
+	const [openContent, setOpenContent] = useState<boolean>(false);
 	const [folderData, setFolderData] = useState<IFolder[]>([]);
 	const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({});
 	const [selectedItem, setSelectedItem] = useState<{
@@ -125,13 +132,22 @@ const SpacePage: React.FC = () => {
 								{space.name}
 							</Typography>
 						</Box>
-						<Box sx={{ padding: '16px 0' }}>
-							<Button variant="outlined" fullWidth onClick={() => setOpenModal(true)}>
-								New Folder
+						<Box sx={{ display: 'grid', gridColumn: 1, gridRow: 1 }}>
+							<Button sx={ContentButton} onClick={() => setOpenContent(!openContent)}>
+								<Box sx={ContentIconBox}>
+									<Box sx={ContentIconInlineBox}>
+										{openContent ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
+									</Box>
+								</Box>
+								<Typography sx={{ marginLeft: '8px' }}>Content</Typography>
 							</Button>
+							<Box sx={AddIconContentBox}>
+								<Button sx={AddIconButton}>
+									<Add />
+								</Button>
+							</Box>
 						</Box>
-						<Divider />
-						{folderData?.length > 0 && (
+						{openContent && folderData?.length > 0 && (
 							<List>
 								{folderData.map((folder, index) => (
 									<FolderListItem
@@ -142,7 +158,9 @@ const SpacePage: React.FC = () => {
 										toggleFolder={toggleFolder}
 									/>
 								))}
-								<Divider />
+								<Button>
+									<Add /> Create
+								</Button>
 							</List>
 						)}
 					</>
