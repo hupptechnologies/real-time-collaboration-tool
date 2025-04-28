@@ -28,6 +28,7 @@ import {
 	updateSpaceAction,
 	deleteSpaceAction
 } from '@/redux/space';
+import socket from '@/utils/socket';
 import { IAPIResponse, ISpace } from '@/types';
 import { SpaceCard } from '@/styles';
 
@@ -36,6 +37,7 @@ const SpacePage = () => {
 	const { showToaster } = useToaster();
 	const theme = useTheme();
 	const { spaces, loading } = useAppSelector((state: RootState) => state.space);
+	const [spaceData, setSpaceData] = useState<ISpace[]>([]);
 	const [open, setOpen] = useState<boolean>(false);
 	const [editId, setEditId] = useState<number | undefined>(undefined);
 	const [editValue, setEditValue] = useState<string>('');
@@ -45,6 +47,24 @@ const SpacePage = () => {
 	const handleModelOpen = () => {
 		setOpen(true);
 	};
+
+	useEffect(() => {
+		socket.connect();
+		socket.on('space:created', (data: any) => {
+			setSpaceData((prev) => [data, ...prev]);
+		});
+
+		return () => {
+			socket.off('space:created');
+			socket.disconnect();
+		};
+	}, []);
+
+	useEffect(() => {
+		if (spaces.length > 0) {
+			setSpaceData(spaces);
+		}
+	}, [spaces]);
 
 	useEffect(() => {
 		dispatch(fetchSpaceDataAction());
@@ -57,7 +77,7 @@ const SpacePage = () => {
 
 	const handleCallback = (data: IAPIResponse<ISpace>) => {
 		if (data.success) {
-			dispatch(fetchSpaceDataAction());
+			// dispatch(fetchSpaceDataAction());
 			showToaster(data.message || '', 'success');
 		}
 	};
@@ -107,8 +127,8 @@ const SpacePage = () => {
 				</Box>
 			</Box>
 			<Grid2 container spacing={2}>
-				{spaces.map((space: ISpace) => (
-					<Grid2 key={space.name} size={{ xs: 12, sm: 6, md: 3 }}>
+				{spaceData.map((space: ISpace) => (
+					<Grid2 key={space.id} size={{ xs: 12, sm: 6, md: 3 }}>
 						<Card sx={SpaceCard}>
 							<CardContent>
 								<Box display="flex" alignItems="center" gap={2}>
