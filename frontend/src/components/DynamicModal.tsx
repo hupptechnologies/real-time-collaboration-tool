@@ -1,8 +1,8 @@
 import React from 'react';
-import { Dialog, DialogTitle, DialogContent, IconButton, Box, Typography } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, IconButton, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { IModalProps } from '@/types';
-import { DialogModelTitleStyle } from '@/styles';
+import { DialogModalTitleStyle } from '@/styles';
 
 const DynamicModal: React.FC<IModalProps> = ({
 	open,
@@ -13,16 +13,19 @@ const DynamicModal: React.FC<IModalProps> = ({
 }) => {
 	return (
 		<Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-			<DialogTitle sx={DialogModelTitleStyle}>
-				{title && <Typography variant="body1">{title}</Typography>}
-				<Box sx={{ flexGrow: 1 }} />
+			<DialogTitle sx={DialogModalTitleStyle}>
+				{title && (
+					<Typography variant="body1" sx={{ flexGrow: 1 }}>
+						{title}
+					</Typography>
+				)}
 				{showCloseButton && (
-					<IconButton onClick={onClose} size="small">
+					<IconButton onClick={onClose} size="small" aria-label="close">
 						<CloseIcon />
 					</IconButton>
 				)}
 			</DialogTitle>
-			<DialogContent>{content}</DialogContent>
+			{content && <DialogContent>{content}</DialogContent>}
 		</Dialog>
 	);
 };
