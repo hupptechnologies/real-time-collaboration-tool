@@ -2,6 +2,8 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import { models } from '../models';
 import { TQuery, TSpace } from '../interface';
 import { message, statusCodes, Response, sendError } from '../utils';
+import { getSocketInstance } from '../utils/socket';
+import { Op } from 'sequelize';
 const { Spaces, Folder } = models;
 
 const create = async (
@@ -13,7 +15,9 @@ const create = async (
 		const userId = req.user.id;
 		const existingSpace = await Spaces.findOne({
 			where: {
-				name: spaceData.name,
+				name: {
+					[Op.eq]: spaceData.name?.trim(),
+				},
 				ownerId: userId,
 			},
 		});
@@ -23,6 +27,8 @@ const create = async (
 
 		spaceData.ownerId = userId;
 		const newSpace = await Spaces.create(spaceData);
+		const io = getSocketInstance();
+		io.emit('space:created', newSpace);
 		Response.send(res, {
 			status: statusCodes.SUCCESS,
 			success: true,
