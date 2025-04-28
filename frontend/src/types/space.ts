@@ -1,5 +1,6 @@
 import React from 'react';
 import { IAPIResponse } from './common';
+import { IFolder } from './folder';
 export interface ISpace {
 	id?: number;
 	name?: string;
@@ -34,24 +35,4 @@ export interface IDrawerLeftProps {
 export interface IDocument {
 	name: string;
 	description: string;
-}
-
-export interface IFolder {
-	readonly id: number;
-	name: string;
-	description: string;
-	parentFolderId: number | null;
-	userId: number;
-	documents?: IDocument[];
-	folders?: IFolder[];
-	readonly createdAt?: Date;
-	readonly updatedAt?: Date;
-}
-
-export interface FolderListItemProps {
-	folder: IFolder;
-	openFolder: Record<string, boolean>;
-	level?: number;
-	toggleFolder: (_folder: IFolder) => void;
-	openDocument: (_doc: IDocument) => void;
 }

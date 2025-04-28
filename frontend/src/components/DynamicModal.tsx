@@ -12,7 +12,7 @@ const DynamicModal: React.FC<IModalProps> = ({
 	showCloseButton = true
 }) => {
 	return (
-		<Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+		<Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
 			<DialogTitle sx={DialogModalTitleStyle}>
 				{title && (
 					<Typography variant="body1" sx={{ flexGrow: 1 }}>

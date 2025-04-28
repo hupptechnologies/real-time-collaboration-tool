@@ -13,7 +13,9 @@ import {
 	Button
 } from '@mui/material';
 import { ChevronLeft, ChevronRight, MenuBook } from '@mui/icons-material';
-import FolderListItem from '@/components/FolderListItem';
+import FolderListItem from '@/components/home/FolderListItem';
+import FolderForm from '@/components/home/FolderForm';
+import DynamicModal from '@/components/DynamicModal';
 import { RootState } from '@/redux/store';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { fetchSingleSpaceAction } from '@/redux/space';
@@ -49,6 +51,7 @@ const SpacePage: React.FC = () => {
 	const { space } = useAppSelector((state: RootState) => state.space);
 	const spaceId = params?.spaceId as string;
 	const [open, setOpen] = useState<boolean>(true);
+	const [openModal, setOpenModal] = useState<boolean>(false);
 	const [folderData, setFolderData] = useState<IFolder[]>([]);
 	const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({});
 	const [selectedItem, setSelectedItem] = useState<{
@@ -93,6 +96,8 @@ const SpacePage: React.FC = () => {
 		setSelectedItem({ type: 'document', name: doc.name, description: doc.description });
 	};
 
+	const handleSubmit = () => {};
+
 	return (
 		<Box sx={{ display: 'flex' }}>
 			<IconButton
@@ -121,7 +126,7 @@ const SpacePage: React.FC = () => {
 							</Typography>
 						</Box>
 						<Box sx={{ padding: '16px 0' }}>
-							<Button variant="outlined" fullWidth>
+							<Button variant="outlined" fullWidth onClick={() => setOpenModal(true)}>
 								New Folder
 							</Button>
 						</Box>
@@ -148,6 +153,19 @@ const SpacePage: React.FC = () => {
 				<Typography variant="h5">{selectedItem.name}</Typography>
 				<Typography variant="body1">{selectedItem.description}</Typography>
 			</Box>
+			<DynamicModal
+				title="New Folder"
+				open={openModal}
+				onClose={() => setOpenModal(false)}
+				content={
+					<FolderForm
+						handleSubmit={handleSubmit}
+						setOpen={setOpenModal}
+						spaceId={Number(spaceId)}
+						parentFolderId={null}
+					/>
+				}
+			/>
 		</Box>
 	);
 };

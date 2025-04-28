@@ -18,7 +18,7 @@ import ConfirmModal from '@/components/ConfirmModal';
 import DynamicModal from '@/components/DynamicModal';
 import LoadingIndicator from '@/components/Loader';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import SpaceForm from './SpaceForm';
+import SpaceForm from '@/components/home/SpaceForm';
 import { useToaster } from '@/context/ToasterContext';
 import { RootState } from '@/redux/store';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
