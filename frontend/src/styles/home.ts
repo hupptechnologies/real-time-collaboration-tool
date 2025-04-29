@@ -45,6 +45,12 @@ export const ContentIconInlineBox: SxProps<Theme> = () => ({
 	flexShrink: 0
 });
 
+export const FolderMainBox: SxProps<Theme> = () => ({
+	display: 'grid',
+	gridColumn: 1,
+	gridRow: 1
+});
+
 export const AddIconContentBox: SxProps<Theme> = () => ({
 	display: 'flex',
 	gridColumn: 1,
@@ -53,11 +59,27 @@ export const AddIconContentBox: SxProps<Theme> = () => ({
 	justifySelf: 'end'
 });
 
-export const AddIconButton: SxProps<Theme> = () => ({
+export const AddIconButton: SxProps<Theme> = (theme) => ({
 	display: 'flex',
 	alignItems: 'center',
 	justifyContent: 'center',
 	minHeight: '24px',
 	minWidth: '24px',
-	width: '24px'
+	width: '24px',
+	':hover': {
+		backgroundColor: theme.palette.mode === 'dark' ? '#ffffff14' : '#0000000a',
+		textDecoration: 'none'
+	}
+});
+
+export const createBtn: SxProps<Theme> = (theme) => ({
+	cursor: 'pointer',
+	display: 'flex',
+	alignItems: 'center',
+	justifyContent: 'flex-start',
+	width: '100%',
+	':hover': {
+		backgroundColor: theme.palette.mode === 'dark' ? '#ffffff14' : '#0000000a',
+		textDecoration: 'none'
+	}
 });

@@ -44,7 +44,7 @@ const SpacePage = () => {
 	const [deleteId, setDeleteId] = useState<number | undefined>(undefined);
 	const [deleteValue, setDeleteValue] = useState<string>('');
 
-	const handleModelOpen = () => {
+	const handleModelOpen = (): void => {
 		setOpen(true);
 	};
 

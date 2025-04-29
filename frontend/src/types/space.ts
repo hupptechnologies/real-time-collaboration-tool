@@ -36,3 +36,9 @@ export interface IDocument {
 	name: string;
 	description: string;
 }
+
+export type FolderContextMenuProps = {
+	open: boolean;
+	position: { mouseX: number; mouseY: number } | null;
+	onClose: () => void;
+};

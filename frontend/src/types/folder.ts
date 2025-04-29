@@ -31,4 +31,5 @@ export interface FolderListItemProps {
 	level?: number;
 	toggleFolder: (_folder: IFolder) => void;
 	openDocument: (_doc: IDocument) => void;
+	handleContextMenu: (_e: React.MouseEvent<HTMLButtonElement>) => void;
 }

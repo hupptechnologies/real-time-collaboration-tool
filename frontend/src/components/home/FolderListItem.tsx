@@ -1,5 +1,5 @@
-import { useState, MouseEvent } from 'react';
 import {
+	Add,
 	FiberManualRecord,
 	Folder,
 	KeyboardArrowDown,
@@ -7,89 +7,52 @@ import {
 } from '@mui/icons-material';
 import {
 	Box,
+	Button,
 	Collapse,
-	Divider,
 	List,
 	ListItemButton,
 	ListItemIcon,
-	ListItemText,
-	Menu,
-	MenuItem
+	ListItemText
 } from '@mui/material';
-import { FolderListItemProps, IDocument, IFolder } from '@/types';
+import { FolderListItemProps } from '@/types';
+import { AddIconButton, AddIconContentBox, FolderMainBox } from '@/styles';
 
 const FolderListItem: React.FC<FolderListItemProps> = ({
 	folder,
 	openFolder,
 	toggleFolder,
 	openDocument,
+	handleContextMenu,
 	level = 0
 }: FolderListItemProps) => {
-	const [contextMenu, setContextMenu] = useState<
-		| {
-				mouseX: number;
-				mouseY: number;
-				target: 'folder' | 'document';
-				item: IFolder | IDocument;
-		  }
-		| undefined
-	>(undefined);
-
 	const isOpen = openFolder[folder.name] || false;
-	const handleContextMenu = (
-		event: MouseEvent,
-		item: IFolder | IDocument,
-		target: 'folder' | 'document'
-	) => {
-		event.preventDefault();
-		setContextMenu({ mouseX: event.clientX - 2, mouseY: event.clientY - 4, target, item });
-	};
-
-	const handleClose = () => setContextMenu(undefined);
-
-	const renderMenu = () => {
-		if (!contextMenu) {
-			return null;
-		}
-
-		if (contextMenu.target === 'folder') {
-			return (
-				<Box>
-					<MenuItem>New Folder</MenuItem>
-					<MenuItem>New Document</MenuItem>
-					<Divider />
-					<MenuItem>Rename Folder</MenuItem>
-				</Box>
-			);
-		}
-		return <MenuItem>Rename Document</MenuItem>;
-	};
-
 	return (
 		<Box>
-			<ListItemButton
-				sx={{ pl: level }}
-				onClick={() => toggleFolder(folder)}
-				onContextMenu={(e) => handleContextMenu(e, folder, 'folder')}>
-				{isOpen ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
-				<ListItemIcon>
-					<Folder />
-				</ListItemIcon>
-				<ListItemText primary={folder.name} />
-			</ListItemButton>
+			<Box sx={FolderMainBox}>
+				<ListItemButton
+					sx={{ pl: level, gridColumn: 1, gridRow: 1 }}
+					onClick={() => toggleFolder(folder)}>
+					{isOpen ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
+					<ListItemIcon sx={{ minWidth: '36px' }}>
+						<Folder />
+					</ListItemIcon>
+					<ListItemText primary={folder.name} />
+				</ListItemButton>
+				<Box sx={AddIconContentBox}>
+					<Button sx={AddIconButton} onClick={handleContextMenu}>
+						<Add />
+					</Button>
+				</Box>
+			</Box>
 			<Collapse in={isOpen} timeout="auto" unmountOnExit>
 				<List component="div" disablePadding>
 					{folder.folders?.length === 0 && (
-						<Box sx={{ pl: level + 1 }} component="span">
+						<Box sx={{ pl: level + 1, fontSize: '14px' }} component="span">
 							There’s nothing in this folder yet.
 						</Box>
 					)}
 					{folder.documents?.map((doc) => (
-						<ListItemButton
-							key={doc.name}
-							sx={{ pl: level + 1 }}
-							onClick={() => openDocument(doc)}
-							onContextMenu={(e) => handleContextMenu(e, doc, 'document')}>
+						<ListItemButton key={doc.name} sx={{ pl: level + 1 }} onClick={() => openDocument(doc)}>
 							<FiberManualRecord sx={{ height: '8px', width: '8px', mr: 1 }} />
 							<ListItemText primary={doc.name} />
 						</ListItemButton>
@@ -102,19 +65,11 @@ const FolderListItem: React.FC<FolderListItemProps> = ({
 							openFolder={openFolder}
 							openDocument={openDocument}
 							level={level + 1}
+							handleContextMenu={handleContextMenu}
 						/>
 					))}
 				</List>
 			</Collapse>
-			<Menu
-				open={Boolean(contextMenu)}
-				onClose={handleClose}
-				anchorReference="anchorPosition"
-				anchorPosition={
-					contextMenu ? { top: contextMenu.mouseY, left: contextMenu.mouseX } : undefined
-				}>
-				{renderMenu()}
-			</Menu>
 		</Box>
 	);
 };

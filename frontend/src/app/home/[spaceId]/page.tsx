@@ -12,6 +12,7 @@ import {
 } from '@mui/icons-material';
 import FolderListItem from '@/components/home/FolderListItem';
 import FolderForm from '@/components/home/FolderForm';
+import FolderContextMenu from '@/components/home/FolderContextMenu';
 import DynamicModal from '@/components/DynamicModal';
 import { RootState } from '@/redux/store';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
@@ -23,6 +24,7 @@ import {
 	ContentButton,
 	ContentIconBox,
 	ContentIconInlineBox,
+	createBtn,
 	DrawerMenuStyle,
 	SpaceNameBox
 } from '@/styles';
@@ -61,6 +63,15 @@ const SpacePage: React.FC = () => {
 	const [openContent, setOpenContent] = useState<boolean>(false);
 	const [folderData, setFolderData] = useState<IFolder[]>([]);
 	const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({});
+	const [contextMenu, setContextMenu] = useState<
+		| {
+				mouseX: number;
+				mouseY: number;
+				target: 'folder' | 'document';
+				// item: IFolder | IDocument | null;
+		  }
+		| undefined
+	>(undefined);
 	const [selectedItem, setSelectedItem] = useState<{
 		type: 'folder' | 'document' | 'default';
 		name: string;
@@ -96,14 +107,22 @@ const SpacePage: React.FC = () => {
 
 	const toggleFolder = (folder: IFolder): void => {
 		setOpenFolders((prev) => ({ ...prev, [folder.name]: !prev[folder.name] }));
-		setSelectedItem({ type: 'folder', name: folder.name, description: folder.description });
 	};
 
 	const openDocument = (doc: IDocument): void => {
 		setSelectedItem({ type: 'document', name: doc.name, description: doc.description });
 	};
 
-	const handleSubmit = () => {};
+	const handleClose = (): void => setContextMenu(undefined);
+
+	const handleContextMenu = (e: React.MouseEvent<HTMLButtonElement>): void => {
+		const rect = e.currentTarget.getBoundingClientRect();
+		setContextMenu({
+			mouseX: rect.left,
+			mouseY: rect.bottom,
+			target: 'folder'
+		});
+	};
 
 	return (
 		<Box sx={{ display: 'flex' }}>
@@ -142,7 +161,7 @@ const SpacePage: React.FC = () => {
 								<Typography sx={{ marginLeft: '8px' }}>Content</Typography>
 							</Button>
 							<Box sx={AddIconContentBox}>
-								<Button sx={AddIconButton}>
+								<Button sx={AddIconButton} onClick={handleContextMenu}>
 									<Add />
 								</Button>
 							</Box>
@@ -156,11 +175,12 @@ const SpacePage: React.FC = () => {
 										openDocument={openDocument}
 										openFolder={openFolders}
 										toggleFolder={toggleFolder}
+										handleContextMenu={handleContextMenu}
 									/>
 								))}
-								<Button>
+								<Box component={'span'} onClick={handleContextMenu} sx={createBtn}>
 									<Add /> Create
-								</Button>
+								</Box>
 							</List>
 						)}
 					</>
@@ -171,13 +191,18 @@ const SpacePage: React.FC = () => {
 				<Typography variant="h5">{selectedItem.name}</Typography>
 				<Typography variant="body1">{selectedItem.description}</Typography>
 			</Box>
+			<FolderContextMenu
+				open={Boolean(contextMenu)}
+				onClose={handleClose}
+				position={contextMenu ? { mouseX: contextMenu.mouseX, mouseY: contextMenu.mouseY } : null}
+			/>
 			<DynamicModal
 				title="New Folder"
 				open={openModal}
 				onClose={() => setOpenModal(false)}
 				content={
 					<FolderForm
-						handleSubmit={handleSubmit}
+						handleSubmit={() => {}}
 						setOpen={setOpenModal}
 						spaceId={Number(spaceId)}
 						parentFolderId={null}
