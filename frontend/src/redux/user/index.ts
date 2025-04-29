@@ -30,12 +30,12 @@ export const fetchUserDataAction = createAsyncThunk(
 export const updateUserAction = createAsyncThunk(
 	'user/edit',
 	async (
-		{ data, callback }: IAsyncThunkArg<IUser>,
+		{ data, callback }: IAsyncThunkArg<IUser, IUser>,
 		{ fulfillWithValue, rejectWithValue, dispatch }
 	) => {
 		try {
 			const response = await updateUser(data);
-			if (response.success) {
+			if (response && response.success && callback) {
 				callback(response);
 			}
 			return fulfillWithValue([]);

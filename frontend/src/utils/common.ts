@@ -1,3 +1,27 @@
+import { IFolder } from '@/types';
+
+export const restructureFolders = (folders: IFolder[]): IFolder[] => {
+	const folderMap: { [key: number]: IFolder } = {};
+	const result: IFolder[] = [];
+
+	folders.forEach((folder) => {
+		folderMap[folder.id] = { ...folder, folders: [] };
+	});
+
+	folders.forEach((folder) => {
+		if (folder.parentFolderId === null) {
+			result.push(folderMap[folder.id]);
+		} else {
+			const parentFolder = folderMap[folder.parentFolderId];
+			if (parentFolder && Array.isArray(parentFolder.folders)) {
+				parentFolder.folders.push(folderMap[folder.id]);
+			}
+		}
+	});
+
+	return result;
+};
+
 export const folderOptionalData = [
 	{
 		id: 1,

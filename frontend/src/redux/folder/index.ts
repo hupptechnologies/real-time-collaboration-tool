@@ -1,12 +1,12 @@
 import { createFolder, deleteFolder, updateFolder } from '@/services/folder';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { updateErrorHandler } from '@/redux/error/slice';
-import { IAsyncThunkArg, IFolder } from '@/types';
+import { IAsyncThunkArg, IFolder, IFolderCreationAttribute } from '@/types';
 
 export const createFolderAction = createAsyncThunk(
 	'folde/new',
 	async (
-		{ data, callback }: IAsyncThunkArg<IFolder>,
+		{ data, callback }: IAsyncThunkArg<IFolderCreationAttribute, IFolder>,
 		{ fulfillWithValue, rejectWithValue, dispatch }
 	) => {
 		try {
@@ -32,7 +32,7 @@ export const createFolderAction = createAsyncThunk(
 export const updateFolderAction = createAsyncThunk(
 	'folder/update',
 	async (
-		{ data, callback }: IAsyncThunkArg<IFolder>,
+		{ data, callback }: IAsyncThunkArg<Partial<IFolder>, IFolder>,
 		{ fulfillWithValue, rejectWithValue, dispatch }
 	) => {
 		try {

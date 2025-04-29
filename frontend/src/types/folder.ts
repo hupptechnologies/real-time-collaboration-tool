@@ -6,7 +6,7 @@ export interface IFolder {
 	description: string;
 	parentFolderId: number | null;
 	spaceId?: number;
-	userId: number;
+	userId?: number;
 	documents?: IDocument[];
 	folders?: IFolder[];
 	readonly createdAt?: Date;
@@ -29,15 +29,19 @@ export interface IFolderListItemProps {
 	folder: IFolder;
 	openFolder: Record<string, boolean>;
 	level?: number;
+	editingFolderId: number | null;
+	setEditingFolderId: React.Dispatch<React.SetStateAction<number | null>>;
+	onRenameFolder: (_id: number, _newName: string) => void;
 	toggleFolder: (_folder: IFolder) => void;
 	openDocument: (_doc: IDocument) => void;
-	handleContextMenu: (_e: React.MouseEvent<HTMLButtonElement>) => void;
+	handleContextMenu: (_e: React.MouseEvent<HTMLButtonElement>, _item: IFolder | null) => void;
 }
 
 export type IFolderContextMenuProps = {
 	open: boolean;
 	position: { mouseX: number; mouseY: number } | null;
 	onClose: () => void;
+	handleNewFolder: () => void;
 };
 
 export interface IFolderState {

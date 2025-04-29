@@ -3,7 +3,12 @@ import { Folder, PostAdd } from '@mui/icons-material';
 import { Menu, MenuItem, ListItemIcon, ListItemText, Divider } from '@mui/material';
 import { IFolderContextMenuProps } from '@/types';
 
-const FolderContextMenu: React.FC<IFolderContextMenuProps> = ({ open, position, onClose }) => {
+const NewContextMenu: React.FC<IFolderContextMenuProps> = ({
+	open,
+	position,
+	onClose,
+	handleNewFolder
+}) => {
 	return (
 		<Menu
 			open={open}
@@ -17,7 +22,7 @@ const FolderContextMenu: React.FC<IFolderContextMenuProps> = ({ open, position, 
 				<ListItemText primary="Document" />
 			</MenuItem>
 			<Divider />
-			<MenuItem>
+			<MenuItem onClick={handleNewFolder}>
 				<ListItemIcon>
 					<Folder fontSize="small" />
 				</ListItemIcon>
@@ -27,4 +32,4 @@ const FolderContextMenu: React.FC<IFolderContextMenuProps> = ({ open, position, 
 	);
 };
 
-export default FolderContextMenu;
+export default NewContextMenu;

@@ -11,12 +11,12 @@ import {
 	MenuBook
 } from '@mui/icons-material';
 import FolderListItem from '@/components/home/FolderListItem';
-import FolderForm from '@/components/home/FolderForm';
-import FolderContextMenu from '@/components/home/FolderContextMenu';
-import DynamicModal from '@/components/DynamicModal';
+import NewContextMenu from '@/components/home/NewContextMenu';
+import { useToaster } from '@/context/ToasterContext';
 import { RootState } from '@/redux/store';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { fetchSingleSpaceAction } from '@/redux/space';
+import { createFolderAction, updateFolderAction } from '@/redux/folder';
 import {
 	AddIconButton,
 	AddIconContentBox,
@@ -28,47 +28,26 @@ import {
 	DrawerMenuStyle,
 	SpaceNameBox
 } from '@/styles';
-import { IDocument, IFolder } from '@/types';
-import { folderOptionalData } from '@/utils/data';
-
-const restructureFolders = (folders: IFolder[]): IFolder[] => {
-	const folderMap: { [key: number]: IFolder } = {};
-	const result: IFolder[] = [];
-
-	folders.forEach((folder) => {
-		folderMap[folder.id] = { ...folder, folders: [] };
-	});
-
-	folders.forEach((folder) => {
-		if (folder.parentFolderId === null) {
-			result.push(folderMap[folder.id]);
-		} else {
-			const parentFolder = folderMap[folder.parentFolderId];
-			if (parentFolder && Array.isArray(parentFolder.folders)) {
-				parentFolder.folders.push(folderMap[folder.id]);
-			}
-		}
-	});
-
-	return result;
-};
+import { IAPIResponse, IDocument, IFolder } from '@/types';
+import { folderOptionalData, restructureFolders } from '@/utils/common';
 
 const SpacePage: React.FC = () => {
 	const params = useParams();
 	const dispatch = useAppDispatch();
+	const { showToaster } = useToaster();
 	const { space } = useAppSelector((state: RootState) => state.space);
 	const spaceId = params?.spaceId as string;
 	const [open, setOpen] = useState<boolean>(true);
-	const [openModal, setOpenModal] = useState<boolean>(false);
 	const [openContent, setOpenContent] = useState<boolean>(false);
 	const [folderData, setFolderData] = useState<IFolder[]>([]);
 	const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({});
+	const [editingFolderId, setEditingFolderId] = useState<number | null>(null);
 	const [contextMenu, setContextMenu] = useState<
 		| {
 				mouseX: number;
 				mouseY: number;
 				target: 'folder' | 'document';
-				// item: IFolder | IDocument | null;
+				item: IFolder | null;
 		  }
 		| undefined
 	>(undefined);
@@ -80,24 +59,29 @@ const SpacePage: React.FC = () => {
 
 	useEffect(() => {
 		if (spaceId) {
-			dispatch(fetchSingleSpaceAction({ data: { id: Number(spaceId) } }));
+			getAllFolder();
 		}
 	}, [spaceId]);
 
 	useEffect(() => {
-		toogleMainDocument();
-		if (Array.isArray(space?.folders) && space?.folders.length > 0) {
-			setFolderData(restructureFolders(space?.folders));
-		} else {
-			setFolderData(folderOptionalData);
-		}
+		toggleMainDocument();
+		const newFolderData =
+			Array.isArray(space?.folders) && space?.folders.length > 0
+				? restructureFolders(space.folders)
+				: folderOptionalData;
+
+		setFolderData(newFolderData);
 	}, [space]);
+
+	const getAllFolder = (): void => {
+		dispatch(fetchSingleSpaceAction({ data: { id: Number(spaceId) } }));
+	};
 
 	const toggleDrawer = (): void => {
 		setOpen((prev) => !prev);
 	};
 
-	const toogleMainDocument = (): void => {
+	const toggleMainDocument = (): void => {
 		setSelectedItem({
 			type: 'default',
 			name: space.name as string,
@@ -106,7 +90,7 @@ const SpacePage: React.FC = () => {
 	};
 
 	const toggleFolder = (folder: IFolder): void => {
-		setOpenFolders((prev) => ({ ...prev, [folder.name]: !prev[folder.name] }));
+		setOpenFolders((prev) => ({ ...prev, [folder.id]: !prev[folder.id] }));
 	};
 
 	const openDocument = (doc: IDocument): void => {
@@ -115,13 +99,60 @@ const SpacePage: React.FC = () => {
 
 	const handleClose = (): void => setContextMenu(undefined);
 
-	const handleContextMenu = (e: React.MouseEvent<HTMLButtonElement>): void => {
+	const handleContextMenu = (
+		e: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLSpanElement>,
+		item: IFolder | null
+	): void => {
 		const rect = e.currentTarget.getBoundingClientRect();
 		setContextMenu({
 			mouseX: rect.left,
 			mouseY: rect.bottom,
-			target: 'folder'
+			target: 'folder',
+			item
 		});
+	};
+
+	const handleNewFolder = (): void => {
+		dispatch(
+			createFolderAction({
+				data: {
+					name: `Untitled Folder ${(space.folders?.length || 0) + 1}`,
+					parentFolderId: contextMenu?.item?.id || null,
+					spaceId: Number(spaceId),
+					description: ''
+				},
+				callback: handleCallBack
+			})
+		);
+	};
+
+	const handleCallBack = (data: IAPIResponse<IFolder>) => {
+		if (data.success) {
+			getAllFolder();
+			if (contextMenu?.item) {
+				setOpenFolders((prev) => ({ ...prev, [Number(contextMenu?.item?.id)]: true }));
+			} else {
+				setOpenContent(true);
+			}
+			setEditingFolderId(data.data?.id || null);
+			setContextMenu(undefined);
+			showToaster(data.message || 'success', 'success');
+		}
+	};
+
+	const handleRenameFolder = (id: number, newName: string) => {
+		if (newName.trim() === '') {
+			return;
+		}
+
+		dispatch(updateFolderAction({ data: { id, name: newName }, callback: renameCallBack }));
+	};
+
+	const renameCallBack = (data: IAPIResponse<IFolder>) => {
+		if (data.success) {
+			getAllFolder();
+			showToaster(data.message || 'success', 'success');
+		}
 	};
 
 	return (
@@ -145,7 +176,7 @@ const SpacePage: React.FC = () => {
 				{open && (
 					<>
 						<Toolbar />
-						<Box onClick={toogleMainDocument} sx={SpaceNameBox}>
+						<Box onClick={toggleMainDocument} sx={SpaceNameBox}>
 							<MenuBook fontSize="large" />
 							<Typography variant="h6" fontWeight="bold">
 								{space.name}
@@ -161,24 +192,27 @@ const SpacePage: React.FC = () => {
 								<Typography sx={{ marginLeft: '8px' }}>Content</Typography>
 							</Button>
 							<Box sx={AddIconContentBox}>
-								<Button sx={AddIconButton} onClick={handleContextMenu}>
+								<Button sx={AddIconButton} onClick={(e) => handleContextMenu(e, null)}>
 									<Add />
 								</Button>
 							</Box>
 						</Box>
 						{openContent && folderData?.length > 0 && (
 							<List>
-								{folderData.map((folder, index) => (
+								{folderData.map((folder) => (
 									<FolderListItem
-										key={index}
+										key={folder.id}
 										folder={folder}
+										editingFolderId={editingFolderId}
 										openDocument={openDocument}
 										openFolder={openFolders}
 										toggleFolder={toggleFolder}
 										handleContextMenu={handleContextMenu}
+										setEditingFolderId={setEditingFolderId}
+										onRenameFolder={handleRenameFolder}
 									/>
 								))}
-								<Box component={'span'} onClick={handleContextMenu} sx={createBtn}>
+								<Box component={'span'} onClick={(e) => handleContextMenu(e, null)} sx={createBtn}>
 									<Add /> Create
 								</Box>
 							</List>
@@ -191,23 +225,11 @@ const SpacePage: React.FC = () => {
 				<Typography variant="h5">{selectedItem.name}</Typography>
 				<Typography variant="body1">{selectedItem.description}</Typography>
 			</Box>
-			<FolderContextMenu
+			<NewContextMenu
 				open={Boolean(contextMenu)}
 				onClose={handleClose}
 				position={contextMenu ? { mouseX: contextMenu.mouseX, mouseY: contextMenu.mouseY } : null}
-			/>
-			<DynamicModal
-				title="New Folder"
-				open={openModal}
-				onClose={() => setOpenModal(false)}
-				content={
-					<FolderForm
-						handleSubmit={() => {}}
-						setOpen={setOpenModal}
-						spaceId={Number(spaceId)}
-						parentFolderId={null}
-					/>
-				}
+				handleNewFolder={handleNewFolder}
 			/>
 		</Box>
 	);

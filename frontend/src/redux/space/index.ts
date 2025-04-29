@@ -30,7 +30,7 @@ export const fetchSpaceDataAction = createAsyncThunk(
 export const createSpaceAction = createAsyncThunk(
 	'space/create',
 	async (
-		{ data, callback }: IAsyncThunkArg<ISpace>,
+		{ data, callback }: IAsyncThunkArg<ISpace, ISpace>,
 		{ fulfillWithValue, rejectWithValue, dispatch }
 	) => {
 		try {
@@ -56,7 +56,7 @@ export const createSpaceAction = createAsyncThunk(
 export const updateSpaceAction = createAsyncThunk(
 	'space/update',
 	async (
-		{ data, callback }: IAsyncThunkArg<ISpace>,
+		{ data, callback }: IAsyncThunkArg<ISpace, ISpace>,
 		{ fulfillWithValue, rejectWithValue, dispatch }
 	) => {
 		try {
@@ -82,7 +82,7 @@ export const updateSpaceAction = createAsyncThunk(
 export const deleteSpaceAction = createAsyncThunk(
 	'space/delete',
 	async (
-		{ data, callback }: IAsyncThunkArg<ISpace>,
+		{ data, callback }: IAsyncThunkArg<ISpace, ISpace>,
 		{ fulfillWithValue, rejectWithValue, dispatch }
 	) => {
 		try {

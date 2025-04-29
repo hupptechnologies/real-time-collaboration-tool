@@ -77,7 +77,7 @@ const SpacePage = () => {
 
 	const handleCallback = (data: IAPIResponse<ISpace>) => {
 		if (data.success) {
-			// dispatch(fetchSpaceDataAction());
+			dispatch(fetchSpaceDataAction());
 			showToaster(data.message || '', 'success');
 		}
 	};
