@@ -1,7 +1,7 @@
 import { getAllSpace, createSpace, updateSpace, deleteSpace, getSpace } from '@/services/space';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { updateErrorHandler } from '@/redux/error/slice';
-import { ISpaceThunkProps } from '@/types';
+import { IAsyncThunkArg, ISpace } from '@/types';
 
 export const fetchSpaceDataAction = createAsyncThunk(
 	'space/getAll',
@@ -29,7 +29,10 @@ export const fetchSpaceDataAction = createAsyncThunk(
 
 export const createSpaceAction = createAsyncThunk(
 	'space/create',
-	async ({ data, callback }: ISpaceThunkProps, { fulfillWithValue, rejectWithValue, dispatch }) => {
+	async (
+		{ data, callback }: IAsyncThunkArg<ISpace>,
+		{ fulfillWithValue, rejectWithValue, dispatch }
+	) => {
 		try {
 			const response = await createSpace(data);
 			if (response.data && response.success && callback) {
@@ -52,7 +55,10 @@ export const createSpaceAction = createAsyncThunk(
 
 export const updateSpaceAction = createAsyncThunk(
 	'space/update',
-	async ({ data, callback }: ISpaceThunkProps, { fulfillWithValue, rejectWithValue, dispatch }) => {
+	async (
+		{ data, callback }: IAsyncThunkArg<ISpace>,
+		{ fulfillWithValue, rejectWithValue, dispatch }
+	) => {
 		try {
 			const response = await updateSpace(data);
 			if (response && response.success && callback) {
@@ -75,7 +81,10 @@ export const updateSpaceAction = createAsyncThunk(
 
 export const deleteSpaceAction = createAsyncThunk(
 	'space/delete',
-	async ({ data, callback }: ISpaceThunkProps, { fulfillWithValue, rejectWithValue, dispatch }) => {
+	async (
+		{ data, callback }: IAsyncThunkArg<ISpace>,
+		{ fulfillWithValue, rejectWithValue, dispatch }
+	) => {
 		try {
 			const response = await deleteSpace(data);
 			if (response && response.success && callback) {
@@ -98,7 +107,7 @@ export const deleteSpaceAction = createAsyncThunk(
 
 export const fetchSingleSpaceAction = createAsyncThunk(
 	'space/single',
-	async ({ data }: ISpaceThunkProps, { fulfillWithValue, rejectWithValue, dispatch }) => {
+	async ({ data }: IAsyncThunkArg<ISpace>, { fulfillWithValue, rejectWithValue, dispatch }) => {
 		try {
 			const response = await getSpace(data);
 			if (response.data && response.success) {

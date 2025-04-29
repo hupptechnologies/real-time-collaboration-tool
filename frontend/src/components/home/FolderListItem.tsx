@@ -14,17 +14,17 @@ import {
 	ListItemIcon,
 	ListItemText
 } from '@mui/material';
-import { FolderListItemProps } from '@/types';
+import { IFolderListItemProps } from '@/types';
 import { AddIconButton, AddIconContentBox, FolderMainBox } from '@/styles';
 
-const FolderListItem: React.FC<FolderListItemProps> = ({
+const FolderListItem: React.FC<IFolderListItemProps> = ({
 	folder,
 	openFolder,
 	toggleFolder,
 	openDocument,
 	handleContextMenu,
 	level = 0
-}: FolderListItemProps) => {
+}: IFolderListItemProps) => {
 	const isOpen = openFolder[folder.name] || false;
 	return (
 		<Box>

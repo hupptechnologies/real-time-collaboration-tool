@@ -1,5 +1,3 @@
-import { IAPIResponse } from './common';
-
 export interface IUser {
 	id?: number;
 	username?: string;
@@ -12,9 +10,4 @@ export interface IUserState {
 	user: IUser;
 	loading: boolean;
 	error: string | null;
-}
-
-export interface IUserThunkProps {
-	data: IUser;
-	callback: (_data: IAPIResponse<IUser>) => void;
 }

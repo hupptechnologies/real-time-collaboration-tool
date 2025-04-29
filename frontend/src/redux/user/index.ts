@@ -1,7 +1,7 @@
 import { getUser, updateUser } from '@/services/user';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { updateErrorHandler } from '@/redux/error/slice';
-import { IUserThunkProps } from '@/types';
+import { IAsyncThunkArg, IUser } from '@/types';
 
 export const fetchUserDataAction = createAsyncThunk(
 	'user/detail',
@@ -29,7 +29,10 @@ export const fetchUserDataAction = createAsyncThunk(
 
 export const updateUserAction = createAsyncThunk(
 	'user/edit',
-	async ({ data, callback }: IUserThunkProps, { fulfillWithValue, rejectWithValue, dispatch }) => {
+	async (
+		{ data, callback }: IAsyncThunkArg<IUser>,
+		{ fulfillWithValue, rejectWithValue, dispatch }
+	) => {
 		try {
 			const response = await updateUser(data);
 			if (response.success) {

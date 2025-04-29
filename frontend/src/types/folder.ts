@@ -25,11 +25,22 @@ export interface IFolderForm {
 	handleSubmit?: (_values: IFolderCreationAttribute) => void | Promise<void>;
 }
 
-export interface FolderListItemProps {
+export interface IFolderListItemProps {
 	folder: IFolder;
 	openFolder: Record<string, boolean>;
 	level?: number;
 	toggleFolder: (_folder: IFolder) => void;
 	openDocument: (_doc: IDocument) => void;
 	handleContextMenu: (_e: React.MouseEvent<HTMLButtonElement>) => void;
+}
+
+export type IFolderContextMenuProps = {
+	open: boolean;
+	position: { mouseX: number; mouseY: number } | null;
+	onClose: () => void;
+};
+
+export interface IFolderState {
+	loading: boolean;
+	error: string | null;
 }

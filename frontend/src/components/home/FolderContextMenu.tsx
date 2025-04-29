@@ -1,9 +1,9 @@
 import React from 'react';
 import { Folder, PostAdd } from '@mui/icons-material';
 import { Menu, MenuItem, ListItemIcon, ListItemText, Divider } from '@mui/material';
-import { FolderContextMenuProps } from '@/types';
+import { IFolderContextMenuProps } from '@/types';
 
-const FolderContextMenu: React.FC<FolderContextMenuProps> = ({ open, position, onClose }) => {
+const FolderContextMenu: React.FC<IFolderContextMenuProps> = ({ open, position, onClose }) => {
 	return (
 		<Menu
 			open={open}

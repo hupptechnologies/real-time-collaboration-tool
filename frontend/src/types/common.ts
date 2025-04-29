@@ -53,3 +53,8 @@ export interface IAPIResponse<T = unknown> {
 	message?: string;
 	data?: T;
 }
+
+export interface IAsyncThunkArg<T = unknown> {
+	data: T;
+	callback: (_data: IAPIResponse<T>) => void;
+}

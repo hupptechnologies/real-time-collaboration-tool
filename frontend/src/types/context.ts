@@ -14,6 +14,6 @@ export type TAuthContextType = {
 	logout: () => void;
 };
 
-export type ToasterContextType = {
+export type TToasterContextType = {
 	showToaster: (_message: string, _severity: AlertColor) => void;
 };

@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react';
-import { ToasterContextType } from '@/types';
+import { TToasterContextType } from '@/types';
 
-export const ToasterContext = createContext<ToasterContextType | null>(null);
+export const ToasterContext = createContext<TToasterContextType | null>(null);
 export const useToaster = () => {
 	const context = useContext(ToasterContext);
 	if (!context) {
