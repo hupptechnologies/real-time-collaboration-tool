@@ -58,7 +58,7 @@ export const updateFolderAction = createAsyncThunk(
 export const deleteFolderAction = createAsyncThunk(
 	'folder/delete',
 	async (
-		{ data, callback }: IAsyncThunkArg<IFolder>,
+		{ data, callback }: IAsyncThunkArg<Partial<IFolder>, IFolder>,
 		{ fulfillWithValue, rejectWithValue, dispatch }
 	) => {
 		try {

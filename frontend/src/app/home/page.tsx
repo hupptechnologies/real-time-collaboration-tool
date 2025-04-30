@@ -183,7 +183,7 @@ const SpacePage = () => {
 			<ConfirmModal
 				open={deleteValue.trim() !== ''}
 				title={`Are you sure you want to delete ${deleteValue} ?`}
-				subTitle="This action cannot be undone."
+				subTitle="This action will delete the space and its related data. Are you sure?"
 				onClose={handleConfirm}
 			/>
 		</Box>

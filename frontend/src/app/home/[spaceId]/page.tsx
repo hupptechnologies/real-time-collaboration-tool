@@ -15,18 +15,23 @@ import {
 	Add,
 	ChevronLeft,
 	ChevronRight,
+	CreateNewFolderOutlined,
+	DeleteForeverOutlined,
+	EditOutlined,
 	FolderCopyOutlined,
 	KeyboardArrowDown,
 	KeyboardArrowRight,
-	MenuBook
+	MenuBook,
+	PostAddOutlined
 } from '@mui/icons-material';
+import ConfirmModal from '@/components/ConfirmModal';
 import FolderListItem from '@/components/home/FolderListItem';
 import NewContextMenu from '@/components/home/NewContextMenu';
 import { useToaster } from '@/context/ToasterContext';
 import { RootState } from '@/redux/store';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { fetchSingleSpaceAction } from '@/redux/space';
-import { createFolderAction, updateFolderAction } from '@/redux/folder';
+import { createFolderAction, deleteFolderAction, updateFolderAction } from '@/redux/folder';
 import {
 	AddIconButton,
 	AddIconContentBox,
@@ -38,8 +43,8 @@ import {
 	DrawerMenuStyle,
 	SpaceNameBox
 } from '@/styles';
-import { IAPIResponse, IDocument, IFolder } from '@/types';
-import { folderOptionalData, restructureFolders } from '@/utils/common';
+import { IAPIResponse, IContextMenu, IDocument, IFolder, TMenuOption } from '@/types';
+import { folderOptionalData, generateDefaultFolderName, restructureFolders } from '@/utils/common';
 
 const SpacePage: React.FC = () => {
 	const params = useParams();
@@ -53,15 +58,9 @@ const SpacePage: React.FC = () => {
 	const [folderData, setFolderData] = useState<IFolder[]>([]);
 	const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({});
 	const [editingFolderId, setEditingFolderId] = useState<number | null>(null);
-	const [contextMenu, setContextMenu] = useState<
-		| {
-				mouseX: number;
-				mouseY: number;
-				target: 'folder' | 'document';
-				item: IFolder | null;
-		  }
-		| undefined
-	>(undefined);
+	const [isDeleted, setIsDeleted] = useState<boolean>(false);
+	const [deleteItem, setDeleteItem] = useState<IFolder | null>(null);
+	const [contextMenu, setContextMenu] = useState<IContextMenu | undefined>(undefined);
 	const [selectedItem, setSelectedItem] = useState<{
 		type: 'folder' | 'document' | 'default';
 		name: string;
@@ -75,13 +74,15 @@ const SpacePage: React.FC = () => {
 	}, [spaceId]);
 
 	useEffect(() => {
-		toggleMainDocument();
 		const newFolderData =
 			Array.isArray(space?.folders) && space?.folders.length > 0
 				? restructureFolders(space.folders)
 				: folderOptionalData;
 
 		setFolderData(newFolderData);
+		if (!selectedItem || selectedItem.type === 'default') {
+			toggleMainDocument();
+		}
 	}, [space]);
 
 	const getAllFolder = (): void => {
@@ -108,23 +109,29 @@ const SpacePage: React.FC = () => {
 		setSelectedItem({ type: 'document', name: doc.name, description: doc.description });
 	};
 
-	const handleClose = (): void => setContextMenu(undefined);
+	const handleCloseContextMenu = (): void => setContextMenu(undefined);
 
-	const handleContextMenu = (e: React.MouseEvent<HTMLDivElement>, item: IFolder | null): void => {
+	const handleContextMenu = (
+		e: React.MouseEvent<HTMLDivElement>,
+		item: IFolder | null,
+		type: TMenuOption
+	): void => {
 		const rect = e.currentTarget.getBoundingClientRect();
 		setContextMenu({
 			mouseX: rect.left,
 			mouseY: rect.bottom,
+			type: type,
 			target: 'folder',
 			item
 		});
 	};
 
 	const handleNewFolder = (): void => {
+		const newName = generateDefaultFolderName(space.folders || []);
 		dispatch(
 			createFolderAction({
 				data: {
-					name: `Untitled Folder ${(space.folders?.length || 0) + 1}`,
+					name: newName,
 					parentFolderId: contextMenu?.item?.id || null,
 					spaceId: Number(spaceId),
 					description: ''
@@ -144,7 +151,7 @@ const SpacePage: React.FC = () => {
 			}
 			setEditingFolderId(data.data?.id || null);
 			setContextMenu(undefined);
-			showToaster(data.message || 'success', 'success');
+			showToaster(data.message || 'Created', 'success');
 		}
 	};
 
@@ -152,14 +159,50 @@ const SpacePage: React.FC = () => {
 		if (newName.trim() === '') {
 			return;
 		}
-
 		dispatch(updateFolderAction({ data: { id, name: newName }, callback: renameCallBack }));
 	};
 
 	const renameCallBack = (data: IAPIResponse<IFolder>) => {
 		if (data.success) {
 			getAllFolder();
-			showToaster(data.message || 'success', 'success');
+			setEditingFolderId(null);
+			setContextMenu(undefined);
+			setIsDeleted(false);
+			showToaster(data.message || 'Updated', 'success');
+		}
+	};
+
+	const handleEditFolder = () => {
+		setEditingFolderId(contextMenu?.item?.id || null);
+		setContextMenu(undefined);
+	};
+
+	const handleConfirm = (confirmed: boolean) => {
+		if (confirmed && deleteItem?.id) {
+			dispatch(
+				deleteFolderAction({
+					data: { id: deleteItem?.id },
+					callback: handleDeleteCallback
+				})
+			);
+		} else {
+			setIsDeleted(false);
+			setDeleteItem(null);
+		}
+	};
+
+	const handleDeleteFolder = () => {
+		setIsDeleted(true);
+		setDeleteItem(contextMenu?.item || null);
+		setContextMenu(undefined);
+	};
+
+	const handleDeleteCallback = (data: IAPIResponse<IFolder>) => {
+		if (data.success) {
+			setFolderData((prev) => prev.filter((f) => f.id !== deleteItem?.id));
+			setIsDeleted(false);
+			setDeleteItem(null);
+			showToaster(data.message || 'Deleted', 'success');
 		}
 	};
 
@@ -212,7 +255,9 @@ const SpacePage: React.FC = () => {
 								<Typography sx={{ marginLeft: '8px' }}>Content</Typography>
 							</ListItemButton>
 							<Box sx={AddIconContentBox}>
-								<ListItemButton sx={AddIconButton} onClick={(e) => handleContextMenu(e, null)}>
+								<ListItemButton
+									sx={AddIconButton}
+									onClick={(e) => handleContextMenu(e, null, 'new')}>
 									<Add />
 								</ListItemButton>
 							</Box>
@@ -224,15 +269,18 @@ const SpacePage: React.FC = () => {
 										key={folder.id}
 										folder={folder}
 										editingFolderId={editingFolderId}
+										menuItem={contextMenu?.item}
 										openDocument={openDocument}
 										openFolder={openFolders}
 										toggleFolder={toggleFolder}
 										handleContextMenu={handleContextMenu}
-										setEditingFolderId={setEditingFolderId}
 										onRenameFolder={handleRenameFolder}
 									/>
 								))}
-								<ListItemButton onClick={(e) => handleContextMenu(e, null)} sx={createBtn}>
+								<ListItemButton
+									key={'button'}
+									onClick={(e) => handleContextMenu(e, null, 'new')}
+									sx={createBtn}>
 									<Add /> Create
 								</ListItemButton>
 							</List>
@@ -245,11 +293,44 @@ const SpacePage: React.FC = () => {
 				<Typography variant="h5">{selectedItem.name}</Typography>
 				<Typography variant="body1">{selectedItem.description}</Typography>
 			</Box>
+			<ConfirmModal
+				open={isDeleted}
+				title={`Are you sure you want to delete ${deleteItem?.name} ?`}
+				subTitle="This action will delete the folder and its related data. Are you sure?"
+				onClose={handleConfirm}
+			/>
 			<NewContextMenu
 				open={Boolean(contextMenu)}
-				onClose={handleClose}
+				handleOnclose={handleCloseContextMenu}
 				position={contextMenu ? { mouseX: contextMenu.mouseX, mouseY: contextMenu.mouseY } : null}
-				handleNewFolder={handleNewFolder}
+				menuItems={
+					contextMenu?.type === 'new'
+						? [
+								{
+									label: 'Document',
+									icon: <PostAddOutlined fontSize="small" />
+								},
+								{ divider: true },
+								{
+									label: 'Folder',
+									icon: <CreateNewFolderOutlined fontSize="small" />,
+									handleOnclick: handleNewFolder
+								}
+							]
+						: [
+								{
+									label: 'Rename',
+									icon: <EditOutlined fontSize="small" />,
+									handleOnclick: handleEditFolder
+								},
+								{ divider: true },
+								{
+									label: 'Delete',
+									icon: <DeleteForeverOutlined fontSize="small" />,
+									handleOnclick: handleDeleteFolder
+								}
+							]
+				}
 			/>
 		</Box>
 	);

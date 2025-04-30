@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
 	Add,
 	FiberManualRecord,
@@ -17,16 +18,15 @@ import {
 } from '@mui/material';
 import { IFolderListItemProps } from '@/types';
 import { AddIconButton, AddIconContentBoxHover, FolderMainBox } from '@/styles';
-import { useState } from 'react';
 
 const FolderListItem: React.FC<IFolderListItemProps> = ({
 	folder,
 	openFolder,
 	editingFolderId,
+	menuItem,
 	toggleFolder,
 	openDocument,
 	handleContextMenu,
-	setEditingFolderId,
 	onRenameFolder,
 	level = 0
 }: IFolderListItemProps) => {
@@ -38,7 +38,6 @@ const FolderListItem: React.FC<IFolderListItemProps> = ({
 		if (trimmedValue) {
 			onRenameFolder(folder.id, trimmedValue);
 		}
-		setEditingFolderId(null);
 	};
 
 	return (
@@ -57,6 +56,7 @@ const FolderListItem: React.FC<IFolderListItemProps> = ({
 					{editingFolderId === folder.id ? (
 						<TextField
 							autoFocus
+							sx={{ width: '120px' }}
 							type="text"
 							defaultValue={folder.name}
 							onBlur={(e) => handleRename(e.target.value)}
@@ -70,12 +70,14 @@ const FolderListItem: React.FC<IFolderListItemProps> = ({
 						<ListItemText primary={folder.name} />
 					)}
 				</ListItemButton>
-				{isHovered && (
+				{(isHovered || menuItem?.id === folder.id) && (
 					<Box sx={AddIconContentBoxHover}>
-						<ListItemButton sx={AddIconButton} onClick={(e) => handleContextMenu(e, folder)}>
+						<ListItemButton sx={AddIconButton} onClick={(e) => handleContextMenu(e, folder, 'new')}>
 							<Add fontSize="small" />
 						</ListItemButton>
-						<ListItemButton sx={AddIconButton} onClick={(e) => handleContextMenu(e, folder)}>
+						<ListItemButton
+							sx={AddIconButton}
+							onClick={(e) => handleContextMenu(e, folder, 'more')}>
 							<MoreHoriz fontSize="small" />
 						</ListItemButton>
 					</Box>
@@ -99,12 +101,12 @@ const FolderListItem: React.FC<IFolderListItemProps> = ({
 							key={subFolder.id}
 							folder={subFolder}
 							editingFolderId={editingFolderId}
+							menuItem={menuItem}
 							level={level + 1}
 							openFolder={openFolder}
 							toggleFolder={toggleFolder}
 							openDocument={openDocument}
 							handleContextMenu={handleContextMenu}
-							setEditingFolderId={setEditingFolderId}
 							onRenameFolder={onRenameFolder}
 						/>
 					))}

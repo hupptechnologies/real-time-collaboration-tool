@@ -11,7 +11,7 @@ export const updateFolder = async (data: Partial<IFolder>) => {
 	return response.data;
 };
 
-export const deleteFolder = async (data: IFolder) => {
+export const deleteFolder = async (data: Partial<IFolder>) => {
 	const response = await axiosInstance.delete(`/folder/${data.id}`);
 	return response.data;
 };

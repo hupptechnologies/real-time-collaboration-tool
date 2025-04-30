@@ -1,5 +1,14 @@
 import { IFolder } from '@/types';
 
+const sortFolders = (folderList: IFolder[]) => {
+	folderList.sort((a, b) => a.name.localeCompare(b.name));
+	folderList.forEach((folder) => {
+		if (Array.isArray(folder.folders)) {
+			sortFolders(folder.folders);
+		}
+	});
+};
+
 export const restructureFolders = (folders: IFolder[]): IFolder[] => {
 	const folderMap: { [key: number]: IFolder } = {};
 	const result: IFolder[] = [];
@@ -19,7 +28,22 @@ export const restructureFolders = (folders: IFolder[]): IFolder[] => {
 		}
 	});
 
+	sortFolders(result);
 	return result;
+};
+
+export const generateDefaultFolderName = (
+	existingFolders: IFolder[],
+	baseName = 'Untitled Folder'
+): string => {
+	const existingNames = existingFolders.map((f) => f.name);
+	let index = 1;
+
+	while (existingNames.includes(`${baseName} ${index}`)) {
+		index++;
+	}
+
+	return `${baseName} ${index}`;
 };
 
 export const folderOptionalData = [
