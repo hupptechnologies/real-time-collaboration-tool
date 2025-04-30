@@ -44,7 +44,7 @@ import {
 	SpaceNameBox
 } from '@/styles';
 import { IAPIResponse, IContextMenu, IDocument, IFolder, TMenuOption } from '@/types';
-import { folderOptionalData, generateDefaultFolderName, restructureFolders } from '@/utils/common';
+import { generateDefaultFolderName, restructureFolders } from '@/utils/common';
 
 const SpacePage: React.FC = () => {
 	const params = useParams();
@@ -74,12 +74,13 @@ const SpacePage: React.FC = () => {
 	}, [spaceId]);
 
 	useEffect(() => {
-		const newFolderData =
-			Array.isArray(space?.folders) && space?.folders.length > 0
-				? restructureFolders(space.folders)
-				: folderOptionalData;
+		if (Array.isArray(space?.folders) && space?.folders.length > 0) {
+			restructureFolders(space.folders);
+			setFolderData(restructureFolders(space.folders));
+		} else {
+			setFolderData([]);
+		}
 
-		setFolderData(newFolderData);
 		if (!selectedItem || selectedItem.type === 'default') {
 			toggleMainDocument();
 		}
