@@ -255,11 +255,13 @@ const SpacePage: React.FC = () => {
 								<Typography sx={{ marginLeft: '8px' }}>Content</Typography>
 							</ListItemButton>
 							<Box sx={AddIconContentBox}>
-								<ListItemButton
-									sx={AddIconButton}
-									onClick={(e) => handleContextMenu(e, null, 'new')}>
-									<Add />
-								</ListItemButton>
+								<Tooltip title="create" placement="top">
+									<ListItemButton
+										sx={AddIconButton}
+										onClick={(e) => handleContextMenu(e, null, 'new')}>
+										<Add />
+									</ListItemButton>
+								</Tooltip>
 							</Box>
 						</Box>
 						{openContent && folderData?.length > 0 && (

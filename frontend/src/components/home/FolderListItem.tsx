@@ -14,7 +14,8 @@ import {
 	ListItemButton,
 	ListItemIcon,
 	ListItemText,
-	TextField
+	TextField,
+	Tooltip
 } from '@mui/material';
 import { IFolderListItemProps } from '@/types';
 import { AddIconButton, AddIconContentBoxHover, FolderMainBox } from '@/styles';
@@ -72,21 +73,27 @@ const FolderListItem: React.FC<IFolderListItemProps> = ({
 				</ListItemButton>
 				{(isHovered || menuItem?.id === folder.id) && (
 					<Box sx={AddIconContentBoxHover}>
-						<ListItemButton sx={AddIconButton} onClick={(e) => handleContextMenu(e, folder, 'new')}>
-							<Add fontSize="small" />
-						</ListItemButton>
-						<ListItemButton
-							sx={AddIconButton}
-							onClick={(e) => handleContextMenu(e, folder, 'more')}>
-							<MoreHoriz fontSize="small" />
-						</ListItemButton>
+						<Tooltip title="create" placement="top">
+							<ListItemButton
+								sx={AddIconButton}
+								onClick={(e) => handleContextMenu(e, folder, 'new')}>
+								<Add fontSize="small" />
+							</ListItemButton>
+						</Tooltip>
+						<Tooltip title="more" placement="top">
+							<ListItemButton
+								sx={AddIconButton}
+								onClick={(e) => handleContextMenu(e, folder, 'more')}>
+								<MoreHoriz fontSize="small" />
+							</ListItemButton>
+						</Tooltip>
 					</Box>
 				)}
 			</Box>
 			<Collapse in={isOpen} timeout="auto" unmountOnExit>
 				<List component="div" disablePadding>
 					{folder.folders?.length === 0 && (
-						<Box sx={{ pl: level + 1, fontSize: '14px' }} component="span">
+						<Box sx={{ pl: level + 3, fontSize: '14px' }} component="span">
 							There’s nothing in this folder yet.
 						</Box>
 					)}
