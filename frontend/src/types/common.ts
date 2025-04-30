@@ -56,5 +56,5 @@ export interface IAPIResponse<T = unknown> {
 
 export interface IAsyncThunkArg<T = unknown, P = unknown> {
 	data: T;
-	callback?: (_data: IAPIResponse<[P] extends [unknown] ? P : T>) => void;
+	callback?: (_data: IAPIResponse<P>) => void;
 }

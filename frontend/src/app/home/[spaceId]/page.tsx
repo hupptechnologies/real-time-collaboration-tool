@@ -1,11 +1,21 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { Box, Drawer, List, Toolbar, IconButton, Tooltip, Typography, Button } from '@mui/material';
+import {
+	Box,
+	Drawer,
+	List,
+	Toolbar,
+	IconButton,
+	Tooltip,
+	Typography,
+	ListItemButton
+} from '@mui/material';
 import {
 	Add,
 	ChevronLeft,
 	ChevronRight,
+	FolderCopyOutlined,
 	KeyboardArrowDown,
 	KeyboardArrowRight,
 	MenuBook
@@ -39,6 +49,7 @@ const SpacePage: React.FC = () => {
 	const spaceId = params?.spaceId as string;
 	const [open, setOpen] = useState<boolean>(true);
 	const [openContent, setOpenContent] = useState<boolean>(false);
+	const [isHovered, setIsHovered] = useState(false);
 	const [folderData, setFolderData] = useState<IFolder[]>([]);
 	const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({});
 	const [editingFolderId, setEditingFolderId] = useState<number | null>(null);
@@ -99,10 +110,7 @@ const SpacePage: React.FC = () => {
 
 	const handleClose = (): void => setContextMenu(undefined);
 
-	const handleContextMenu = (
-		e: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLSpanElement>,
-		item: IFolder | null
-	): void => {
+	const handleContextMenu = (e: React.MouseEvent<HTMLDivElement>, item: IFolder | null): void => {
 		const rect = e.currentTarget.getBoundingClientRect();
 		setContextMenu({
 			mouseX: rect.left,
@@ -183,22 +191,34 @@ const SpacePage: React.FC = () => {
 							</Typography>
 						</Box>
 						<Box sx={{ display: 'grid', gridColumn: 1, gridRow: 1 }}>
-							<Button sx={ContentButton} onClick={() => setOpenContent(!openContent)}>
+							<ListItemButton
+								sx={ContentButton}
+								onClick={() => setOpenContent(!openContent)}
+								onMouseEnter={() => setIsHovered(true)}
+								onMouseLeave={() => setIsHovered(false)}>
 								<Box sx={ContentIconBox}>
 									<Box sx={ContentIconInlineBox}>
-										{openContent ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
+										{isHovered ? (
+											openContent ? (
+												<KeyboardArrowDown />
+											) : (
+												<KeyboardArrowRight />
+											)
+										) : (
+											<FolderCopyOutlined />
+										)}
 									</Box>
 								</Box>
 								<Typography sx={{ marginLeft: '8px' }}>Content</Typography>
-							</Button>
+							</ListItemButton>
 							<Box sx={AddIconContentBox}>
-								<Button sx={AddIconButton} onClick={(e) => handleContextMenu(e, null)}>
+								<ListItemButton sx={AddIconButton} onClick={(e) => handleContextMenu(e, null)}>
 									<Add />
-								</Button>
+								</ListItemButton>
 							</Box>
 						</Box>
 						{openContent && folderData?.length > 0 && (
-							<List>
+							<List sx={{ padding: 0 }}>
 								{folderData.map((folder) => (
 									<FolderListItem
 										key={folder.id}
@@ -212,9 +232,9 @@ const SpacePage: React.FC = () => {
 										onRenameFolder={handleRenameFolder}
 									/>
 								))}
-								<Box component={'span'} onClick={(e) => handleContextMenu(e, null)} sx={createBtn}>
+								<ListItemButton onClick={(e) => handleContextMenu(e, null)} sx={createBtn}>
 									<Add /> Create
-								</Box>
+								</ListItemButton>
 							</List>
 						)}
 					</>

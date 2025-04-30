@@ -34,7 +34,7 @@ export interface IFolderListItemProps {
 	onRenameFolder: (_id: number, _newName: string) => void;
 	toggleFolder: (_folder: IFolder) => void;
 	openDocument: (_doc: IDocument) => void;
-	handleContextMenu: (_e: React.MouseEvent<HTMLButtonElement>, _item: IFolder | null) => void;
+	handleContextMenu: (_e: React.MouseEvent<HTMLDivElement>, _item: IFolder | null) => void;
 }
 
 export type IFolderContextMenuProps = {

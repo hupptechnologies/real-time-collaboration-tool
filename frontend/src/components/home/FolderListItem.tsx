@@ -3,20 +3,21 @@ import {
 	FiberManualRecord,
 	Folder,
 	KeyboardArrowDown,
-	KeyboardArrowRight
-	// MoreHoriz
+	KeyboardArrowRight,
+	MoreHoriz
 } from '@mui/icons-material';
 import {
 	Box,
-	Button,
 	Collapse,
 	List,
 	ListItemButton,
 	ListItemIcon,
-	ListItemText
+	ListItemText,
+	TextField
 } from '@mui/material';
 import { IFolderListItemProps } from '@/types';
-import { AddIconButton, AddIconContentBox, FolderMainBox } from '@/styles';
+import { AddIconButton, AddIconContentBoxHover, FolderMainBox } from '@/styles';
+import { useState } from 'react';
 
 const FolderListItem: React.FC<IFolderListItemProps> = ({
 	folder,
@@ -29,10 +30,23 @@ const FolderListItem: React.FC<IFolderListItemProps> = ({
 	onRenameFolder,
 	level = 0
 }: IFolderListItemProps) => {
+	const [isHovered, setIsHovered] = useState(false);
+
 	const isOpen = openFolder[folder.id] || false;
+	const handleRename = (value: string) => {
+		const trimmedValue = value.trim();
+		if (trimmedValue) {
+			onRenameFolder(folder.id, trimmedValue);
+		}
+		setEditingFolderId(null);
+	};
+
 	return (
 		<Box>
-			<Box sx={FolderMainBox}>
+			<Box
+				sx={FolderMainBox}
+				onMouseEnter={() => setIsHovered(true)}
+				onMouseLeave={() => setIsHovered(false)}>
 				<ListItemButton
 					sx={{ pl: level, gridColumn: 1, gridRow: 1 }}
 					onClick={() => toggleFolder(folder)}>
@@ -41,18 +55,14 @@ const FolderListItem: React.FC<IFolderListItemProps> = ({
 						<Folder />
 					</ListItemIcon>
 					{editingFolderId === folder.id ? (
-						<input
+						<TextField
 							autoFocus
 							type="text"
 							defaultValue={folder.name}
-							onBlur={(e) => {
-								onRenameFolder(folder.id, e.target.value.trim());
-								setEditingFolderId(null);
-							}}
+							onBlur={(e) => handleRename(e.target.value)}
 							onKeyDown={(e) => {
 								if (e.key === 'Enter') {
-									onRenameFolder(folder.id, (e.target as HTMLInputElement).value.trim());
-									setEditingFolderId(null);
+									handleRename((e.target as HTMLInputElement).value);
 								}
 							}}
 						/>
@@ -60,14 +70,16 @@ const FolderListItem: React.FC<IFolderListItemProps> = ({
 						<ListItemText primary={folder.name} />
 					)}
 				</ListItemButton>
-				<Box sx={AddIconContentBox}>
-					<Button sx={AddIconButton} onClick={(e) => handleContextMenu(e, folder)}>
-						<Add fontSize="small" />
-					</Button>
-					{/* <Button sx={AddIconButton} onClick={(e) => handleContextMenu(e, folder)}>
-						<MoreHoriz fontSize="small" />
-					</Button> */}
-				</Box>
+				{isHovered && (
+					<Box sx={AddIconContentBoxHover}>
+						<ListItemButton sx={AddIconButton} onClick={(e) => handleContextMenu(e, folder)}>
+							<Add fontSize="small" />
+						</ListItemButton>
+						<ListItemButton sx={AddIconButton} onClick={(e) => handleContextMenu(e, folder)}>
+							<MoreHoriz fontSize="small" />
+						</ListItemButton>
+					</Box>
+				)}
 			</Box>
 			<Collapse in={isOpen} timeout="auto" unmountOnExit>
 				<List component="div" disablePadding>

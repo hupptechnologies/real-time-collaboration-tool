@@ -22,6 +22,7 @@ export const ContentGrid: SxProps<Theme> = () => ({
 });
 
 export const ContentButton: SxProps<Theme> = () => ({
+	paddingLeft: 0,
 	height: '36px',
 	cursor: 'pointer',
 	display: 'flex',
@@ -34,7 +35,7 @@ export const ContentButton: SxProps<Theme> = () => ({
 export const ContentIconBox: SxProps<Theme> = () => ({
 	width: '24px',
 	height: '24px',
-	border: '1px solid #091e4224',
+	// border: '1px solid #091e4224',
 	borderRadius: '4px',
 	display: 'block'
 });
@@ -48,7 +49,8 @@ export const ContentIconInlineBox: SxProps<Theme> = () => ({
 export const FolderMainBox: SxProps<Theme> = () => ({
 	display: 'grid',
 	gridColumn: 1,
-	gridRow: 1
+	gridRow: 1,
+	position: 'relative'
 });
 
 export const AddIconContentBox: SxProps<Theme> = () => ({
@@ -57,6 +59,16 @@ export const AddIconContentBox: SxProps<Theme> = () => ({
 	gridRow: 1,
 	justifyContent: 'flex-end',
 	justifySelf: 'end'
+});
+
+export const AddIconContentBoxHover: SxProps<Theme> = () => ({
+	...AddIconContentBox,
+	position: 'absolute',
+	right: 10,
+	top: '50%',
+	display: 'flex',
+	gap: '4px',
+	transform: 'translateY(-50%)'
 });
 
 export const AddIconButton: SxProps<Theme> = (theme) => ({
@@ -72,14 +84,11 @@ export const AddIconButton: SxProps<Theme> = (theme) => ({
 	}
 });
 
-export const createBtn: SxProps<Theme> = (theme) => ({
+export const createBtn: SxProps<Theme> = () => ({
+	paddingLeft: 0,
 	cursor: 'pointer',
 	display: 'flex',
 	alignItems: 'center',
 	justifyContent: 'flex-start',
-	width: '100%',
-	':hover': {
-		backgroundColor: theme.palette.mode === 'dark' ? '#ffffff14' : '#0000000a',
-		textDecoration: 'none'
-	}
+	width: '100%'
 });
