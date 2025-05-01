@@ -11,6 +11,7 @@ import {
 	ListOrdered,
 	Redo,
 	Strikethrough,
+	Underline,
 	Undo
 } from 'lucide-react';
 import Toggle from './Toggle';
@@ -90,6 +91,12 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
 					selected={editor.isActive('italic')}
 					onChange={() => editor.chain().focus().toggleItalic().run()}>
 					<Italic fontSize="small" />
+				</Toggle>
+				<Toggle
+					value={'underline'}
+					selected={editor.isActive('underline')}
+					onChange={() => editor.chain().focus().toggleUnderline().run()}>
+					<Underline fontSize="small" />
 				</Toggle>
 				<Toggle
 					value={'strike'}

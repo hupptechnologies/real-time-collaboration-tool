@@ -4,6 +4,7 @@ import { EditorContent, useEditor } from '@tiptap/react';
 import { Box } from '@mui/material';
 import StarterKit from '@tiptap/starter-kit';
 import TextAlign from '@tiptap/extension-text-align';
+import Underline from '@tiptap/extension-underline';
 import MenuBar from './MenuBar';
 import { IRichTextEditorProps } from '@/types';
 import { EditorMainBox } from '@/styles';
@@ -12,6 +13,7 @@ const RichTextEditor: React.FC<IRichTextEditorProps> = ({ content, onChange }) =
 	const editor = useEditor({
 		extensions: [
 			StarterKit,
+			Underline,
 			TextAlign.configure({
 				types: ['heading', 'paragraph']
 			})
