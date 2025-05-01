@@ -1,5 +1,22 @@
-import { styled, SxProps, Theme, ToggleButton } from '@mui/material';
+import {
+	styled,
+	SxProps,
+	ToggleButton,
+	ToggleButtonGroup,
+	toggleButtonGroupClasses,
+	Theme
+} from '@mui/material';
 import { ICustomToggleProps } from '@/types';
+
+export const EditorMainBox: SxProps<Theme> = (theme) => ({
+	'.custom-editor': {
+		minHeight: '156px',
+		border: '1px solid #ccc',
+		borderRadius: 2,
+		backgroundColor: theme.palette.grey[100],
+		padding: theme.spacing(2)
+	}
+});
 
 export const StyledToggleButton = styled(ToggleButton, {
 	shouldForwardProp: (prop) => prop !== 'sizeVariant' && prop !== 'colorVariant'
@@ -39,13 +56,25 @@ export const StyledToggleButton = styled(ToggleButton, {
 	transition: theme.transitions.create(['color', 'box-shadow'])
 }));
 
-export const MenuOptionBox: SxProps<Theme> = () => ({
-	border: '1px solid #ccc',
-	borderRadius: 2,
-	p: 1,
-	mb: 1,
+export const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
+	[`& .${toggleButtonGroupClasses.grouped}`]: {
+		margin: theme.spacing(0.5),
+		border: 0,
+		borderRadius: theme.shape.borderRadius,
+		[`&.${toggleButtonGroupClasses.disabled}`]: {
+			border: 0
+		}
+	},
+	[`& .${toggleButtonGroupClasses.middleButton},& .${toggleButtonGroupClasses.lastButton}`]: {
+		marginLeft: -1,
+		borderLeft: '1px solid transparent'
+	}
+}));
+
+export const MenuBoxPaper: SxProps<Theme> = (theme) => ({
 	display: 'flex',
-	gap: 2,
-	zIndex: 50,
-	flexWrap: 'wrap'
+	border: `1px solid ${theme.palette.divider}`,
+	flexWrap: 'wrap',
+	borderRadius: 2,
+	mb: 1
 });

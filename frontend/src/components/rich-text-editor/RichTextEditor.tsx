@@ -1,24 +1,36 @@
 'use client';
+import React from 'react';
 import { EditorContent, useEditor } from '@tiptap/react';
 import { Box } from '@mui/material';
 import StarterKit from '@tiptap/starter-kit';
-import React from 'react';
+import TextAlign from '@tiptap/extension-text-align';
 import MenuBar from './MenuBar';
 import { IRichTextEditorProps } from '@/types';
+import { EditorMainBox } from '@/styles';
 
 const RichTextEditor: React.FC<IRichTextEditorProps> = ({ content, onChange }) => {
 	const editor = useEditor({
-		extensions: [StarterKit],
+		extensions: [
+			StarterKit,
+			TextAlign.configure({
+				types: ['heading', 'paragraph']
+			})
+		],
 		content: content,
+		editorProps: {
+			attributes: {
+				class: 'custom-editor'
+			}
+		},
 		onUpdate: ({ editor }) => {
 			onChange(editor.getHTML());
 		}
 	});
 
 	return (
-		<Box>
+		<Box sx={EditorMainBox}>
 			<MenuBar editor={editor} />
-			<EditorContent editor={editor} className="custom-editor" />
+			<EditorContent editor={editor} />
 		</Box>
 	);
 };

@@ -21,6 +21,7 @@
     "@mui/icons-material": "^6.4.6",
     "@mui/material": "^6.4.6",
     "@reduxjs/toolkit": "^2.6.0",
+    "@tiptap/extension-text-align": "^2.11.9",
     "@tiptap/pm": "^2.11.9",
     "@tiptap/react": "^2.11.9",
     "@tiptap/starter-kit": "^2.11.9",
