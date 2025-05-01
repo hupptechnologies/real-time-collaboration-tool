@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Editor } from '@tiptap/react';
 import { Box, MenuItem, Select, FormControl, Divider, Paper } from '@mui/material';
+import ColorDropdown from './ColorDropDown';
 import {
 	AlignJustify,
 	AlignLeft,
@@ -15,7 +16,7 @@ import {
 	Undo
 } from 'lucide-react';
 import Toggle from './Toggle';
-import { MenuBoxPaper, StyledToggleButtonGroup } from '@/styles';
+import { AlignmentBox, ColorMainBox, MenuBoxPaper, StyledToggleButtonGroup } from '@/styles';
 
 const MenuBar = ({ editor }: { editor: Editor | null }) => {
 	const [selectedHeading, setSelectedHeading] = useState<number>(0);
@@ -106,8 +107,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
 				</Toggle>
 			</StyledToggleButtonGroup>
 			<Divider flexItem orientation="vertical" sx={{ mx: 0.5, my: 1 }} />
-			<Box
-				sx={{ display: 'flex', alignItems: 'center', paddingLeft: '12px', paddingRight: '12px' }}>
+			<Box sx={AlignmentBox}>
 				<FormControl size="medium" variant="standard">
 					<Select
 						value={selectedAlignment}
@@ -125,6 +125,10 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
 						</MenuItem>
 					</Select>
 				</FormControl>
+			</Box>
+			<Divider flexItem orientation="vertical" sx={{ mx: 0.5, my: 1 }} />
+			<Box sx={ColorMainBox}>
+				<ColorDropdown onSelect={(color) => editor.chain().focus().setColor(color).run()} />
 			</Box>
 			<Divider flexItem orientation="vertical" sx={{ mx: 0.5, my: 1 }} />
 			<StyledToggleButtonGroup size="small">

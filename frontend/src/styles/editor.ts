@@ -78,3 +78,39 @@ export const MenuBoxPaper: SxProps<Theme> = (theme) => ({
 	borderRadius: 2,
 	mb: 1
 });
+
+export const AlignmentBox: SxProps<Theme> = () => ({
+	display: 'flex',
+	alignItems: 'center',
+	paddingLeft: '12px',
+	paddingRight: '12px'
+});
+
+export const ColorMainBox: SxProps<Theme> = () => ({
+	display: 'flex',
+	alignItems: 'center',
+	px: 1
+});
+
+export const ColorDropDownPaper: SxProps<Theme> = () => ({
+	mt: 1,
+	p: 1,
+	display: 'grid',
+	gridTemplateColumns: 'repeat(7, 24px)',
+	gap: 1
+});
+
+export const ColorDropDownBox = ({ color }: { color: string }): SxProps<Theme> => ({
+	width: 24,
+	height: 24,
+	backgroundColor: color,
+	borderRadius: '4px',
+	border: '1px solid #ccc',
+	cursor: 'pointer',
+	display: 'flex',
+	alignItems: 'center',
+	justifyContent: 'center',
+	'&:hover': {
+		border: '2px solid black'
+	}
+});
