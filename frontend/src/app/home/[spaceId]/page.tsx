@@ -24,6 +24,7 @@ import {
 	MenuBook,
 	PostAddOutlined
 } from '@mui/icons-material';
+import dynamic from 'next/dynamic';
 import ConfirmModal from '@/components/ConfirmModal';
 import FolderListItem from '@/components/home/FolderListItem';
 import NewContextMenu from '@/components/home/NewContextMenu';
@@ -45,6 +46,10 @@ import {
 } from '@/styles';
 import { IAPIResponse, IContextMenu, IDocument, IFolder, TMenuOption } from '@/types';
 import { generateDefaultFolderName, restructureFolders } from '@/utils/common';
+
+const RichTextEditor = dynamic(() => import('@/components/rich-text-editor/RichTextEditor'), {
+	ssr: false
+});
 
 const SpacePage: React.FC = () => {
 	const params = useParams();
@@ -207,6 +212,10 @@ const SpacePage: React.FC = () => {
 		}
 	};
 
+	const onChange = (content: string) => {
+		console.info(content);
+	};
+
 	return (
 		<Box sx={{ display: 'flex' }}>
 			<IconButton
@@ -295,6 +304,7 @@ const SpacePage: React.FC = () => {
 				<Toolbar />
 				<Typography variant="h5">{selectedItem.name}</Typography>
 				<Typography variant="body1">{selectedItem.description}</Typography>
+				<RichTextEditor content={selectedItem.name} onChange={onChange} />
 			</Box>
 			<ConfirmModal
 				open={isDeleted}
