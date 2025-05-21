@@ -4,6 +4,7 @@ import TextAlign from '@tiptap/extension-text-align';
 import Underline from '@tiptap/extension-underline';
 import TextStyle from '@tiptap/extension-text-style';
 import Highlight from '@tiptap/extension-highlight';
+import { Link } from '@tiptap/extension-link';
 import { Color } from '@tiptap/extension-color';
 import {
 	MenuButtonBold,
@@ -11,6 +12,7 @@ import {
 	MenuButtonHighlightColor,
 	MenuButtonItalic,
 	MenuButtonOrderedList,
+	MenuButtonEditLink,
 	MenuButtonRedo,
 	MenuButtonStrikethrough,
 	MenuButtonTextColor,
@@ -18,13 +20,21 @@ import {
 	MenuButtonUndo,
 	MenuControlsContainer,
 	MenuDivider,
+	MenuButtonIndent,
 	MenuSelectHeading,
 	RichTextEditor,
-	type RichTextEditorRef
+	type RichTextEditorRef,
+	LinkBubbleMenu,
+	TableBubbleMenu,
+	LinkBubbleMenuHandler
 } from 'mui-tiptap';
 import { useRef, useState } from 'react';
 import { AlignJustify, AlignLeft, AlignRight } from 'lucide-react';
 import { AlignmentBox } from 'styles/editor';
+
+const CustomLinkExtension = Link.extend({
+	inclusive: false
+});
 
 const MuiRichTextEditor = () => {
 	const rteRef = useRef<RichTextEditorRef>(null);
@@ -70,6 +80,12 @@ const MuiRichTextEditor = () => {
 					}),
 					Highlight.configure({ multicolor: true }),
 					Underline,
+					CustomLinkExtension.configure({
+						autolink: true,
+						linkOnPaste: true,
+						openOnClick: false
+					}),
+					LinkBubbleMenuHandler,
 					Color
 				]}
 				content="<p>Hello world</p>"
@@ -115,23 +131,31 @@ const MuiRichTextEditor = () => {
 						<MenuButtonTextColor defaultTextColor={'#000000'} swatchColors={textColors} />
 						<MenuButtonHighlightColor
 							swatchColors={[
-								{ value: '#595959', label: 'Dark grey' },
-								{ value: '#dddddd', label: 'Light grey' },
-								{ value: '#ffa6a6', label: 'Light red' },
-								{ value: '#ffd699', label: 'Light orange' },
-								{ value: '#ffff00', label: 'Yellow' },
-								{ value: '#99cc99', label: 'Light green' },
-								{ value: '#90c6ff', label: 'Light blue' },
-								{ value: '#8085e9', label: 'Light purple' }
+								{ value: '#CFE1FD', label: 'Blue Tint' },
+								{ value: '#C6EDFB', label: 'Sky Tint' },
+								{ value: '#BAF3DB', label: 'Mint Tint' },
+								{ value: '#F5E989', label: 'Yellow Tint' },
+								{ value: '#FFD5D2', label: 'Coral Tint' },
+								{ value: '#EED7FC', label: 'Lavender Tint' }
 							]}
 						/>
 						<MenuDivider />
 
 						<MenuButtonOrderedList />
 						<MenuButtonBulletedList />
+						<MenuButtonIndent />
+						<MenuDivider />
+
+						<MenuButtonEditLink />
 					</MenuControlsContainer>
+				)}>
+				{() => (
+					<>
+						<LinkBubbleMenu />
+						<TableBubbleMenu />
+					</>
 				)}
-			/>
+			</RichTextEditor>
 
 			<Button onClick={() => console.info(rteRef.current?.editor?.getHTML())}>Log HTML</Button>
 		</div>
