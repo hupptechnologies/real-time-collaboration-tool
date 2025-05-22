@@ -58,3 +58,7 @@ export interface IAsyncThunkArg<T = unknown, P = unknown> {
 	data: T;
 	callback?: (_data: IAPIResponse<P>) => void;
 }
+
+export type TUseExtensionsOptions = {
+	placeholder?: string;
+};
