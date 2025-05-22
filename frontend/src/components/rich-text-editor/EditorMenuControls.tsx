@@ -8,9 +8,12 @@ import {
 	MenuButtonOrderedList,
 	MenuButtonRedo,
 	MenuButtonStrikethrough,
+	MenuButtonSubscript,
+	MenuButtonSuperscript,
 	MenuButtonTextColor,
 	MenuButtonUnderline,
 	MenuButtonUndo,
+	MenuButtonUnindent,
 	MenuControlsContainer,
 	MenuDivider,
 	MenuSelectHeading,
@@ -58,6 +61,8 @@ const EditorMenuControls = () => {
 			<MenuButtonItalic />
 			<MenuButtonUnderline />
 			<MenuButtonStrikethrough />
+			<MenuButtonSubscript />
+			<MenuButtonSuperscript />
 			<MenuDivider />
 
 			<MenuSelectTextAlign />
@@ -70,6 +75,7 @@ const EditorMenuControls = () => {
 			<MenuButtonOrderedList />
 			<MenuButtonBulletedList />
 			<MenuButtonIndent />
+			<MenuButtonUnindent />
 			<MenuDivider />
 
 			<MenuButtonEditLink />

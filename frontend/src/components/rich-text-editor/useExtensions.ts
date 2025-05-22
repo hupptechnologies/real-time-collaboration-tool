@@ -7,11 +7,21 @@ import TextStyle from '@tiptap/extension-text-style';
 import Highlight from '@tiptap/extension-highlight';
 import { Link } from '@tiptap/extension-link';
 import { Color } from '@tiptap/extension-color';
+import { Subscript } from '@tiptap/extension-subscript';
+import { Superscript } from '@tiptap/extension-superscript';
 import { LinkBubbleMenuHandler } from 'mui-tiptap';
 import { TUseExtensionsOptions } from '@/types';
 
 const CustomLinkExtension = Link.extend({
 	inclusive: false
+});
+
+const CustomSubscript = Subscript.extend({
+	excludes: 'superscript'
+});
+
+const CustomSuperscript = Superscript.extend({
+	excludes: 'subscript'
 });
 
 const useExtensions = ({ placeholder }: TUseExtensionsOptions): EditorOptions['extensions'] => {
@@ -31,6 +41,8 @@ const useExtensions = ({ placeholder }: TUseExtensionsOptions): EditorOptions['e
 				linkOnPaste: true,
 				openOnClick: false
 			}),
+			CustomSubscript,
+			CustomSuperscript,
 			LinkBubbleMenuHandler,
 			Color
 		];
