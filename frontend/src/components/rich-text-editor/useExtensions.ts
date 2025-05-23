@@ -1,12 +1,15 @@
 import { useMemo } from 'react';
 import type { EditorOptions } from '@tiptap/core';
-import { LinkBubbleMenuHandler } from 'mui-tiptap';
+import { LinkBubbleMenuHandler, TableImproved } from 'mui-tiptap';
 import { Color } from '@tiptap/extension-color';
 import { Highlight } from '@tiptap/extension-highlight';
 import { Link } from '@tiptap/extension-link';
 import { StarterKit } from '@tiptap/starter-kit';
 import { Subscript } from '@tiptap/extension-subscript';
 import { Superscript } from '@tiptap/extension-superscript';
+import { TableRow } from '@tiptap/extension-table-row';
+import { TableHeader } from '@tiptap/extension-table-header';
+import { TableCell } from '@tiptap/extension-table-cell';
 import { TaskList } from '@tiptap/extension-task-list';
 import { TaskItem } from '@tiptap/extension-task-item';
 import { TextAlign } from '@tiptap/extension-text-align';
@@ -40,6 +43,12 @@ const useExtensions = ({ placeholder }: TUseExtensionsOptions): EditorOptions['e
 			CustomSuperscript,
 			LinkBubbleMenuHandler,
 			Highlight.configure({ multicolor: true }),
+			TableImproved.configure({
+				resizable: true
+			}),
+			TableRow,
+			TableHeader,
+			TableCell,
 			TextStyle,
 			TaskList,
 			TaskItem.configure({

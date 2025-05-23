@@ -1,8 +1,10 @@
 import {
+	MenuButtonAddTable,
 	MenuButtonBlockquote,
 	MenuButtonBold,
 	MenuButtonBulletedList,
 	MenuButtonCode,
+	MenuButtonCodeBlock,
 	MenuButtonEditLink,
 	MenuButtonHighlightColor,
 	MenuButtonHorizontalRule,
@@ -10,6 +12,7 @@ import {
 	MenuButtonItalic,
 	MenuButtonOrderedList,
 	MenuButtonRedo,
+	MenuButtonRemoveFormatting,
 	MenuButtonStrikethrough,
 	MenuButtonSubscript,
 	MenuButtonSuperscript,
@@ -85,8 +88,11 @@ const EditorMenuControls = () => {
 			<MenuDivider />
 
 			<MenuButtonEditLink />
+			<MenuButtonAddTable />
 			<MenuButtonHorizontalRule tooltipLabel="Divider" />
 			<MenuButtonBlockquote tooltipLabel="Quote" />
+			<MenuButtonCodeBlock tooltipLabel="Code Snippet" />
+			<MenuButtonRemoveFormatting />
 		</MenuControlsContainer>
 	);
 };
