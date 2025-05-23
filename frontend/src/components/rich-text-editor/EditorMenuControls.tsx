@@ -1,8 +1,11 @@
 import {
+	MenuButtonBlockquote,
 	MenuButtonBold,
 	MenuButtonBulletedList,
+	MenuButtonCode,
 	MenuButtonEditLink,
 	MenuButtonHighlightColor,
+	MenuButtonHorizontalRule,
 	MenuButtonIndent,
 	MenuButtonItalic,
 	MenuButtonOrderedList,
@@ -62,6 +65,7 @@ const EditorMenuControls = () => {
 			<MenuButtonItalic />
 			<MenuButtonUnderline />
 			<MenuButtonStrikethrough />
+			<MenuButtonCode />
 			<MenuButtonSubscript />
 			<MenuButtonSuperscript />
 			<MenuDivider />
@@ -73,14 +77,16 @@ const EditorMenuControls = () => {
 			<MenuButtonHighlightColor swatchColors={MenuHighlightSwatchColor} />
 			<MenuDivider />
 
-			<MenuButtonOrderedList />
-			<MenuButtonBulletedList />
-			<MenuButtonTaskList />
+			<MenuButtonOrderedList tooltipLabel="Numbered list" />
+			<MenuButtonBulletedList tooltipLabel="Bullet list" />
+			<MenuButtonTaskList tooltipLabel="Action item[]" />
 			<MenuButtonIndent />
 			<MenuButtonUnindent />
 			<MenuDivider />
 
 			<MenuButtonEditLink />
+			<MenuButtonHorizontalRule tooltipLabel="Divider" />
+			<MenuButtonBlockquote tooltipLabel="Quote" />
 		</MenuControlsContainer>
 	);
 };
