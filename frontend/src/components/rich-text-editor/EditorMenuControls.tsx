@@ -10,6 +10,7 @@ import {
 	MenuButtonStrikethrough,
 	MenuButtonSubscript,
 	MenuButtonSuperscript,
+	MenuButtonTaskList,
 	MenuButtonTextColor,
 	MenuButtonUnderline,
 	MenuButtonUndo,
@@ -74,6 +75,7 @@ const EditorMenuControls = () => {
 
 			<MenuButtonOrderedList />
 			<MenuButtonBulletedList />
+			<MenuButtonTaskList />
 			<MenuButtonIndent />
 			<MenuButtonUnindent />
 			<MenuDivider />
