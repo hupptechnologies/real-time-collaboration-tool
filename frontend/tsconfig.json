@@ -23,7 +23,7 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
+      "@/*": ["*"],
       "@/assets/*": ["assets/*"],
       "@/components/*": ["components/*"],
       "@/context/*": ["context/*"],
@@ -31,8 +31,8 @@
       "@/redux/*": ["redux/*"],
       "@/services/*": ["services/*"],
       "@/utils/*": ["utils/*"],
-      "@/types": ["types/index"],
-      "@/styles": ["styles/index"]
+      "@/types/*": ["types/*"],
+      "@/styles/*": ["styles/*"]
     },
     "incremental": true
   },
@@ -43,7 +43,5 @@
     "**/*.ts",
     "**/*.tsx"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules", "build", "dist", ".next"]
 }

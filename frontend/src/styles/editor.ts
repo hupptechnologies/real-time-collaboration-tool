@@ -114,3 +114,40 @@ export const ColorDropDownBox = ({ color }: { color: string }): SxProps<Theme> =
 		border: '2px solid black'
 	}
 });
+
+export const EditorContainerBox: SxProps<Theme> = (_theme) => ({
+	width: '100%'
+});
+
+export const EditorWrapperBox: SxProps<Theme> = () => ({
+	width: '100%',
+	my: 2,
+	display: 'flex',
+	flexDirection: 'column',
+	gap: 2
+});
+
+export const ButtonBox: SxProps<Theme> = () => ({
+	display: 'flex',
+	justifyContent: 'flex-end'
+});
+
+export const RichEditorBox: SxProps<Theme> = (theme) => ({
+	width: '100%',
+	overflow: 'hidden',
+	'& .MuiRichTextEditor-root': {
+		overflow: 'auto',
+		[theme.breakpoints.down('sm')]: {
+			minHeight: '200px',
+			maxHeight: '50vh'
+		},
+		[theme.breakpoints.between('sm', 'md')]: {
+			minHeight: '300px',
+			maxHeight: '60vh'
+		},
+		[theme.breakpoints.up('md')]: {
+			minHeight: '400px',
+			maxHeight: '70vh'
+		}
+	}
+});
