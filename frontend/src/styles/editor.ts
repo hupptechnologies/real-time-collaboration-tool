@@ -1,5 +1,11 @@
 import { SxProps, Theme } from '@mui/material';
 
+// Common transition settings
+const transitions = {
+	duration: '0.3s',
+	easing: 'ease-in-out'
+};
+
 export const EditorMainBox: SxProps<Theme> = (theme) => ({
 	'.custom-editor': {
 		minHeight: '156px',
@@ -88,5 +94,14 @@ export const RichEditorBox: SxProps<Theme> = (theme) => ({
 			minHeight: '400px',
 			maxHeight: '70vh'
 		}
+	},
+	'& .ProseMirror': {
+		transition: `all ${transitions.duration} ${transitions.easing}`
+	},
+	'& .MuiButton-root': {
+		transition: `all ${transitions.duration} ${transitions.easing}`
+	},
+	'& .MuiBox-root': {
+		transition: `all ${transitions.duration} ${transitions.easing}`
 	}
 });
