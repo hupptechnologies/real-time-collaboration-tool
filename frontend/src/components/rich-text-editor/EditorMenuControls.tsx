@@ -24,8 +24,10 @@ import {
 	MenuControlsContainer,
 	MenuDivider,
 	MenuSelectHeading,
-	MenuSelectTextAlign
+	MenuSelectTextAlign,
+	useRichTextEditorContext
 } from 'mui-tiptap';
+import MenuButtonEmoji from './MenuButtonEmoji';
 
 const MenuHighlightSwatchColor = [
 	{ value: '#CFE1FD', label: 'Blue Tint' },
@@ -55,6 +57,8 @@ const MenuTextSwatchColors = [
 ];
 
 const EditorMenuControls = () => {
+	const editor = useRichTextEditorContext();
+
 	return (
 		<MenuControlsContainer>
 			<MenuButtonUndo />
@@ -87,6 +91,7 @@ const EditorMenuControls = () => {
 			<MenuButtonUnindent />
 			<MenuDivider />
 
+			<MenuButtonEmoji editor={editor} />
 			<MenuButtonEditLink />
 			<MenuButtonAddTable />
 			<MenuButtonHorizontalRule tooltipLabel="Divider" />
