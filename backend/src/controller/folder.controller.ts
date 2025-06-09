@@ -134,6 +134,7 @@ const update = async (
 		const existingFolderName = await Folder.findOne({
 			where: {
 				name: trimmedName,
+				spaceId: existingFolder.dataValues.spaceId,
 				userId: userId,
 				id: { [Op.ne]: id },
 			},
