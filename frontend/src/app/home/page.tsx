@@ -10,8 +10,7 @@ import {
 	Avatar,
 	Tooltip,
 	IconButton,
-	TextField,
-	useTheme
+	TextField
 } from '@mui/material';
 import { Edit, Add, AssignmentOutlined, Delete, Check } from '@mui/icons-material';
 import ConfirmModal from '@/components/ConfirmModal';
@@ -30,12 +29,19 @@ import {
 } from '@/redux/space';
 import socket from '@/utils/socket';
 import { IAPIResponse, ISpace } from '@/types';
-import { SpaceCard } from '@/styles';
+import {
+	SpaceCard,
+	SpaceAvatar,
+	SpaceTitle,
+	SpaceDescription,
+	SpaceActionsContainer,
+	SpaceEditButton,
+	SpaceDeleteButton
+} from '@/styles';
 
 const SpacePage = () => {
 	const dispatch = useAppDispatch();
 	const { showToaster } = useToaster();
-	const theme = useTheme();
 	const { spaces, loading } = useAppSelector((state: RootState) => state.space);
 	const [spaceData, setSpaceData] = useState<ISpace[]>([]);
 	const [open, setOpen] = useState<boolean>(false);
@@ -130,40 +136,54 @@ const SpacePage = () => {
 				{spaceData.map((space: ISpace) => (
 					<Grid2 key={space.id} size={{ xs: 12, sm: 6, md: 3 }}>
 						<Card sx={SpaceCard}>
-							<CardContent>
-								<Box display="flex" alignItems="center" gap={2}>
-									<Avatar sx={{ backgroundColor: theme.palette.primary.main }} variant="rounded">
-										<AssignmentOutlined />
-									</Avatar>
-									<Box flex={1}>
-										{editId === space.id ? (
-											<TextField
-												value={editValue}
-												onChange={(e) => setEditValue(e.target.value)}
-												onBlur={() => handleSaveEdit(space)}
-												onKeyDown={(e) => e.key === 'Enter' && handleSaveEdit(space)}
-												autoFocus
-												fullWidth
-												variant="standard"
-											/>
-										) : (
-											<Typography variant="h6" fontWeight="bold">
+							<CardContent sx={{ p: 3 }}>
+								<Box display="flex" flexDirection="column" gap={2}>
+									<Box display="flex" alignItems="center" gap={2}>
+										<Avatar sx={SpaceAvatar} variant="rounded">
+											<AssignmentOutlined />
+										</Avatar>
+										<Box flex={1}>
+											{editId === space.id ? (
+												<TextField
+													value={editValue}
+													onChange={(e) => setEditValue(e.target.value)}
+													onBlur={() => handleSaveEdit(space)}
+													onKeyDown={(e) => e.key === 'Enter' && handleSaveEdit(space)}
+													autoFocus
+													fullWidth
+													variant="standard"
+												/>
+											) : (
 												<Link
-													style={{ color: theme.palette.text.primary, textDecoration: 'none' }}
-													href={`/home/${space.id}`}>
-													{space.name}
+													href={`/home/${space.id}`}
+													style={{
+														textDecoration: 'none',
+														color: 'inherit'
+													}}>
+													<Typography variant="h6" sx={SpaceTitle}>
+														{space.name}
+													</Typography>
+													<Typography variant="body2" sx={SpaceDescription}>
+														{space.description || 'No description'}
+													</Typography>
 												</Link>
-											</Typography>
-										)}
+											)}
+										</Box>
 									</Box>
-									<Box>
+									<Box className="space-actions" sx={SpaceActionsContainer}>
 										<Tooltip title="Edit">
-											<IconButton onClick={() => handleEditClick(space)}>
+											<IconButton
+												size="small"
+												onClick={() => handleEditClick(space)}
+												sx={SpaceEditButton}>
 												{editId === space.id ? <Check /> : <Edit />}
 											</IconButton>
 										</Tooltip>
 										<Tooltip title="Delete">
-											<IconButton onClick={() => handleDeleteClick(space)}>
+											<IconButton
+												size="small"
+												onClick={() => handleDeleteClick(space)}
+												sx={SpaceDeleteButton}>
 												<Delete />
 											</IconButton>
 										</Tooltip>

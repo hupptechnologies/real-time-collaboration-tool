@@ -54,14 +54,17 @@ export const EmptyStateContainer: SxProps<Theme> = {
 };
 
 export const EmptyStateIcon: SxProps<Theme> = {
-	width: '120px',
-	height: '120px',
+	width: '140px',
+	height: '140px',
 	display: 'flex',
 	alignItems: 'center',
 	justifyContent: 'center',
-	borderRadius: '50%',
-	backgroundColor: 'action.hover',
-	mb: 2
+	mb: 3,
+	'& svg': {
+		fontSize: '140px',
+		color: (theme) => theme.palette.grey[200],
+		opacity: 1
+	}
 };
 
 export const EmptyStateTitle: SxProps<Theme> = {

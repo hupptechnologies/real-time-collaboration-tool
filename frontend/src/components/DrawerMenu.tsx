@@ -21,7 +21,8 @@ import {
 	KeyboardArrowDown,
 	KeyboardArrowRight,
 	MenuBook,
-	PostAddOutlined
+	PostAddOutlined,
+	FolderOutlined
 } from '@mui/icons-material';
 import ConfirmModal from '@/components/ConfirmModal';
 import FolderListItem from '@/components/home/FolderListItem';
@@ -294,7 +295,7 @@ const DrawerMenu = () => {
 								) : (
 									<Box sx={EmptyStateContainer}>
 										<Box sx={EmptyStateIcon}>
-											<FolderCopyOutlined sx={{ fontSize: '60px', opacity: 0.6 }} />
+											<FolderOutlined />
 										</Box>
 										<Typography variant="h6" sx={EmptyStateTitle}>
 											No pages or folders
