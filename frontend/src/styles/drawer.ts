@@ -42,3 +42,36 @@ export const SpaceNameBox: SxProps<Theme> = () => ({
 	gap: 1,
 	paddingBottom: 2
 });
+
+export const EmptyStateContainer: SxProps<Theme> = {
+	display: 'flex',
+	flexDirection: 'column',
+	alignItems: 'center',
+	justifyContent: 'center',
+	padding: 3,
+	height: '50vh',
+	color: 'text.secondary'
+};
+
+export const EmptyStateIcon: SxProps<Theme> = {
+	width: '120px',
+	height: '120px',
+	display: 'flex',
+	alignItems: 'center',
+	justifyContent: 'center',
+	borderRadius: '50%',
+	backgroundColor: 'action.hover',
+	mb: 2
+};
+
+export const EmptyStateTitle: SxProps<Theme> = {
+	mb: 1,
+	fontWeight: 500,
+	color: 'text.primary'
+};
+
+export const EmptyStateDescription: SxProps<Theme> = {
+	mb: 3,
+	textAlign: 'center',
+	maxWidth: '280px'
+};

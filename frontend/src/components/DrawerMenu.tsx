@@ -40,7 +40,11 @@ import {
 	ContentIconInlineBox,
 	createBtn,
 	DrawerMenuStyle,
-	SpaceNameBox
+	SpaceNameBox,
+	EmptyStateContainer,
+	EmptyStateIcon,
+	EmptyStateTitle,
+	EmptyStateDescription
 } from '@/styles';
 import { IAPIResponse, IContextMenu, IDocument, IFolder, TMenuOption } from '@/types';
 import { generateDefaultFolderName, restructureFolders } from '@/utils/common';
@@ -263,28 +267,44 @@ const DrawerMenu = () => {
 								</Tooltip>
 							</Box>
 						</Box>
-						{openContent && folderData?.length > 0 && (
-							<List sx={{ padding: 0 }}>
-								{folderData.map((folder) => (
-									<FolderListItem
-										key={folder.id}
-										folder={folder}
-										editingFolderId={editingFolderId}
-										menuItem={contextMenu?.item}
-										openDocument={openDocument}
-										openFolder={openFolders}
-										toggleFolder={toggleFolder}
-										handleContextMenu={handleContextMenu}
-										onRenameFolder={handleRenameFolder}
-									/>
-								))}
-								<ListItemButton
-									key={'button'}
-									onClick={(e) => handleContextMenu(e, null, 'new')}
-									sx={createBtn}>
-									<Add /> Create
-								</ListItemButton>
-							</List>
+						{openContent && (
+							<>
+								{folderData?.length > 0 ? (
+									<List sx={{ padding: 0 }}>
+										{folderData.map((folder) => (
+											<FolderListItem
+												key={folder.id}
+												folder={folder}
+												editingFolderId={editingFolderId}
+												menuItem={contextMenu?.item}
+												openDocument={openDocument}
+												openFolder={openFolders}
+												toggleFolder={toggleFolder}
+												handleContextMenu={handleContextMenu}
+												onRenameFolder={handleRenameFolder}
+											/>
+										))}
+										<ListItemButton
+											key={'button'}
+											onClick={(e) => handleContextMenu(e, null, 'new')}
+											sx={createBtn}>
+											<Add /> Create
+										</ListItemButton>
+									</List>
+								) : (
+									<Box sx={EmptyStateContainer}>
+										<Box sx={EmptyStateIcon}>
+											<FolderCopyOutlined sx={{ fontSize: '60px', opacity: 0.6 }} />
+										</Box>
+										<Typography variant="h6" sx={EmptyStateTitle}>
+											No pages or folders
+										</Typography>
+										<Typography variant="body2" sx={EmptyStateDescription}>
+											Create a page or folder to start organizing your space
+										</Typography>
+									</Box>
+								)}
+							</>
 						)}
 					</>
 				)}
