@@ -204,7 +204,7 @@ const DrawerMenu = () => {
 
 	const handleDeleteCallback = (data: IAPIResponse<IFolder>) => {
 		if (data.success) {
-			setFolderData((prev) => prev.filter((f) => f.id !== deleteItem?.id));
+			getAllFolder();
 			setIsDeleted(false);
 			setDeleteItem(null);
 			showToaster(data.message || 'Deleted', 'success');

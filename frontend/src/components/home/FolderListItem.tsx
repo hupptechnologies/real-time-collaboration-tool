@@ -17,8 +17,14 @@ import {
 	TextField,
 	Tooltip
 } from '@mui/material';
-import { IFolderListItemProps } from '@/types';
-import { AddIconButton, AddIconContentBoxHover, FolderMainBox } from '@/styles';
+import { IFolder, IFolderListItemProps } from '@/types';
+import {
+	AddIconButton,
+	AddIconContentBoxHover,
+	EditFolderListItemText,
+	FolderListItemText,
+	FolderMainBox
+} from '@/styles';
 
 const FolderListItem: React.FC<IFolderListItemProps> = ({
 	folder,
@@ -57,7 +63,12 @@ const FolderListItem: React.FC<IFolderListItemProps> = ({
 					{editingFolderId === folder.id ? (
 						<TextField
 							autoFocus
-							sx={{ width: '120px' }}
+							variant="outlined"
+							size="small"
+							sx={EditFolderListItemText}
+							inputProps={{
+								maxLength: 50
+							}}
 							type="text"
 							defaultValue={folder.name}
 							onBlur={(e) => handleRename(e.target.value)}
@@ -68,19 +79,24 @@ const FolderListItem: React.FC<IFolderListItemProps> = ({
 							}}
 						/>
 					) : (
-						<ListItemText primary={folder.name} />
+						<Tooltip title={folder.name.length > 10 ? folder.name : ''} placement="top">
+							<ListItemText
+								primary={folder.name}
+								sx={FolderListItemText(isHovered, menuItem as IFolder, folder)}
+							/>
+						</Tooltip>
 					)}
 				</ListItemButton>
-				{(isHovered || menuItem?.id === folder.id) && (
+				{(isHovered || menuItem?.id === folder.id) && editingFolderId !== folder.id && (
 					<Box sx={AddIconContentBoxHover}>
-						<Tooltip title="create" placement="top">
+						<Tooltip title="Create" placement="top">
 							<ListItemButton
 								sx={AddIconButton}
 								onClick={(e) => handleContextMenu(e, folder, 'new')}>
 								<Add fontSize="small" />
 							</ListItemButton>
 						</Tooltip>
-						<Tooltip title="more" placement="top">
+						<Tooltip title="More actions" placement="top">
 							<ListItemButton
 								sx={AddIconButton}
 								onClick={(e) => handleContextMenu(e, folder, 'more')}>
@@ -94,7 +110,7 @@ const FolderListItem: React.FC<IFolderListItemProps> = ({
 				<List component="div" disablePadding>
 					{folder.folders?.length === 0 && (
 						<Box sx={{ pl: level + 3, fontSize: '14px' }} component="span">
-							There’s nothing in this folder yet.
+							There&apos;s nothing in this folder yet.
 						</Box>
 					)}
 					{folder.documents?.map((doc) => (

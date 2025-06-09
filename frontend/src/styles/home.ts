@@ -1,3 +1,4 @@
+import { IFolder } from '@/types';
 import { SxProps, Theme } from '@mui/material';
 
 export const SpaceCard: SxProps<Theme> = {
@@ -160,4 +161,27 @@ export const createBtn: SxProps<Theme> = () => ({
 	alignItems: 'center',
 	justifyContent: 'flex-start',
 	width: '100%'
+});
+
+export const FolderListItemText = (isHovered: boolean, menuItem: IFolder, folder: IFolder) => ({
+	'& .MuiListItemText-primary': {
+		textOverflow: isHovered || menuItem?.id === folder.id ? 'ellipsis' : 'clip',
+		overflow: 'hidden',
+		whiteSpace: 'nowrap',
+		maxWidth: isHovered || menuItem?.id === folder.id ? '120px' : '130px',
+		transition: 'text-overflow 0.2s ease'
+	}
+});
+
+export const EditFolderListItemText: SxProps<Theme> = () => ({
+	width: '180px',
+	'& .MuiOutlinedInput-root': {
+		height: '32px',
+		fontSize: '14px',
+		backgroundColor: 'background.paper',
+		'&.Mui-focused fieldset': {
+			borderColor: 'primary.main',
+			borderWidth: '1px'
+		}
+	}
 });
