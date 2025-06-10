@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
 	Add,
 	FiberManualRecord,
-	Folder,
+	FolderOutlined,
 	KeyboardArrowDown,
 	KeyboardArrowRight,
 	MoreHoriz
@@ -38,6 +38,7 @@ const FolderListItem: React.FC<IFolderListItemProps> = ({
 	level = 0
 }: IFolderListItemProps) => {
 	const [isHovered, setIsHovered] = useState(false);
+	const [activeButtonType, setActiveButtonType] = useState<'new' | 'more' | null>(null);
 
 	const isOpen = openFolder[folder.id] || false;
 	const handleRename = (value: string) => {
@@ -47,6 +48,17 @@ const FolderListItem: React.FC<IFolderListItemProps> = ({
 		}
 	};
 
+	const handleButtonClick = (e: React.MouseEvent<HTMLDivElement>, type: 'new' | 'more') => {
+		setActiveButtonType(type);
+		handleContextMenu(e, folder, type);
+	};
+
+	useEffect(() => {
+		if (!menuItem) {
+			setActiveButtonType(null);
+		}
+	}, [menuItem]);
+
 	return (
 		<Box>
 			<Box
@@ -54,11 +66,11 @@ const FolderListItem: React.FC<IFolderListItemProps> = ({
 				onMouseEnter={() => setIsHovered(true)}
 				onMouseLeave={() => setIsHovered(false)}>
 				<ListItemButton
-					sx={{ pl: level, gridColumn: 1, gridRow: 1 }}
+					sx={{ gridColumn: 1, gridRow: 1, padding: '0 4px 0 0', pl: level }}
 					onClick={() => toggleFolder(folder)}>
 					{isOpen ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
 					<ListItemIcon sx={{ minWidth: '36px' }}>
-						<Folder />
+						<FolderOutlined />
 					</ListItemIcon>
 					{editingFolderId === folder.id ? (
 						<TextField
@@ -92,14 +104,18 @@ const FolderListItem: React.FC<IFolderListItemProps> = ({
 						<Tooltip title="Create" placement="top">
 							<ListItemButton
 								sx={AddIconButton}
-								onClick={(e) => handleContextMenu(e, folder, 'new')}>
+								data-type="new"
+								data-active={menuItem?.id === folder.id && activeButtonType === 'new'}
+								onClick={(e) => handleButtonClick(e, 'new')}>
 								<Add fontSize="small" />
 							</ListItemButton>
 						</Tooltip>
 						<Tooltip title="More actions" placement="top">
 							<ListItemButton
 								sx={AddIconButton}
-								onClick={(e) => handleContextMenu(e, folder, 'more')}>
+								data-type="more"
+								data-active={menuItem?.id === folder.id && activeButtonType === 'more'}
+								onClick={(e) => handleButtonClick(e, 'more')}>
 								<MoreHoriz fontSize="small" />
 							</ListItemButton>
 						</Tooltip>

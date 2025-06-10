@@ -93,6 +93,7 @@ export const ContentGrid: SxProps<Theme> = () => ({
 
 export const ContentButton: SxProps<Theme> = () => ({
 	paddingLeft: 0,
+	padding: '0 4px 0 0',
 	height: '36px',
 	cursor: 'pointer',
 	display: 'flex',
@@ -151,16 +152,25 @@ export const AddIconButton: SxProps<Theme> = (theme) => ({
 	':hover': {
 		backgroundColor: theme.palette.mode === 'dark' ? '#ffffff14' : '#0000000a',
 		textDecoration: 'none'
+	},
+	'&[data-active="true"]': {
+		'&[data-type="new"], &[data-type="more"]': {
+			border: '1px solid',
+			borderColor: theme.palette.primary.main,
+			borderRadius: 1,
+			backgroundColor: theme.palette.mode === 'dark' ? '#ffffff14' : '#0000000a'
+		}
 	}
 });
 
 export const createBtn: SxProps<Theme> = () => ({
-	paddingLeft: 0,
+	padding: '0 4px 0 0',
 	cursor: 'pointer',
 	display: 'flex',
 	alignItems: 'center',
 	justifyContent: 'flex-start',
-	width: '100%'
+	width: '100%',
+	height: '32px'
 });
 
 export const FolderListItemText = (isHovered: boolean, menuItem: IFolder, folder: IFolder) => ({

@@ -124,7 +124,7 @@ const DrawerMenu = () => {
 		const rect = e.currentTarget.getBoundingClientRect();
 		setContextMenu({
 			mouseX: rect.left,
-			mouseY: rect.bottom,
+			mouseY: rect.bottom + 10,
 			type: type,
 			target: 'folder',
 			item
@@ -262,6 +262,8 @@ const DrawerMenu = () => {
 								<Tooltip title="create" placement="top">
 									<ListItemButton
 										sx={AddIconButton}
+										data-type="new"
+										data-active={contextMenu?.type === 'new' && !contextMenu?.item}
 										onClick={(e) => handleContextMenu(e, null, 'new')}>
 										<Add />
 									</ListItemButton>
