@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import {
 	Add,
 	FiberManualRecord,
+	FolderOpen,
 	FolderOutlined,
 	KeyboardArrowDown,
 	KeyboardArrowRight,
@@ -70,7 +71,7 @@ const FolderListItem: React.FC<IFolderListItemProps> = ({
 					onClick={() => toggleFolder(folder)}>
 					{isOpen ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
 					<ListItemIcon sx={{ minWidth: '36px' }}>
-						<FolderOutlined />
+						{isOpen ? <FolderOpen /> : <FolderOutlined />}
 					</ListItemIcon>
 					{editingFolderId === folder.id ? (
 						<TextField
