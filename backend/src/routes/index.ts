@@ -4,6 +4,7 @@ import authRoutes from './auth.route';
 import spaceRoutes from './space.route';
 import users from './users.route';
 import folder from './folder.route';
+import page from './page.route';
 
 const routes = async (
 	fastify: FastifyInstance<Server, IncomingMessage, ServerResponse>,
@@ -19,6 +20,9 @@ const routes = async (
 	});
 	fastify.register(folder, {
 		prefix: '/api/folder',
+	});
+	fastify.register(page, {
+		prefix: '/api/page',
 	});
 };
 
