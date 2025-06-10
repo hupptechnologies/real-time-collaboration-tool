@@ -56,5 +56,8 @@ module.exports = {
 			tableName: 'users',
 			schema: 'admin',
 		});
+		await queryInterface.sequelize.query(
+      `DROP TYPE IF EXISTS admin."enum_users_role";`
+    );
 	},
 };

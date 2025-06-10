@@ -3,10 +3,10 @@ import {
 	Model,
 	Column,
 	ForeignKey,
-	Default,
 	Unique,
 	HasMany,
 	BelongsTo,
+	DataType,
 } from 'sequelize-typescript';
 import { IFolder, TFloder } from '../interface';
 import Spaces from './spaces.model';
@@ -20,31 +20,48 @@ import Users from './users.model';
 })
 export default class Folder extends Model<IFolder, TFloder> {
 	@Unique
-	@Column
+	@Column({
+		type: DataType.STRING(255),
+		allowNull: false,
+	})
 	declare name: string;
 
-	@Column
+	@Column({
+		type: DataType.STRING(1024),
+		allowNull: true,
+	})
 	declare description: string;
 
 	@ForeignKey(() => Folder)
-	@Default(null)
-	@Column
-	declare parentFolderId: number;
+	@Column({
+		type: DataType.INTEGER,
+		allowNull: true,
+	})
+	declare parentFolderId: number | null;
 
 	@ForeignKey(() => Spaces)
-	@Column
+	@Column({
+		type: DataType.INTEGER,
+		allowNull: false,
+	})
 	declare spaceId: number;
 
 	@ForeignKey(() => Users)
-	@Column
+	@Column({
+		type: DataType.INTEGER,
+		allowNull: false,
+	})
 	declare userId: number;
 
 	@HasMany(() => Folder)
-	declare childFolder: Folder;
+	declare childFolder: Folder[];
 
 	@BelongsTo(() => Spaces, {
 		foreignKey: 'spaceId',
 		as: 'spaces',
 	})
 	declare spaces: Spaces;
+
+	@BelongsTo(() => Users)
+	declare user: Users;
 }
