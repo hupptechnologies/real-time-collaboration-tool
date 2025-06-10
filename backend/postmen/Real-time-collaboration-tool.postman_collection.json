@@ -87,6 +87,243 @@
 			]
 		},
 		{
+			"name": "Folder",
+			"item": [
+				{
+					"name": "Create Folder",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n    \"name\": \"New Folder 2\", //required\n    \"spaceId\": 6, //required\n    \"parentFolderId\": null, //required\n    \"description\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASEPATH}}/api/folder/new",
+							"host": [
+								"{{BASEPATH}}"
+							],
+							"path": [
+								"api",
+								"folder",
+								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Folder",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASEPATH}}/api/folder/list",
+							"host": [
+								"{{BASEPATH}}"
+							],
+							"path": [
+								"api",
+								"folder",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Folder By Id",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test\",\n    \"description\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASEPATH}}/api/folder/{{id}}",
+							"host": [
+								"{{BASEPATH}}"
+							],
+							"path": [
+								"api",
+								"folder",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Folder By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASEPATH}}/api/folder/{{id}}",
+							"host": [
+								"{{BASEPATH}}"
+							],
+							"path": [
+								"api",
+								"folder",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Folder By Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASEPATH}}/api/folder/{{id}}",
+							"host": [
+								"{{BASEPATH}}"
+							],
+							"path": [
+								"api",
+								"folder",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Pages",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"\",           // Required\n    \"content\": \"\",        // Required\n    \"spaceId\":  13,       // Required\n    \"status\": \"draft\",   // Optional:  'draft', 'published', 'archived'\n    \"folderId\": null,    // Optional\n    \"parentId\": null    // Optional\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASEPATH}}/api/page/new",
+							"host": [
+								"{{BASEPATH}}"
+							],
+							"path": [
+								"api",
+								"page",
+								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"\",           // Optional\n    \"content\": \"\",        // Optional\n    \"status\": \"draft\",   // Optional:  'draft', 'published', 'archived'\n    \"folderId\": null,    // Optional\n    \"parentId\": null    // Optional\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASEPATH}}/api/page/{{id}}",
+							"host": [
+								"{{BASEPATH}}"
+							],
+							"path": [
+								"api",
+								"page",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASEPATH}}/api/page/{{id}}",
+							"host": [
+								"{{BASEPATH}}"
+							],
+							"path": [
+								"api",
+								"page",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get One",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASEPATH}}/api/page/{{id}}",
+							"host": [
+								"{{BASEPATH}}"
+							],
+							"path": [
+								"api",
+								"page",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASEPATH}}/api/page/all/13",
+							"host": [
+								"{{BASEPATH}}"
+							],
+							"path": [
+								"api",
+								"page",
+								"all",
+								"13"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Space",
 			"item": [
 				{
