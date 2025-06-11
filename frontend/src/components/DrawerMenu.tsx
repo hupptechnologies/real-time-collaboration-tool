@@ -33,6 +33,7 @@ import { RootState } from '@/redux/store';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { fetchSingleSpaceAction } from '@/redux/space';
 import { createFolderAction, deleteFolderAction, updateFolderAction } from '@/redux/folder';
+import { createPageAction } from '@/redux/page';
 import {
 	AddIconButton,
 	AddIconContentBox,
@@ -54,9 +55,10 @@ import {
 	IContextMenu,
 	IFolder,
 	IPage,
-	IDrawerMenuProps
+	IDrawerMenuProps,
+	IPageCreationAttribute
 } from '@/types';
-import { generateDefaultFolderName, restructureFolders } from '@/utils/common';
+import { exampleContent, generateDefaultFolderName, restructureFolders } from '@/utils/common';
 
 const DrawerMenu = ({ selectedItem, setSelectedItem }: IDrawerMenuProps) => {
 	const params = useParams();
@@ -128,6 +130,28 @@ const DrawerMenu = ({ selectedItem, setSelectedItem }: IDrawerMenuProps) => {
 		});
 	};
 
+	const handleNewPage = (): void => {
+		const newPage: IPageCreationAttribute = {
+			title: '',
+			content: exampleContent,
+			status: 'draft',
+			spaceId: Number(spaceId)
+		};
+		if (contextMenu?.target === 'folder') {
+			if (contextMenu?.item) {
+				newPage.folderId = contextMenu?.item?.id;
+				newPage.parentId = null;
+			} else {
+				newPage.parentId = null;
+				newPage.folderId = null;
+			}
+		} else {
+			newPage.parentId = contextMenu?.item?.id;
+			newPage.folderId = null;
+		}
+		dispatch(createPageAction({ data: newPage, callback: handleCallBack }));
+	};
+
 	const handleNewFolder = (): void => {
 		const newName = generateDefaultFolderName(space.folders || []);
 		dispatch(
@@ -143,7 +167,7 @@ const DrawerMenu = ({ selectedItem, setSelectedItem }: IDrawerMenuProps) => {
 		);
 	};
 
-	const handleCallBack = (data: IAPIResponse<IFolder>) => {
+	const handleCallBack = (data: IAPIResponse<IFolder | IPage>) => {
 		if (data.success) {
 			getAllFolder();
 			if (contextMenu?.item) {
@@ -338,7 +362,8 @@ const DrawerMenu = ({ selectedItem, setSelectedItem }: IDrawerMenuProps) => {
 						? [
 								{
 									label: 'Page',
-									icon: <PostAddOutlined fontSize="small" />
+									icon: <PostAddOutlined fontSize="small" />,
+									handleOnclick: handleNewPage
 								},
 								...(contextMenu?.target === 'folder'
 									? [

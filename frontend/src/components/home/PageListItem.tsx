@@ -58,7 +58,7 @@ const PageListItem = ({
 					<Tooltip title={page.title.length > 8 ? page.title : ''} placement="top">
 						<Box sx={{ display: 'flex', alignItems: 'center' }}>
 							<ListItemText
-								primary={page.title}
+								primary={page.title || 'Untitled'}
 								sx={ListItemTextStyle(isHovered, menuItem?.id === page.id)}
 							/>
 							{page.status === 'draft' && (

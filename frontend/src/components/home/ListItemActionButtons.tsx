@@ -2,16 +2,16 @@ import { useEffect, useState } from 'react';
 import { Add, MoreHoriz } from '@mui/icons-material';
 import { Box, ListItemButton, Tooltip } from '@mui/material';
 import { AddIconButton, AddIconContentBoxHover } from '@/styles';
-import { IListItemActionButtonsProps, IPage } from '@/types';
+import { IListItemActionButtonsProps, IPage, TMenuOption } from '@/types';
 
 const ListItemActionButtons: React.FC<IListItemActionButtonsProps> = ({
 	option,
 	menuItem,
 	handleContextMenu
 }: IListItemActionButtonsProps) => {
-	const [activeButtonType, setActiveButtonType] = useState<'new' | 'more' | null>(null);
+	const [activeButtonType, setActiveButtonType] = useState<TMenuOption | null>(null);
 
-	const handleButtonClick = (e: React.MouseEvent<HTMLDivElement>, type: 'new' | 'more') => {
+	const handleButtonClick = (e: React.MouseEvent<HTMLDivElement>, type: TMenuOption) => {
 		setActiveButtonType(type);
 		handleContextMenu(e, option, type);
 	};
