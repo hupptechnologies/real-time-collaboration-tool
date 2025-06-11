@@ -1,10 +1,11 @@
 import React from 'react';
-import { IFolder } from './folder';
+import { IFolder, IPage } from './folder';
 export interface ISpace {
 	id?: number;
 	name?: string;
 	description?: string;
 	folders?: IFolder[];
+	pages?: IPage[];
 }
 
 export interface ISpaceState {
@@ -23,9 +24,4 @@ export interface IDrawerLeftProps {
 	name: string;
 	description: string;
 	data: IFolder[];
-}
-
-export interface IDocument {
-	name: string;
-	description: string;
 }

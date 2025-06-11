@@ -20,13 +20,14 @@ import {
 	FolderCopyOutlined,
 	KeyboardArrowDown,
 	KeyboardArrowRight,
-	MenuBook,
 	PostAddOutlined,
-	FolderOutlined
+	FolderOutlined,
+	SpaceDashboardOutlined
 } from '@mui/icons-material';
 import ConfirmModal from '@/components/ConfirmModal';
 import FolderListItem from '@/components/home/FolderListItem';
 import NewContextMenu from '@/components/home/NewContextMenu';
+import PageListItem from '@/components/home/PageListItem';
 import { useToaster } from '@/context/ToasterContext';
 import { RootState } from '@/redux/store';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
@@ -47,10 +48,17 @@ import {
 	EmptyStateTitle,
 	EmptyStateDescription
 } from '@/styles';
-import { IAPIResponse, IContextMenu, IDocument, IFolder, TMenuOption } from '@/types';
+import {
+	THandleContextMenuFn,
+	IAPIResponse,
+	IContextMenu,
+	IFolder,
+	IPage,
+	IDrawerMenuProps
+} from '@/types';
 import { generateDefaultFolderName, restructureFolders } from '@/utils/common';
 
-const DrawerMenu = () => {
+const DrawerMenu = ({ selectedItem, setSelectedItem }: IDrawerMenuProps) => {
 	const params = useParams();
 	const dispatch = useAppDispatch();
 	const { showToaster } = useToaster();
@@ -65,11 +73,6 @@ const DrawerMenu = () => {
 	const [isDeleted, setIsDeleted] = useState<boolean>(false);
 	const [deleteItem, setDeleteItem] = useState<IFolder | null>(null);
 	const [contextMenu, setContextMenu] = useState<IContextMenu | undefined>(undefined);
-	const [selectedItem, setSelectedItem] = useState<{
-		type: 'folder' | 'document' | 'default';
-		name: string;
-		description: string;
-	}>({ type: 'default', name: space.name as string, description: space.description as string });
 
 	useEffect(() => {
 		if (spaceId) {
@@ -79,7 +82,6 @@ const DrawerMenu = () => {
 
 	useEffect(() => {
 		if (Array.isArray(space?.folders) && space?.folders.length > 0) {
-			restructureFolders(space.folders);
 			setFolderData(restructureFolders(space.folders));
 		} else {
 			setFolderData([]);
@@ -101,8 +103,7 @@ const DrawerMenu = () => {
 	const toggleMainDocument = (): void => {
 		setSelectedItem({
 			type: 'default',
-			name: space.name as string,
-			description: space.description as string
+			item: space
 		});
 	};
 
@@ -110,23 +111,19 @@ const DrawerMenu = () => {
 		setOpenFolders((prev) => ({ ...prev, [folder.id]: !prev[folder.id] }));
 	};
 
-	const openDocument = (doc: IDocument): void => {
-		setSelectedItem({ type: 'document', name: doc.name, description: doc.description });
+	const openPage = (page: IPage): void => {
+		setSelectedItem({ type: 'page', item: page });
 	};
 
 	const handleCloseContextMenu = (): void => setContextMenu(undefined);
 
-	const handleContextMenu = (
-		e: React.MouseEvent<HTMLDivElement>,
-		item: IFolder | null,
-		type: TMenuOption
-	): void => {
+	const handleContextMenu: THandleContextMenuFn = (e, item, type): void => {
 		const rect = e.currentTarget.getBoundingClientRect();
 		setContextMenu({
 			mouseX: rect.left,
 			mouseY: rect.bottom + 10,
 			type: type,
-			target: 'folder',
+			target: (item as IPage)?.title ? 'page' : 'folder',
 			item
 		});
 	};
@@ -198,7 +195,7 @@ const DrawerMenu = () => {
 
 	const handleDeleteFolder = () => {
 		setIsDeleted(true);
-		setDeleteItem(contextMenu?.item || null);
+		setDeleteItem(contextMenu?.item as IFolder | null);
 		setContextMenu(undefined);
 	};
 
@@ -232,7 +229,7 @@ const DrawerMenu = () => {
 					<>
 						<Toolbar />
 						<Box onClick={toggleMainDocument} sx={SpaceNameBox}>
-							<MenuBook fontSize="large" />
+							<SpaceDashboardOutlined fontSize="medium" />
 							<Typography variant="h6" fontWeight="bold">
 								{space.name}
 							</Typography>
@@ -272,6 +269,20 @@ const DrawerMenu = () => {
 						</Box>
 						{openContent && (
 							<>
+								{space.pages && space.pages.length > 0 ? (
+									<List sx={{ padding: 0 }}>
+										{space.pages.map((page) => (
+											<PageListItem
+												key={page.id}
+												page={page}
+												openPage={openPage}
+												level={0}
+												menuItem={contextMenu?.item as IPage}
+												handleContextMenu={handleContextMenu}
+											/>
+										))}
+									</List>
+								) : null}
 								{folderData?.length > 0 ? (
 									<List sx={{ padding: 0 }}>
 										{folderData.map((folder) => (
@@ -280,7 +291,7 @@ const DrawerMenu = () => {
 												folder={folder}
 												editingFolderId={editingFolderId}
 												menuItem={contextMenu?.item}
-												openDocument={openDocument}
+												openPage={openPage}
 												openFolder={openFolders}
 												toggleFolder={toggleFolder}
 												handleContextMenu={handleContextMenu}
@@ -326,15 +337,19 @@ const DrawerMenu = () => {
 					contextMenu?.type === 'new'
 						? [
 								{
-									label: 'Document',
+									label: 'Page',
 									icon: <PostAddOutlined fontSize="small" />
 								},
-								{ divider: true },
-								{
-									label: 'Folder',
-									icon: <CreateNewFolderOutlined fontSize="small" />,
-									handleOnclick: handleNewFolder
-								}
+								...(contextMenu?.target === 'folder'
+									? [
+											{ divider: true as const },
+											{
+												label: 'Folder',
+												icon: <CreateNewFolderOutlined fontSize="small" />,
+												handleOnclick: handleNewFolder
+											}
+										]
+									: [])
 							]
 						: [
 								{

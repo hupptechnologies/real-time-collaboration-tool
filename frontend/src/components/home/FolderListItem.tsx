@@ -1,12 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
-	Add,
-	FiberManualRecord,
 	FolderOpen,
 	FolderOutlined,
 	KeyboardArrowDown,
-	KeyboardArrowRight,
-	MoreHoriz
+	KeyboardArrowRight
 } from '@mui/icons-material';
 import {
 	Box,
@@ -18,14 +15,10 @@ import {
 	TextField,
 	Tooltip
 } from '@mui/material';
-import { IFolder, IFolderListItemProps } from '@/types';
-import {
-	AddIconButton,
-	AddIconContentBoxHover,
-	EditFolderListItemText,
-	FolderListItemText,
-	FolderMainBox
-} from '@/styles';
+import { IFolder, IFolderListItemProps, IPage } from '@/types';
+import { EditFolderListItemText, FolderMainBox, ListItemTextStyle } from '@/styles';
+import PageListItem from './PageListItem';
+import ListItemActionButtons from './ListItemActionButtons';
 
 const FolderListItem: React.FC<IFolderListItemProps> = ({
 	folder,
@@ -33,13 +26,12 @@ const FolderListItem: React.FC<IFolderListItemProps> = ({
 	editingFolderId,
 	menuItem,
 	toggleFolder,
-	openDocument,
+	openPage,
 	handleContextMenu,
 	onRenameFolder,
 	level = 0
 }: IFolderListItemProps) => {
 	const [isHovered, setIsHovered] = useState(false);
-	const [activeButtonType, setActiveButtonType] = useState<'new' | 'more' | null>(null);
 
 	const isOpen = openFolder[folder.id] || false;
 	const handleRename = (value: string) => {
@@ -48,17 +40,6 @@ const FolderListItem: React.FC<IFolderListItemProps> = ({
 			onRenameFolder(folder.id, trimmedValue);
 		}
 	};
-
-	const handleButtonClick = (e: React.MouseEvent<HTMLDivElement>, type: 'new' | 'more') => {
-		setActiveButtonType(type);
-		handleContextMenu(e, folder, type);
-	};
-
-	useEffect(() => {
-		if (!menuItem) {
-			setActiveButtonType(null);
-		}
-	}, [menuItem]);
 
 	return (
 		<Box>
@@ -95,46 +76,35 @@ const FolderListItem: React.FC<IFolderListItemProps> = ({
 						<Tooltip title={folder.name.length > 10 ? folder.name : ''} placement="top">
 							<ListItemText
 								primary={folder.name}
-								sx={FolderListItemText(isHovered, menuItem as IFolder, folder)}
+								sx={ListItemTextStyle(isHovered, menuItem?.id === folder.id)}
 							/>
 						</Tooltip>
 					)}
 				</ListItemButton>
 				{(isHovered || menuItem?.id === folder.id) && editingFolderId !== folder.id && (
-					<Box sx={AddIconContentBoxHover}>
-						<Tooltip title="Create" placement="top">
-							<ListItemButton
-								sx={AddIconButton}
-								data-type="new"
-								data-active={menuItem?.id === folder.id && activeButtonType === 'new'}
-								onClick={(e) => handleButtonClick(e, 'new')}>
-								<Add fontSize="small" />
-							</ListItemButton>
-						</Tooltip>
-						<Tooltip title="More actions" placement="top">
-							<ListItemButton
-								sx={AddIconButton}
-								data-type="more"
-								data-active={menuItem?.id === folder.id && activeButtonType === 'more'}
-								onClick={(e) => handleButtonClick(e, 'more')}>
-								<MoreHoriz fontSize="small" />
-							</ListItemButton>
-						</Tooltip>
-					</Box>
+					<ListItemActionButtons
+						option={folder}
+						menuItem={menuItem as IFolder}
+						handleContextMenu={(e, option, type) => handleContextMenu(e, option as IFolder, type)}
+					/>
 				)}
 			</Box>
 			<Collapse in={isOpen} timeout="auto" unmountOnExit>
 				<List component="div" disablePadding>
-					{folder.folders?.length === 0 && (
+					{folder.folders?.length === 0 && folder.pages?.length === 0 && (
 						<Box sx={{ pl: level + 3, fontSize: '14px' }} component="span">
 							There&apos;s nothing in this folder yet.
 						</Box>
 					)}
-					{folder.documents?.map((doc) => (
-						<ListItemButton key={doc.name} sx={{ pl: level + 1 }} onClick={() => openDocument(doc)}>
-							<FiberManualRecord sx={{ height: '8px', width: '8px', mr: 1 }} />
-							<ListItemText primary={doc.name} />
-						</ListItemButton>
+					{folder.pages?.map((page) => (
+						<PageListItem
+							key={page.id}
+							page={page}
+							openPage={openPage}
+							level={level + 2}
+							menuItem={menuItem as IPage}
+							handleContextMenu={handleContextMenu}
+						/>
 					))}
 					{folder.folders?.map((subFolder) => (
 						<FolderListItem
@@ -145,7 +115,7 @@ const FolderListItem: React.FC<IFolderListItemProps> = ({
 							level={level + 1}
 							openFolder={openFolder}
 							toggleFolder={toggleFolder}
-							openDocument={openDocument}
+							openPage={openPage}
 							handleContextMenu={handleContextMenu}
 							onRenameFolder={onRenameFolder}
 						/>

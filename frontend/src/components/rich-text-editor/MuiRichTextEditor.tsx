@@ -6,17 +6,13 @@ import {
 	TableBubbleMenu,
 	type RichTextEditorRef
 } from 'mui-tiptap';
-import { Button, Container, Box, Fade } from '@mui/material';
+import { Button, Container, Box, Fade, Typography } from '@mui/material';
 import EditorMenuControls from './EditorMenuControls';
 import useExtensions from './useExtensions';
 import { EditorContainerBox, EditorWrapperBox, ButtonBox, RichEditorBox } from '@/styles/editor';
+import { IPage, ISpace, IMuiRichTextEditorProps } from '@/types';
 
-interface MuiRichTextEditorProps {
-	content: string;
-	onContentChange?: (_content: string) => void;
-}
-
-const MuiRichTextEditor = ({ content, onContentChange }: MuiRichTextEditorProps) => {
+const MuiRichTextEditor = ({ item, onContentChange }: IMuiRichTextEditorProps) => {
 	const rteRef = useRef<RichTextEditorRef>(null);
 	const [isEditable, setIsEditable] = useState(false);
 	const extensions = useExtensions({
@@ -35,6 +31,9 @@ const MuiRichTextEditor = ({ content, onContentChange }: MuiRichTextEditorProps)
 						{isEditable ? 'Save' : 'Edit'}
 					</Button>
 				</Box>
+				<Box>
+					<Typography variant="h6">{(item as ISpace)?.name || (item as IPage)?.title}</Typography>
+				</Box>
 				<Box sx={RichEditorBox}>
 					<Fade in={isEditable} timeout={300} unmountOnExit>
 						<Box sx={{ display: isEditable ? 'block' : 'none' }}>
@@ -42,7 +41,8 @@ const MuiRichTextEditor = ({ content, onContentChange }: MuiRichTextEditorProps)
 								ref={rteRef}
 								editable={true}
 								extensions={extensions}
-								content={content}
+								immediatelyRender={false}
+								content={(item as ISpace)?.description || (item as IPage)?.content || ''}
 								onUpdate={({ editor }) => handleContentChange(editor.getHTML())}
 								renderControls={() => <EditorMenuControls />}>
 								{() => (
@@ -56,7 +56,14 @@ const MuiRichTextEditor = ({ content, onContentChange }: MuiRichTextEditorProps)
 					</Fade>
 					<Fade in={!isEditable} timeout={300} unmountOnExit>
 						<Box sx={{ display: !isEditable ? 'block' : 'none' }}>
-							<RichTextReadOnly content={content} extensions={extensions} />
+							<RichTextReadOnly
+								content={
+									(item as ISpace)?.description ||
+									(item as IPage)?.content ||
+									'Add your own content here...'
+								}
+								extensions={extensions}
+							/>
 						</Box>
 					</Fade>
 				</Box>

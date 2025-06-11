@@ -78,3 +78,17 @@ export const EmptyStateDescription: SxProps<Theme> = {
 	textAlign: 'center',
 	maxWidth: '280px'
 };
+
+export const DraftStatusBox: SxProps<Theme> = {
+	textTransform: 'uppercase',
+	padding: '2px 4px',
+	fontSize: '12px',
+	fontWeight: 'bold',
+	display: 'inline-flex',
+	alignItems: 'center',
+	justifyContent: 'flex-end',
+	boxSizing: 'border-box',
+	borderRadius: '4px',
+	backgroundColor: 'grey.200',
+	marginLeft: '4px'
+};

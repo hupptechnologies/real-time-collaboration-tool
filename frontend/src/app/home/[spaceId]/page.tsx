@@ -3,18 +3,18 @@ import React, { useState } from 'react';
 import DrawerMenu from '@/components/DrawerMenu';
 import { Box } from '@mui/material';
 import MuiRichTextEditor from '@/components/rich-text-editor/MuiRichTextEditor';
-import { exampleContent } from '@/utils/common';
+import { ISelectedItem } from '@/types';
 
 const SpacePage: React.FC = () => {
-	const [content, setContent] = useState(exampleContent);
+	const [selectedItem, setSelectedItem] = useState<ISelectedItem>({ type: 'default', item: null });
 	return (
 		<Box sx={{ display: 'flex' }}>
-			<DrawerMenu />
+			<DrawerMenu selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
 			<Box component="main" sx={{ flexGrow: 1, p: 3 }}>
 				<MuiRichTextEditor
-					content={content}
+					item={selectedItem.item}
 					onContentChange={(newContent) => {
-						setContent(newContent);
+						console.info('newContent', typeof newContent, newContent);
 					}}
 				/>
 			</Box>

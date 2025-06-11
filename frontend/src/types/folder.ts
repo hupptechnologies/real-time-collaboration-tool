@@ -1,6 +1,5 @@
 import React from 'react';
-import { IDocument } from './space';
-
+import { ISpace } from './space';
 export interface IFolder {
 	readonly id: number;
 	name: string;
@@ -8,8 +7,23 @@ export interface IFolder {
 	parentFolderId: number | null;
 	spaceId?: number;
 	userId?: number;
-	documents?: IDocument[];
+	pages?: IPage[];
 	folders?: IFolder[];
+	readonly createdAt?: Date;
+	readonly updatedAt?: Date;
+}
+
+export type TPageStatus = 'draft' | 'published' | 'archived';
+export interface IPage {
+	readonly id?: number;
+	title: string;
+	content: string;
+	status: TPageStatus;
+	parentId?: number | null;
+	folderId?: number | null;
+	spaceId: number;
+	userId: number;
+	pages?: IPage[];
 	readonly createdAt?: Date;
 	readonly updatedAt?: Date;
 }
@@ -27,21 +41,35 @@ export interface IFolderForm {
 }
 
 export type TMenuOption = 'new' | 'more';
+export type THandleContextMenuFn = (
+	_e: React.MouseEvent<HTMLDivElement>,
+	_item: IFolder | IPage | null,
+	_type: TMenuOption
+) => void;
 
 export interface IFolderListItemProps {
 	folder: IFolder;
 	openFolder: Record<string, boolean>;
 	level?: number;
 	editingFolderId: number | null;
-	menuItem: IFolder | undefined | null;
+	menuItem: IFolder | IPage | undefined | null;
 	onRenameFolder: (_id: number, _newName: string) => void;
 	toggleFolder: (_folder: IFolder) => void;
-	openDocument: (_doc: IDocument) => void;
-	handleContextMenu: (
-		_e: React.MouseEvent<HTMLDivElement>,
-		_item: IFolder | null,
-		_type: TMenuOption
-	) => void;
+	openPage: (_page: IPage) => void;
+	handleContextMenu: THandleContextMenuFn;
+}
+
+export interface IPageListItemProps {
+	page: IPage;
+	openPage: (_page: IPage) => void;
+	level?: number;
+	menuItem: IFolder | IPage;
+	handleContextMenu: THandleContextMenuFn;
+}
+
+export interface ISelectedItem {
+	type: 'folder' | 'page' | 'default';
+	item: IPage | ISpace | null;
 }
 
 export type IFolderContextMenuProps = {
@@ -55,8 +83,8 @@ export interface IContextMenu {
 	mouseX: number;
 	mouseY: number;
 	type: TMenuOption;
-	target: 'folder' | 'document';
-	item: IFolder | null;
+	target: 'folder' | 'page';
+	item: IFolder | IPage | null;
 }
 
 interface IContextMenuItem {
@@ -74,4 +102,20 @@ type IContextMenuElement = IContextMenuItem | IContextMenuDivider;
 export interface IFolderState {
 	loading: boolean;
 	error: string | null;
+}
+
+export interface IListItemActionButtonsProps {
+	option: IFolder | IPage;
+	menuItem: IFolder | IPage;
+	handleContextMenu: THandleContextMenuFn;
+}
+
+export interface IDrawerMenuProps {
+	selectedItem: ISelectedItem;
+	setSelectedItem: (_item: ISelectedItem) => void;
+}
+
+export interface IMuiRichTextEditorProps {
+	item: IPage | ISpace | null;
+	onContentChange?: (_content: string) => void;
 }
