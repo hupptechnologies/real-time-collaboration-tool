@@ -69,8 +69,11 @@ export default class Page extends Model<IPage, TPage> {
 	})
 	declare userId: number;
 
-	@HasMany(() => Page)
-	declare childPages: Page[];
+	@HasMany(() => Page, {
+		foreignKey: 'parentId',
+		as: 'pages',
+	})
+	declare pages: Page[];
 
 	@BelongsTo(() => Folder)
 	declare folder: Folder;

@@ -11,6 +11,7 @@ import {
 import { IFolder, TFloder } from '../interface';
 import Spaces from './spaces.model';
 import Users from './users.model';
+import Page from './page.model';
 
 @Table({
 	timestamps: true,
@@ -64,4 +65,10 @@ export default class Folder extends Model<IFolder, TFloder> {
 
 	@BelongsTo(() => Users)
 	declare user: Users;
+
+	@HasMany(() => Page, {
+		foreignKey: 'folderId',
+		as: 'pages',
+	})
+	declare pages: Page[];
 }

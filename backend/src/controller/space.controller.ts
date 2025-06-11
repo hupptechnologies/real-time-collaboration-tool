@@ -4,7 +4,7 @@ import { TQuery, TSpace } from '../interface';
 import { message, statusCodes, Response, sendError } from '../utils';
 import { getSocketInstance } from '../utils/socket';
 import { Op } from 'sequelize';
-const { Spaces, Folder } = models;
+const { Spaces, Folder, Page } = models;
 
 const create = async (
 	req: FastifyRequest<{ Body: TSpace }>,
@@ -84,6 +84,45 @@ const findById = async (
 					model: Folder,
 					as: 'folders',
 					required: false,
+					include: [
+						{
+							model: Page,
+							as: 'pages',
+							required: false,
+							where: {
+								parentId: null,
+							},
+							include: [
+								{
+									model: Page,
+									as: 'pages',
+									required: false,
+									where: {
+										folderId: null,
+									},
+								},
+							],
+						},
+					],
+				},
+				{
+					model: Page,
+					as: 'pages',
+					required: false,
+					where: {
+						parentId: null,
+						folderId: null,
+					},
+					include: [
+						{
+							model: Page,
+							as: 'pages',
+							required: false,
+							where: {
+								folderId: null,
+							},
+						},
+					],
 				},
 			],
 		});

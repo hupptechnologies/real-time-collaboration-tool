@@ -10,6 +10,7 @@ import {
 import { ISpace, TSpace } from '../interface';
 import Users from './users.model';
 import Folder from './folder.model';
+import Page from './page.model';
 
 @Table({
 	timestamps: true,
@@ -39,4 +40,10 @@ export default class Spaces extends Model<ISpace, TSpace> {
 		as: 'folders',
 	})
 	declare folders: Folder;
+
+	@HasMany(() => Page, {
+		foreignKey: 'spaceId',
+		as: 'pages',
+	})
+	declare pages: Page[];
 }
