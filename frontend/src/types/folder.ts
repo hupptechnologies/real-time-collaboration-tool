@@ -28,6 +28,11 @@ export interface IPage {
 	readonly updatedAt?: Date;
 }
 
+export type IPageCreationAttribute = Pick<
+	IPage,
+	'title' | 'content' | 'status' | 'parentId' | 'spaceId' | 'folderId'
+>;
+
 export type IFolderCreationAttribute = Pick<
 	IFolder,
 	'name' | 'description' | 'parentFolderId' | 'spaceId'
@@ -100,6 +105,10 @@ interface IContextMenuDivider {
 type IContextMenuElement = IContextMenuItem | IContextMenuDivider;
 
 export interface IFolderState {
+	loading: boolean;
+	error: string | null;
+}
+export interface IPageState {
 	loading: boolean;
 	error: string | null;
 }
