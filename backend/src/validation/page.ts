@@ -36,7 +36,6 @@ export const updatePageSchema: FastifySchema = {
 			status: {
 				type: 'string',
 				enum: ['draft', 'published', 'archived'],
-				default: 'draft',
 			},
 			parentId: { type: ['number', 'null'] },
 			folderId: { type: ['number', 'null'] },
