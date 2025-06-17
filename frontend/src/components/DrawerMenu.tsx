@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import {
 	Box,
@@ -55,9 +55,21 @@ import {
 	IContextMenu,
 	IFolder,
 	IPage,
-	IPageCreationAttribute
+	IPageCreationAttribute,
+	IContextMenuElement
 } from '@/types';
 import { generateDefaultFolderName, restructureFolders } from '@/utils/common';
+
+interface UIState {
+	open: boolean;
+	openContent: boolean;
+	isHovered: boolean;
+	editingFolderId: number | null;
+	editingPageId: number | null;
+	isDeleted: boolean;
+	deleteItem: IFolder | IPage | null;
+	contextMenu: IContextMenu | undefined;
+}
 
 const DrawerMenu = () => {
 	const params = useParams();
@@ -66,63 +78,79 @@ const DrawerMenu = () => {
 	const { showToaster } = useToaster();
 	const { space } = useAppSelector((state: RootState) => state.space);
 	const spaceId = params?.spaceId as string;
-	const [open, setOpen] = useState<boolean>(true);
-	const [openContent, setOpenContent] = useState<boolean>(false);
-	const [isHovered, setIsHovered] = useState(false);
+	const [uiState, setUiState] = useState<UIState>({
+		open: true,
+		openContent: false,
+		isHovered: false,
+		editingFolderId: null,
+		editingPageId: null,
+		isDeleted: false,
+		deleteItem: null,
+		contextMenu: undefined
+	});
+
 	const [folderData, setFolderData] = useState<IFolder[]>([]);
 	const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({});
-	const [editingFolderId, setEditingFolderId] = useState<number | null>(null);
-	const [editingPageId, setEditingPageId] = useState<number | null>(null);
-	const [isDeleted, setIsDeleted] = useState<boolean>(false);
-	const [deleteItem, setDeleteItem] = useState<IFolder | IPage | null>(null);
-	const [contextMenu, setContextMenu] = useState<IContextMenu | undefined>(undefined);
+
+	const memoizedFolderData = useMemo(() => {
+		if (Array.isArray(space?.folders) && space?.folders.length > 0) {
+			return restructureFolders(space.folders);
+		}
+		return [];
+	}, [space?.folders]);
+
+	useEffect(() => {
+		if (memoizedFolderData) {
+			setFolderData(memoizedFolderData);
+		}
+	}, [memoizedFolderData]);
+
+	const getAllFolder = useCallback((): void => {
+		dispatch(fetchSingleSpaceAction({ data: { id: Number(spaceId) } }));
+	}, [spaceId]);
 
 	useEffect(() => {
 		if (spaceId) {
 			getAllFolder();
 		}
-	}, [spaceId]);
+	}, [spaceId, getAllFolder]);
 
-	useEffect(() => {
-		if (Array.isArray(space?.folders) && space?.folders.length > 0) {
-			setFolderData(restructureFolders(space.folders));
-		} else {
-			setFolderData([]);
-		}
-	}, [space]);
+	const toggleDrawer = useCallback((): void => {
+		setUiState((prev) => ({ ...prev, open: !prev.open }));
+	}, []);
 
-	const getAllFolder = (): void => {
-		dispatch(fetchSingleSpaceAction({ data: { id: Number(spaceId) } }));
-	};
-
-	const toggleDrawer = (): void => {
-		setOpen((prev) => !prev);
-	};
-
-	const toggleMainDocument = (): void => {
+	const toggleMainDocument = useCallback((): void => {
 		router.push(`/home/${spaceId}`);
-	};
+	}, [router, spaceId]);
 
-	const toggleFolder = (folder: IFolder): void => {
+	const toggleFolder = useCallback((folder: IFolder): void => {
 		setOpenFolders((prev) => ({ ...prev, [folder.id]: !prev[folder.id] }));
-	};
+	}, []);
 
-	const openPage = (page: IPage): void => {
-		router.push(`/home/${spaceId}?pageId=${page.id}&edit=${page.status === 'draft'}`);
-	};
+	const openPage = useCallback(
+		(page: IPage): void => {
+			router.push(`/home/${spaceId}?pageId=${page.id}&edit=${page.status === 'draft'}`);
+		},
+		[router, spaceId]
+	);
 
-	const handleCloseContextMenu = (): void => setContextMenu(undefined);
+	const handleCloseContextMenu = useCallback((): void => {
+		setUiState((prev) => ({ ...prev, contextMenu: undefined }));
+	}, []);
 
-	const handleContextMenu: THandleContextMenuFn = (e, item, type): void => {
+	const handleContextMenu: THandleContextMenuFn = useCallback((e, item, type): void => {
 		const rect = e.currentTarget.getBoundingClientRect();
-		setContextMenu({
-			mouseX: rect.left,
-			mouseY: rect.bottom + 10,
-			type: type,
-			target: (item as IPage)?.title ? 'page' : 'folder',
-			item
-		});
-	};
+		setUiState((prev) => ({
+			...prev,
+			contextMenu: {
+				mouseX: rect.left,
+				mouseY: rect.bottom + 10,
+				type: type,
+				target: (item as IPage)?.title ? 'page' : 'folder',
+				item
+			}
+		}));
+	}, []);
 
 	const handleNewPage = (): void => {
 		const newPage: IPageCreationAttribute = {
@@ -131,16 +159,16 @@ const DrawerMenu = () => {
 			status: 'draft',
 			spaceId: Number(spaceId)
 		};
-		if (contextMenu?.target === 'folder') {
-			if (contextMenu?.item) {
-				newPage.folderId = contextMenu?.item?.id;
+		if (uiState.contextMenu?.target === 'folder') {
+			if (uiState.contextMenu?.item) {
+				newPage.folderId = uiState.contextMenu?.item?.id;
 				newPage.parentId = null;
 			} else {
 				newPage.parentId = null;
 				newPage.folderId = null;
 			}
 		} else {
-			newPage.parentId = contextMenu?.item?.id;
+			newPage.parentId = uiState.contextMenu?.item?.id;
 			newPage.folderId = null;
 		}
 		dispatch(createPageAction({ data: newPage, callback: handleCallBack }));
@@ -152,7 +180,7 @@ const DrawerMenu = () => {
 			createFolderAction({
 				data: {
 					name: newName,
-					parentFolderId: contextMenu?.item?.id || null,
+					parentFolderId: uiState.contextMenu?.item?.id || null,
 					spaceId: Number(spaceId),
 					description: ''
 				},
@@ -164,13 +192,16 @@ const DrawerMenu = () => {
 	const handleCallBack = (data: IAPIResponse<IFolder | IPage>) => {
 		if (data.success) {
 			getAllFolder();
-			if (contextMenu?.item) {
-				setOpenFolders((prev) => ({ ...prev, [Number(contextMenu?.item?.id)]: true }));
+			if (uiState.contextMenu?.item) {
+				setOpenFolders((prev) => ({ ...prev, [Number(uiState.contextMenu?.item?.id)]: true }));
 			} else {
-				setOpenContent(true);
+				setUiState((prev) => ({ ...prev, openContent: true }));
 			}
-			setEditingFolderId(data.data?.id || null);
-			setContextMenu(undefined);
+			setUiState((prev) => ({
+				...prev,
+				editingFolderId: data.data?.id || null,
+				contextMenu: undefined
+			}));
 			showToaster(data.message || 'Created', 'success');
 			const isPage = (item: any): item is IPage => {
 				return item && 'title' in item && 'content' in item;
@@ -203,74 +234,115 @@ const DrawerMenu = () => {
 	const renameCallBack = (data: IAPIResponse<IFolder | IPage>) => {
 		if (data.success) {
 			getAllFolder();
-			setEditingFolderId(null);
-			setEditingPageId(null);
-			setContextMenu(undefined);
-			setIsDeleted(false);
+			setUiState((prev) => ({
+				...prev,
+				editingFolderId: null,
+				editingPageId: null,
+				contextMenu: undefined,
+				isDeleted: false
+			}));
 			showToaster(data.message || 'Updated', 'success');
 		}
 	};
 
 	const handleEditItem = () => {
-		if (contextMenu?.target === 'page') {
-			setEditingPageId(contextMenu?.item?.id || null);
-		} else {
-			setEditingFolderId(contextMenu?.item?.id || null);
-		}
-		setContextMenu(undefined);
+		setUiState((prev) => {
+			const { contextMenu } = prev;
+			const itemId = contextMenu?.item?.id || null;
+			const isPage = contextMenu?.target === 'page';
+			return {
+				...prev,
+				[isPage ? 'editingPageId' : 'editingFolderId']: itemId,
+				contextMenu: undefined
+			};
+		});
 	};
 
-	const handleDeletePage = () => {
-		setIsDeleted(true);
-		setDeleteItem(contextMenu?.item as IPage | null);
-		setContextMenu(undefined);
-	};
-
-	const handleDeleteFolder = () => {
-		setIsDeleted(true);
-		setDeleteItem(contextMenu?.item as IFolder | null);
-		setContextMenu(undefined);
+	const handleDeleteItem = () => {
+		setUiState((prev) => ({
+			...prev,
+			isDeleted: true,
+			deleteItem: uiState.contextMenu?.item as IFolder | IPage | null,
+			contextMenu: undefined
+		}));
 	};
 
 	const handleConfirm = (confirmed: boolean) => {
-		if (confirmed && deleteItem?.id) {
-			if ('title' in deleteItem) {
+		if (confirmed && uiState.deleteItem?.id) {
+			if ('title' in uiState.deleteItem) {
 				dispatch(
 					deletePageAction({
-						data: { id: deleteItem.id },
+						data: { id: uiState.deleteItem.id },
 						callback: handleDeleteCallback
 					})
 				);
 			} else {
 				dispatch(
 					deleteFolderAction({
-						data: { id: deleteItem.id },
+						data: { id: uiState.deleteItem.id },
 						callback: handleDeleteCallback
 					})
 				);
 			}
 		} else {
-			setIsDeleted(false);
-			setDeleteItem(null);
+			setUiState((prev) => ({ ...prev, isDeleted: false, deleteItem: null }));
 		}
 	};
 
 	const handleDeleteCallback = (data: IAPIResponse<IFolder | IPage>) => {
 		if (data.success) {
 			getAllFolder();
-			setIsDeleted(false);
-			setDeleteItem(null);
+			setUiState((prev) => ({ ...prev, isDeleted: false, deleteItem: null }));
 			showToaster(data.message || 'Deleted', 'success');
 		}
 	};
+
+	const menuItems = useMemo(() => {
+		if (uiState.contextMenu?.type === 'new') {
+			const items: IContextMenuElement[] = [
+				{
+					label: 'Page',
+					icon: <PostAddOutlined fontSize="small" />,
+					handleOnclick: handleNewPage
+				}
+			];
+
+			if (uiState.contextMenu?.target === 'folder') {
+				items.push(
+					{ divider: true },
+					{
+						label: 'Folder',
+						icon: <CreateNewFolderOutlined fontSize="small" />,
+						handleOnclick: handleNewFolder
+					}
+				);
+			}
+			return items;
+		}
+
+		return [
+			{
+				label: 'Rename',
+				icon: <EditOutlined fontSize="small" />,
+				handleOnclick: handleEditItem
+			},
+			{ divider: true },
+			{
+				label: 'Delete',
+				icon: <DeleteForeverOutlined fontSize="small" />,
+				handleOnclick: handleDeleteItem
+			}
+		] as IContextMenuElement[];
+	}, [uiState.contextMenu]);
+
 	return (
 		<Box sx={{ display: 'flex' }}>
 			<IconButton
 				onClick={toggleDrawer}
 				aria-label="open drawer"
 				edge="end"
-				sx={ArrowIconStyle(open)}>
-				{open ? (
+				sx={ArrowIconStyle(uiState.open)}>
+				{uiState.open ? (
 					<Tooltip title="Collapse">
 						<ChevronLeft />
 					</Tooltip>
@@ -280,8 +352,8 @@ const DrawerMenu = () => {
 					</Tooltip>
 				)}
 			</IconButton>
-			<Drawer variant="permanent" open={open} sx={DrawerMenuStyle(open)}>
-				{open && (
+			<Drawer variant="permanent" open={uiState.open} sx={DrawerMenuStyle(uiState.open)}>
+				{uiState.open && (
 					<>
 						<Toolbar />
 						<Box onClick={toggleMainDocument} sx={SpaceNameBox}>
@@ -293,13 +365,13 @@ const DrawerMenu = () => {
 						<Box sx={{ display: 'grid', gridColumn: 1, gridRow: 1 }}>
 							<ListItemButton
 								sx={ContentButton}
-								onClick={() => setOpenContent(!openContent)}
-								onMouseEnter={() => setIsHovered(true)}
-								onMouseLeave={() => setIsHovered(false)}>
+								onClick={() => setUiState((prev) => ({ ...prev, openContent: !prev.openContent }))}
+								onMouseEnter={() => setUiState((prev) => ({ ...prev, isHovered: true }))}
+								onMouseLeave={() => setUiState((prev) => ({ ...prev, isHovered: false }))}>
 								<Box sx={ContentIconBox}>
 									<Box sx={ContentIconInlineBox}>
-										{isHovered ? (
-											openContent ? (
+										{uiState.isHovered ? (
+											uiState.openContent ? (
 												<KeyboardArrowDown />
 											) : (
 												<KeyboardArrowRight />
@@ -316,14 +388,14 @@ const DrawerMenu = () => {
 									<ListItemButton
 										sx={AddIconButton}
 										data-type="new"
-										data-active={contextMenu?.type === 'new' && !contextMenu?.item}
+										data-active={uiState.contextMenu?.type === 'new' && !uiState.contextMenu?.item}
 										onClick={(e) => handleContextMenu(e, null, 'new')}>
 										<Add />
 									</ListItemButton>
 								</Tooltip>
 							</Box>
 						</Box>
-						{openContent && (
+						{uiState.openContent && (
 							<>
 								{space.pages && space.pages.length > 0 ? (
 									<List sx={{ padding: 0 }}>
@@ -333,9 +405,9 @@ const DrawerMenu = () => {
 												page={page}
 												openPage={openPage}
 												level={0}
-												menuItem={contextMenu?.item as IPage}
+												menuItem={uiState.contextMenu?.item as IPage}
 												handleContextMenu={handleContextMenu}
-												editingPageId={editingPageId}
+												editingPageId={uiState.editingPageId}
 												onRenamePage={handleRenamePage}
 											/>
 										))}
@@ -347,14 +419,14 @@ const DrawerMenu = () => {
 											<FolderListItem
 												key={folder.id}
 												folder={folder}
-												editingFolderId={editingFolderId}
-												menuItem={contextMenu?.item}
+												editingFolderId={uiState.editingFolderId}
+												menuItem={uiState.contextMenu?.item}
 												openPage={openPage}
 												openFolder={openFolders}
 												toggleFolder={toggleFolder}
 												handleContextMenu={handleContextMenu}
 												onRenameFolder={handleRenameFolder}
-												editingPageId={editingPageId}
+												editingPageId={uiState.editingPageId}
 												onRenamePage={handleRenamePage}
 											/>
 										))}
@@ -384,52 +456,23 @@ const DrawerMenu = () => {
 				)}
 			</Drawer>
 			<ConfirmModal
-				open={isDeleted}
-				title={`Are you sure you want to delete ${deleteItem && ('name' in deleteItem ? deleteItem.name : (deleteItem as IPage).title)} ?`}
+				open={uiState.isDeleted}
+				title={`Are you sure you want to delete ${uiState.deleteItem && ('name' in uiState.deleteItem ? uiState.deleteItem.name : (uiState.deleteItem as IPage).title)} ?`}
 				subTitle="This action will delete the item and its related data. Are you sure?"
 				onClose={handleConfirm}
 			/>
 			<NewContextMenu
-				open={Boolean(contextMenu)}
+				open={Boolean(uiState.contextMenu)}
 				handleOnclose={handleCloseContextMenu}
-				position={contextMenu ? { mouseX: contextMenu.mouseX, mouseY: contextMenu.mouseY } : null}
-				menuItems={
-					contextMenu?.type === 'new'
-						? [
-								{
-									label: 'Page',
-									icon: <PostAddOutlined fontSize="small" />,
-									handleOnclick: handleNewPage
-								},
-								...(contextMenu?.target === 'folder'
-									? [
-											{ divider: true as const },
-											{
-												label: 'Folder',
-												icon: <CreateNewFolderOutlined fontSize="small" />,
-												handleOnclick: handleNewFolder
-											}
-										]
-									: [])
-							]
-						: [
-								{
-									label: 'Rename',
-									icon: <EditOutlined fontSize="small" />,
-									handleOnclick: handleEditItem
-								},
-								{ divider: true },
-								{
-									label: 'Delete',
-									icon: <DeleteForeverOutlined fontSize="small" />,
-									handleOnclick:
-										contextMenu?.target === 'page' ? handleDeletePage : handleDeleteFolder
-								}
-							]
+				position={
+					uiState.contextMenu
+						? { mouseX: uiState.contextMenu.mouseX, mouseY: uiState.contextMenu.mouseY }
+						: null
 				}
+				menuItems={menuItems}
 			/>
 		</Box>
 	);
 };
 
-export default DrawerMenu;
+export default React.memo(DrawerMenu);

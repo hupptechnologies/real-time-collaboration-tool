@@ -96,17 +96,17 @@ export interface IContextMenu {
 	item: IFolder | IPage | null;
 }
 
-interface IContextMenuItem {
+export interface IContextMenuItem {
 	label: string;
 	icon: React.ReactNode;
 	handleOnclick?: () => void;
 }
 
-interface IContextMenuDivider {
+export interface IContextMenuDivider {
 	divider: true;
 }
 
-type IContextMenuElement = IContextMenuItem | IContextMenuDivider;
+export type IContextMenuElement = IContextMenuItem | IContextMenuDivider;
 
 export interface IFolderState {
 	loading: boolean;
