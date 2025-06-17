@@ -163,6 +163,7 @@ const update = async (
 			where: {
 				name: name,
 				ownerId: userId,
+				id: { [Op.ne]: id },
 			},
 		});
 		if (existingSpaceName) {
