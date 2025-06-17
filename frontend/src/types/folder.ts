@@ -111,6 +111,7 @@ export interface IFolderState {
 export interface IPageState {
 	loading: boolean;
 	error: string | null;
+	page: IPage | null;
 }
 
 export interface IListItemActionButtonsProps {

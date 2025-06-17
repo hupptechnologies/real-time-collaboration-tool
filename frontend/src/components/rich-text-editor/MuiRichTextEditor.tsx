@@ -1,4 +1,5 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import {
 	LinkBubbleMenu,
 	RichTextEditor,
@@ -6,64 +7,216 @@ import {
 	TableBubbleMenu,
 	type RichTextEditorRef
 } from 'mui-tiptap';
-import { Button, Container, Box, Fade, Typography } from '@mui/material';
+import { Button, Container, Box, Fade, Typography, TextField } from '@mui/material';
+import { EditOutlined } from '@mui/icons-material';
 import EditorMenuControls from './EditorMenuControls';
 import useExtensions from './useExtensions';
+import { useToaster } from '@/context/ToasterContext';
+import { RootState } from '@/redux/store';
+import { useAppDispatch, useAppSelector } from '@/redux/hook';
+import { getPageAction, updatePageAction } from '@/redux/page';
+import { fetchSingleSpaceAction, updateSpaceAction } from '@/redux/space';
+import { IAPIResponse, IPage, TPageStatus, ISpace } from '@/types';
 import { EditorContainerBox, EditorWrapperBox, ButtonBox, RichEditorBox } from '@/styles/editor';
-import { IPage, ISpace, IMuiRichTextEditorProps } from '@/types';
 
-const MuiRichTextEditor = ({ item, onContentChange }: IMuiRichTextEditorProps) => {
+const MuiRichTextEditor = () => {
 	const rteRef = useRef<RichTextEditorRef>(null);
-	const [isEditable, setIsEditable] = useState(false);
+	const searchParams = useSearchParams();
+	const router = useRouter();
+	const { space } = useAppSelector((state: RootState) => state.space);
+	const { page } = useAppSelector((state: RootState) => state.page);
+	const dispatch = useAppDispatch();
+	const { showToaster } = useToaster();
+	const pageId = searchParams.get('pageId');
+	const edit = searchParams.get('edit');
+
+	const [isEditable, setIsEditable] = useState<boolean>(false);
+	const [title, setTitle] = useState<string>('');
+	const [content, setContent] = useState<string>('');
+	const [isUpdating, setIsUpdating] = useState<boolean>(false);
 	const extensions = useExtensions({
 		placeholder: 'Add your own content here...'
 	});
 
-	const handleContentChange = (newContent: string) => {
-		onContentChange?.(newContent);
+	const handleContentChange = useCallback((newContent: string) => {
+		setContent(newContent);
+	}, []);
+
+	const getPageData = useCallback(() => {
+		if (pageId) {
+			dispatch(getPageAction({ data: { id: Number(pageId) } }));
+		}
+	}, [pageId, dispatch]);
+
+	useEffect(() => {
+		getPageData();
+	}, [getPageData]);
+
+	useEffect(() => {
+		setIsEditable(edit === 'true');
+	}, [edit]);
+
+	useEffect(() => {
+		if (pageId && page) {
+			setTitle(page.title || '');
+			setContent(page.content || '');
+		} else if (space) {
+			setTitle(space.name || '');
+			setContent(space.description || '');
+		}
+	}, [pageId, page, space]);
+
+	useEffect(() => {
+		if (rteRef.current && isEditable) {
+			rteRef.current.editor?.commands.setContent(content);
+		}
+	}, [content, isEditable]);
+
+	const handleUpdatePage = (status: TPageStatus) => {
+		if (title.trim() === '') {
+			showToaster('Title is required', 'error');
+			return;
+		}
+		setIsUpdating(true);
+		try {
+			if (pageId) {
+				dispatch(
+					updatePageAction({
+						data: {
+							id: Number(pageId),
+							title,
+							content,
+							status: status
+						},
+						callback: handleCallBack
+					})
+				).unwrap();
+			} else if (space?.id) {
+				dispatch(
+					updateSpaceAction({
+						data: {
+							id: Number(space.id),
+							name: title,
+							description: content
+						},
+						callback: handleSpaceCallBack
+					})
+				).unwrap();
+			}
+		} catch (error: any) {
+			showToaster(`Failed to update ${error.message}`, 'error');
+		} finally {
+			setIsUpdating(false);
+		}
+	};
+
+	const handleCallBack = (res: IAPIResponse<IPage>) => {
+		if (res.success) {
+			setIsEditable(false);
+			getPageData();
+			dispatch(fetchSingleSpaceAction({ data: { id: Number(space?.id) } }));
+			router.replace(`/home/${space?.id}?pageId=${pageId}&edit=false`);
+			showToaster('Page updated successfully', 'success');
+		}
+	};
+
+	const handleSpaceCallBack = (res: IAPIResponse<ISpace>) => {
+		if (res.success) {
+			setIsEditable(false);
+			dispatch(fetchSingleSpaceAction({ data: { id: Number(space?.id) } }));
+			router.replace(`/home/${space?.id}`);
+			showToaster('Space updated successfully', 'success');
+		}
 	};
 
 	return (
 		<Container sx={EditorContainerBox} maxWidth="lg">
 			<Box sx={EditorWrapperBox}>
 				<Box sx={ButtonBox}>
-					<Button variant="contained" onClick={() => setIsEditable(!isEditable)}>
-						{isEditable ? 'Save' : 'Edit'}
-					</Button>
+					{isEditable ? (
+						page?.status === 'draft' ? (
+							<>
+								<Button
+									variant="contained"
+									onClick={() => handleUpdatePage('published')}
+									disabled={isUpdating}>
+									{isUpdating ? 'Publishing...' : 'Publish'}
+								</Button>
+								<Button
+									variant="text"
+									onClick={() => handleUpdatePage('draft')}
+									disabled={isUpdating}>
+									Close Draft
+								</Button>
+							</>
+						) : (
+							<>
+								<Button
+									variant="contained"
+									onClick={() => handleUpdatePage('published')}
+									disabled={isUpdating}>
+									{isUpdating ? 'Updating...' : 'Update'}
+								</Button>
+								<Button variant="text" onClick={() => setIsEditable(false)} disabled={isUpdating}>
+									Close
+								</Button>
+							</>
+						)
+					) : (
+						<Button
+							variant="outlined"
+							startIcon={<EditOutlined />}
+							onClick={() => setIsEditable(true)}>
+							Edit
+						</Button>
+					)}
 				</Box>
-				<Box>
-					<Typography variant="h6">{(item as ISpace)?.name || (item as IPage)?.title}</Typography>
-				</Box>
-				<Box sx={RichEditorBox}>
-					<Fade in={isEditable} timeout={300} unmountOnExit>
-						<Box sx={{ display: isEditable ? 'block' : 'none' }}>
-							<RichTextEditor
-								ref={rteRef}
-								editable={true}
-								extensions={extensions}
-								immediatelyRender={false}
-								content={(item as ISpace)?.description || (item as IPage)?.content || ''}
-								onUpdate={({ editor }) => handleContentChange(editor.getHTML())}
-								renderControls={() => <EditorMenuControls />}>
-								{() => (
-									<>
-										<LinkBubbleMenu />
-										<TableBubbleMenu />
-									</>
-								)}
-							</RichTextEditor>
-						</Box>
-					</Fade>
-					<Fade in={!isEditable} timeout={300} unmountOnExit>
-						<Box sx={{ display: !isEditable ? 'block' : 'none' }}>
-							<RichTextReadOnly
-								content={
-									(item as ISpace)?.description ||
-									(item as IPage)?.content ||
-									'Add your own content here...'
-								}
-								extensions={extensions}
+				<Fade in={true} timeout={300}>
+					<Box>
+						{isEditable ? (
+							<TextField
+								id="title"
+								name="title"
+								placeholder="Add Your Title"
+								value={title}
+								onChange={(e) => setTitle(e.target.value)}
+								fullWidth
+								variant="outlined"
+								size="small"
+								sx={{ mb: 2 }}
 							/>
+						) : (
+							<Typography variant="h6" sx={{ mb: 2 }}>
+								{title}
+							</Typography>
+						)}
+					</Box>
+				</Fade>
+				<Box sx={RichEditorBox}>
+					<Fade in={true} timeout={300}>
+						<Box>
+							{isEditable ? (
+								<RichTextEditor
+									ref={rteRef}
+									editable={true}
+									extensions={extensions}
+									immediatelyRender={false}
+									content={content}
+									onUpdate={({ editor }) => handleContentChange(editor.getHTML())}
+									renderControls={() => <EditorMenuControls />}>
+									{() => (
+										<>
+											<LinkBubbleMenu />
+											<TableBubbleMenu />
+										</>
+									)}
+								</RichTextEditor>
+							) : (
+								<RichTextReadOnly
+									content={content || 'Add your own content here...'}
+									extensions={extensions}
+								/>
+							)}
 						</Box>
 					</Fade>
 				</Box>

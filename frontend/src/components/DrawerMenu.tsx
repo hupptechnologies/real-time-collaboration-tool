@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import {
 	Box,
 	Drawer,
@@ -55,13 +55,13 @@ import {
 	IContextMenu,
 	IFolder,
 	IPage,
-	IDrawerMenuProps,
 	IPageCreationAttribute
 } from '@/types';
-import { exampleContent, generateDefaultFolderName, restructureFolders } from '@/utils/common';
+import { generateDefaultFolderName, restructureFolders } from '@/utils/common';
 
-const DrawerMenu = ({ selectedItem, setSelectedItem }: IDrawerMenuProps) => {
+const DrawerMenu = () => {
 	const params = useParams();
+	const router = useRouter();
 	const dispatch = useAppDispatch();
 	const { showToaster } = useToaster();
 	const { space } = useAppSelector((state: RootState) => state.space);
@@ -88,10 +88,6 @@ const DrawerMenu = ({ selectedItem, setSelectedItem }: IDrawerMenuProps) => {
 		} else {
 			setFolderData([]);
 		}
-
-		if (!selectedItem || selectedItem.type === 'default') {
-			toggleMainDocument();
-		}
 	}, [space]);
 
 	const getAllFolder = (): void => {
@@ -103,10 +99,7 @@ const DrawerMenu = ({ selectedItem, setSelectedItem }: IDrawerMenuProps) => {
 	};
 
 	const toggleMainDocument = (): void => {
-		setSelectedItem({
-			type: 'default',
-			item: space
-		});
+		router.push(`/home/${spaceId}`);
 	};
 
 	const toggleFolder = (folder: IFolder): void => {
@@ -114,7 +107,7 @@ const DrawerMenu = ({ selectedItem, setSelectedItem }: IDrawerMenuProps) => {
 	};
 
 	const openPage = (page: IPage): void => {
-		setSelectedItem({ type: 'page', item: page });
+		router.push(`/home/${spaceId}?pageId=${page.id}&edit=${page.status === 'draft'}`);
 	};
 
 	const handleCloseContextMenu = (): void => setContextMenu(undefined);
@@ -133,7 +126,7 @@ const DrawerMenu = ({ selectedItem, setSelectedItem }: IDrawerMenuProps) => {
 	const handleNewPage = (): void => {
 		const newPage: IPageCreationAttribute = {
 			title: '',
-			content: exampleContent,
+			content: '',
 			status: 'draft',
 			spaceId: Number(spaceId)
 		};
@@ -178,6 +171,12 @@ const DrawerMenu = ({ selectedItem, setSelectedItem }: IDrawerMenuProps) => {
 			setEditingFolderId(data.data?.id || null);
 			setContextMenu(undefined);
 			showToaster(data.message || 'Created', 'success');
+			const isPage = (item: any): item is IPage => {
+				return item && 'title' in item && 'content' in item;
+			};
+			if (data.data && isPage(data.data)) {
+				openPage(data.data);
+			}
 		}
 	};
 
