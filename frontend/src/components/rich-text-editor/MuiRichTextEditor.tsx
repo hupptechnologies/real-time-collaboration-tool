@@ -38,10 +38,6 @@ const MuiRichTextEditor = () => {
 		placeholder: 'Add your own content here...'
 	});
 
-	const handleContentChange = useCallback((newContent: string) => {
-		setContent(newContent);
-	}, []);
-
 	const getPageData = useCallback(() => {
 		if (pageId) {
 			dispatch(getPageAction({ data: { id: Number(pageId) } }));
@@ -79,13 +75,14 @@ const MuiRichTextEditor = () => {
 		}
 		setIsUpdating(true);
 		try {
+			const currentContent = rteRef.current?.editor?.getHTML() || content;
 			if (pageId) {
 				dispatch(
 					updatePageAction({
 						data: {
 							id: Number(pageId),
 							title,
-							content,
+							content: currentContent,
 							status: status
 						},
 						callback: handleCallBack
@@ -97,7 +94,7 @@ const MuiRichTextEditor = () => {
 						data: {
 							id: Number(space.id),
 							name: title,
-							description: content
+							description: currentContent
 						},
 						callback: handleSpaceCallBack
 					})
@@ -116,7 +113,11 @@ const MuiRichTextEditor = () => {
 			getPageData();
 			dispatch(fetchSingleSpaceAction({ data: { id: Number(space?.id) } }));
 			router.replace(`/home/${space?.id}?pageId=${pageId}&edit=false`);
-			showToaster('Page updated successfully', 'success');
+			if (res.data?.status === 'draft') {
+				showToaster('Draft updated successfully', 'success');
+			} else {
+				showToaster('Page updated successfully', 'success');
+			}
 		}
 	};
 
@@ -204,7 +205,6 @@ const MuiRichTextEditor = () => {
 									extensions={extensions}
 									immediatelyRender={false}
 									content={content}
-									onUpdate={({ editor }) => handleContentChange(editor.getHTML())}
 									renderControls={() => <EditorMenuControls />}>
 									{() => (
 										<>

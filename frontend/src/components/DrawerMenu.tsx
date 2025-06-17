@@ -80,7 +80,7 @@ const DrawerMenu = () => {
 	const spaceId = params?.spaceId as string;
 	const [uiState, setUiState] = useState<UIState>({
 		open: true,
-		openContent: false,
+		openContent: true,
 		isHovered: false,
 		editingFolderId: null,
 		editingPageId: null,
