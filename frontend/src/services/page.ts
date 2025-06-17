@@ -15,3 +15,8 @@ export const updatePage = async (data: Partial<IPage>) => {
 	const response = await axiosInstance.put(`/page/${data.id}`, data);
 	return response.data;
 };
+
+export const deletePage = async (data: Partial<IPage>) => {
+	const response = await axiosInstance.delete(`/page/${data.id}`);
+	return response.data;
+};

@@ -62,14 +62,18 @@ export interface IFolderListItemProps {
 	toggleFolder: (_folder: IFolder) => void;
 	openPage: (_page: IPage) => void;
 	handleContextMenu: THandleContextMenuFn;
+	editingPageId?: number | null;
+	onRenamePage?: (_id: number, _newName: string) => void;
 }
 
 export interface IPageListItemProps {
 	page: IPage;
 	openPage: (_page: IPage) => void;
 	level?: number;
-	menuItem: IFolder | IPage;
+	menuItem: IPage | IFolder;
 	handleContextMenu: THandleContextMenuFn;
+	editingPageId?: number | null;
+	onRenamePage?: (_id: number, _newName: string) => void;
 }
 
 export interface ISelectedItem {

@@ -33,7 +33,7 @@ import { RootState } from '@/redux/store';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { fetchSingleSpaceAction } from '@/redux/space';
 import { createFolderAction, deleteFolderAction, updateFolderAction } from '@/redux/folder';
-import { createPageAction } from '@/redux/page';
+import { createPageAction, deletePageAction, updatePageAction } from '@/redux/page';
 import {
 	AddIconButton,
 	AddIconContentBox,
@@ -72,8 +72,9 @@ const DrawerMenu = () => {
 	const [folderData, setFolderData] = useState<IFolder[]>([]);
 	const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({});
 	const [editingFolderId, setEditingFolderId] = useState<number | null>(null);
+	const [editingPageId, setEditingPageId] = useState<number | null>(null);
 	const [isDeleted, setIsDeleted] = useState<boolean>(false);
-	const [deleteItem, setDeleteItem] = useState<IFolder | null>(null);
+	const [deleteItem, setDeleteItem] = useState<IFolder | IPage | null>(null);
 	const [contextMenu, setContextMenu] = useState<IContextMenu | undefined>(undefined);
 
 	useEffect(() => {
@@ -187,33 +188,42 @@ const DrawerMenu = () => {
 		dispatch(updateFolderAction({ data: { id, name: newName }, callback: renameCallBack }));
 	};
 
-	const renameCallBack = (data: IAPIResponse<IFolder>) => {
+	const handleRenamePage = (id: number, newName: string) => {
+		if (newName.trim() === '') {
+			return;
+		}
+		dispatch(
+			updatePageAction({
+				data: { id, title: newName },
+				callback: renameCallBack
+			})
+		);
+	};
+
+	const renameCallBack = (data: IAPIResponse<IFolder | IPage>) => {
 		if (data.success) {
 			getAllFolder();
 			setEditingFolderId(null);
+			setEditingPageId(null);
 			setContextMenu(undefined);
 			setIsDeleted(false);
 			showToaster(data.message || 'Updated', 'success');
 		}
 	};
 
-	const handleEditFolder = () => {
-		setEditingFolderId(contextMenu?.item?.id || null);
+	const handleEditItem = () => {
+		if (contextMenu?.target === 'page') {
+			setEditingPageId(contextMenu?.item?.id || null);
+		} else {
+			setEditingFolderId(contextMenu?.item?.id || null);
+		}
 		setContextMenu(undefined);
 	};
 
-	const handleConfirm = (confirmed: boolean) => {
-		if (confirmed && deleteItem?.id) {
-			dispatch(
-				deleteFolderAction({
-					data: { id: deleteItem?.id },
-					callback: handleDeleteCallback
-				})
-			);
-		} else {
-			setIsDeleted(false);
-			setDeleteItem(null);
-		}
+	const handleDeletePage = () => {
+		setIsDeleted(true);
+		setDeleteItem(contextMenu?.item as IPage | null);
+		setContextMenu(undefined);
 	};
 
 	const handleDeleteFolder = () => {
@@ -222,7 +232,30 @@ const DrawerMenu = () => {
 		setContextMenu(undefined);
 	};
 
-	const handleDeleteCallback = (data: IAPIResponse<IFolder>) => {
+	const handleConfirm = (confirmed: boolean) => {
+		if (confirmed && deleteItem?.id) {
+			if ('title' in deleteItem) {
+				dispatch(
+					deletePageAction({
+						data: { id: deleteItem.id },
+						callback: handleDeleteCallback
+					})
+				);
+			} else {
+				dispatch(
+					deleteFolderAction({
+						data: { id: deleteItem.id },
+						callback: handleDeleteCallback
+					})
+				);
+			}
+		} else {
+			setIsDeleted(false);
+			setDeleteItem(null);
+		}
+	};
+
+	const handleDeleteCallback = (data: IAPIResponse<IFolder | IPage>) => {
 		if (data.success) {
 			getAllFolder();
 			setIsDeleted(false);
@@ -302,6 +335,8 @@ const DrawerMenu = () => {
 												level={0}
 												menuItem={contextMenu?.item as IPage}
 												handleContextMenu={handleContextMenu}
+												editingPageId={editingPageId}
+												onRenamePage={handleRenamePage}
 											/>
 										))}
 									</List>
@@ -319,6 +354,8 @@ const DrawerMenu = () => {
 												toggleFolder={toggleFolder}
 												handleContextMenu={handleContextMenu}
 												onRenameFolder={handleRenameFolder}
+												editingPageId={editingPageId}
+												onRenamePage={handleRenamePage}
 											/>
 										))}
 										<ListItemButton
@@ -348,8 +385,8 @@ const DrawerMenu = () => {
 			</Drawer>
 			<ConfirmModal
 				open={isDeleted}
-				title={`Are you sure you want to delete ${deleteItem?.name} ?`}
-				subTitle="This action will delete the folder and its related data. Are you sure?"
+				title={`Are you sure you want to delete ${deleteItem && ('name' in deleteItem ? deleteItem.name : (deleteItem as IPage).title)} ?`}
+				subTitle="This action will delete the item and its related data. Are you sure?"
 				onClose={handleConfirm}
 			/>
 			<NewContextMenu
@@ -379,13 +416,14 @@ const DrawerMenu = () => {
 								{
 									label: 'Rename',
 									icon: <EditOutlined fontSize="small" />,
-									handleOnclick: handleEditFolder
+									handleOnclick: handleEditItem
 								},
 								{ divider: true },
 								{
 									label: 'Delete',
 									icon: <DeleteForeverOutlined fontSize="small" />,
-									handleOnclick: handleDeleteFolder
+									handleOnclick:
+										contextMenu?.target === 'page' ? handleDeletePage : handleDeleteFolder
 								}
 							]
 				}

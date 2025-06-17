@@ -6,7 +6,8 @@ import {
 	ListItemButton,
 	ListItemIcon,
 	ListItemText,
-	Tooltip
+	Tooltip,
+	TextField
 } from '@mui/material';
 import {
 	ArticleOutlined,
@@ -23,15 +24,27 @@ const PageListItem = ({
 	openPage,
 	level,
 	menuItem,
-	handleContextMenu
+	handleContextMenu,
+	editingPageId,
+	onRenamePage
 }: IPageListItemProps) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [isHovered, setIsHovered] = useState(false);
+	const [newTitle, setNewTitle] = useState(page.title);
 
 	const handleOpenPage = () => {
 		setIsOpen(!isOpen);
 		openPage(page);
 	};
+
+	const handleRename = (value: string) => {
+		const trimmedValue = value.trim();
+		if (trimmedValue && page.id) {
+			onRenamePage?.(page.id, trimmedValue);
+		}
+	};
+
+	const isEditing = editingPageId === page.id;
 
 	return (
 		<Box>
@@ -55,21 +68,39 @@ const PageListItem = ({
 					<ListItemIcon sx={{ minWidth: '36px' }}>
 						<ArticleOutlined />
 					</ListItemIcon>
-					<Tooltip title={page.title.length > 8 ? page.title : ''} placement="top">
-						<Box sx={{ display: 'flex', alignItems: 'center' }}>
-							<ListItemText
-								primary={page.title || 'Untitled'}
-								sx={ListItemTextStyle(isHovered, menuItem?.id === page.id)}
-							/>
-							{page.status === 'draft' && (
-								<Box component="span" sx={DraftStatusBox}>
-									{page.status}
-								</Box>
-							)}
-						</Box>
-					</Tooltip>
+					{isEditing ? (
+						<TextField
+							size="small"
+							value={newTitle}
+							onChange={(e) => setNewTitle(e.target.value)}
+							onBlur={() => handleRename(newTitle)}
+							onKeyDown={(e) => {
+								if (e.key === 'Enter') {
+									handleRename(newTitle);
+								}
+							}}
+							autoFocus
+							fullWidth
+							variant="outlined"
+							sx={{ mr: 1 }}
+						/>
+					) : (
+						<Tooltip title={page.title.length > 8 ? page.title : ''} placement="top">
+							<Box sx={{ display: 'flex', alignItems: 'center' }}>
+								<ListItemText
+									primary={page.title || 'Untitled'}
+									sx={ListItemTextStyle(isHovered, menuItem?.id === page.id)}
+								/>
+								{page.status === 'draft' && (
+									<Box component="span" sx={DraftStatusBox}>
+										{page.status}
+									</Box>
+								)}
+							</Box>
+						</Tooltip>
+					)}
 				</ListItemButton>
-				{(isHovered || menuItem?.id === page?.id) && (
+				{(isHovered || menuItem?.id === page?.id) && !isEditing && (
 					<ListItemActionButtons
 						option={page}
 						menuItem={menuItem}
@@ -90,6 +121,8 @@ const PageListItem = ({
 								level={level ? level + 2 : 0}
 								menuItem={menuItem}
 								handleContextMenu={handleContextMenu}
+								editingPageId={editingPageId}
+								onRenamePage={onRenamePage}
 							/>
 						))}
 				</List>

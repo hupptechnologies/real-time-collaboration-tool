@@ -29,7 +29,9 @@ const FolderListItem: React.FC<IFolderListItemProps> = ({
 	openPage,
 	handleContextMenu,
 	onRenameFolder,
-	level = 0
+	level = 0,
+	editingPageId,
+	onRenamePage
 }: IFolderListItemProps) => {
 	const [isHovered, setIsHovered] = useState(false);
 
@@ -104,6 +106,8 @@ const FolderListItem: React.FC<IFolderListItemProps> = ({
 							level={level + 2}
 							menuItem={menuItem as IPage}
 							handleContextMenu={handleContextMenu}
+							editingPageId={editingPageId}
+							onRenamePage={onRenamePage}
 						/>
 					))}
 					{folder.folders?.map((subFolder) => (

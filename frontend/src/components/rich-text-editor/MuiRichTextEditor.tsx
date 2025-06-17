@@ -73,7 +73,7 @@ const MuiRichTextEditor = () => {
 	}, [content, isEditable]);
 
 	const handleUpdatePage = (status: TPageStatus) => {
-		if (title.trim() === '') {
+		if (title.trim() === '' && status === 'published') {
 			showToaster('Title is required', 'error');
 			return;
 		}
@@ -138,12 +138,13 @@ const MuiRichTextEditor = () => {
 							<>
 								<Button
 									variant="contained"
+									sx={{ mr: 1 }}
 									onClick={() => handleUpdatePage('published')}
 									disabled={isUpdating}>
 									{isUpdating ? 'Publishing...' : 'Publish'}
 								</Button>
 								<Button
-									variant="text"
+									variant="outlined"
 									onClick={() => handleUpdatePage('draft')}
 									disabled={isUpdating}>
 									Close Draft
@@ -153,6 +154,7 @@ const MuiRichTextEditor = () => {
 							<>
 								<Button
 									variant="contained"
+									sx={{ mr: 1 }}
 									onClick={() => handleUpdatePage('published')}
 									disabled={isUpdating}>
 									{isUpdating ? 'Updating...' : 'Update'}

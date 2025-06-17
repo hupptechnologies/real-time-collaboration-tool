@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { IPageState } from '@/types';
-import { createPageAction, getPageAction, updatePageAction } from '.';
+import { createPageAction, getPageAction, updatePageAction, deletePageAction } from '.';
 
 const initialState: IPageState = {
 	loading: false,
@@ -41,6 +41,16 @@ const pageSlice = createSlice({
 			state.loading = false;
 		});
 		builder.addCase(updatePageAction.rejected, (state, action) => {
+			state.loading = false;
+			state.error = action.error.message || 'Failed';
+		});
+		builder.addCase(deletePageAction.pending, (state) => {
+			state.loading = true;
+		});
+		builder.addCase(deletePageAction.fulfilled, (state) => {
+			state.loading = false;
+		});
+		builder.addCase(deletePageAction.rejected, (state, action) => {
 			state.loading = false;
 			state.error = action.error.message || 'Failed';
 		});
