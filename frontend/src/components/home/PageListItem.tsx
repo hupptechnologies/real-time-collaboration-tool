@@ -22,7 +22,7 @@ import { DraftStatusBox, FolderMainBox, ListItemTextStyle } from '@/styles';
 const PageListItem = ({
 	page,
 	openPage,
-	level,
+	level = 0,
 	menuItem,
 	handleContextMenu,
 	editingPageId,
@@ -118,7 +118,7 @@ const PageListItem = ({
 								key={subPage.id}
 								page={subPage}
 								openPage={openPage}
-								level={level ? level + 2 : 0}
+								level={level + 2}
 								menuItem={menuItem}
 								handleContextMenu={handleContextMenu}
 								editingPageId={editingPageId}

@@ -90,18 +90,20 @@ const DrawerMenu = () => {
 	});
 
 	const [folderData, setFolderData] = useState<IFolder[]>([]);
+	const [rootPages, setRootPages] = useState<IPage[]>([]);
 	const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({});
 
 	const memoizedFolderData = useMemo(() => {
 		if (Array.isArray(space?.folders) && space?.folders.length > 0) {
-			return restructureFolders(space.folders);
+			return restructureFolders(space.folders, space.pages || []);
 		}
-		return [];
+		return { folders: [], rootPages: [] };
 	}, [space?.folders]);
 
 	useEffect(() => {
 		if (memoizedFolderData) {
-			setFolderData(memoizedFolderData);
+			setFolderData(memoizedFolderData.folders);
+			setRootPages(memoizedFolderData.rootPages);
 		}
 	}, [memoizedFolderData]);
 
@@ -397,9 +399,9 @@ const DrawerMenu = () => {
 						</Box>
 						{uiState.openContent && (
 							<>
-								{space.pages && space.pages.length > 0 ? (
+								{rootPages && rootPages.length > 0 ? (
 									<List sx={{ padding: 0 }}>
-										{space.pages.map((page) => (
+										{rootPages.map((page) => (
 											<PageListItem
 												key={page.id}
 												page={page}

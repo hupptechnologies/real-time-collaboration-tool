@@ -1,4 +1,4 @@
-import { IFolder } from '@/types';
+import { IFolder, IPage } from '@/types';
 
 const sortFolders = (folderList: IFolder[]) => {
 	folderList.sort((a, b) => a.name.localeCompare(b.name));
@@ -9,27 +9,72 @@ const sortFolders = (folderList: IFolder[]) => {
 	});
 };
 
-export const restructureFolders = (folders: IFolder[]): IFolder[] => {
+export const restructureFolders = (
+	folders: IFolder[],
+	pages: IPage[]
+): { folders: IFolder[]; rootPages: IPage[] } => {
 	const folderMap: { [key: number]: IFolder } = {};
+	const pageMap: { [key: number]: IPage & { pages?: IPage[] } } = {};
 	const result: IFolder[] = [];
+	const rootPages: IPage[] = [];
 
 	folders.forEach((folder) => {
-		folderMap[folder.id] = { ...folder, folders: [] };
+		folderMap[folder.id] = { ...folder, folders: [], pages: [] };
 	});
 
+	// First, create a map of all pages
+	pages.forEach((page) => {
+		if (!page.id) {
+			return;
+		}
+		pageMap[page.id] = { ...page, pages: [] };
+	});
+
+	// Assign pages to their parent page if parentId exists
+	pages.forEach((page) => {
+		if (!page.id) {
+			return;
+		}
+		if (page.parentId && pageMap[page.parentId]) {
+			if (!pageMap[page.parentId].pages) {
+				pageMap[page.parentId].pages = [];
+			}
+			pageMap[page.parentId]?.pages?.push(pageMap[page.id]);
+		}
+	});
+
+	// Assign only true root pages (no folderId, no parentId) to rootPages, and assign top-level pages to folders
+	pages.forEach((page) => {
+		if (!page.id) {
+			return;
+		}
+		const isNested = !!page.parentId && pageMap[page.parentId];
+		if (!isNested) {
+			if (page.folderId && folderMap[page.folderId]) {
+				if (!folderMap[page.folderId].pages) {
+					folderMap[page.folderId].pages = [];
+				}
+				folderMap[page.folderId]?.pages?.push(pageMap[page.id]);
+			} else if (!page.parentId) {
+				rootPages.push(pageMap[page.id]);
+			}
+		}
+	});
+
+	// Build folder tree
 	folders.forEach((folder) => {
 		if (folder.parentFolderId === null) {
 			result.push(folderMap[folder.id]);
 		} else {
 			const parentFolder = folderMap[folder.parentFolderId];
-			if (parentFolder && Array.isArray(parentFolder.folders)) {
-				parentFolder.folders.push(folderMap[folder.id]);
+			if (parentFolder) {
+				parentFolder?.folders?.push(folderMap[folder.id]);
 			}
 		}
 	});
 
 	sortFolders(result);
-	return result;
+	return { folders: result, rootPages };
 };
 
 export const generateDefaultFolderName = (
