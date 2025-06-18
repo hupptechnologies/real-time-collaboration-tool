@@ -84,45 +84,11 @@ const findById = async (
 					model: Folder,
 					as: 'folders',
 					required: false,
-					include: [
-						{
-							model: Page,
-							as: 'pages',
-							required: false,
-							where: {
-								parentId: null,
-							},
-							include: [
-								{
-									model: Page,
-									as: 'pages',
-									required: false,
-									where: {
-										folderId: null,
-									},
-								},
-							],
-						},
-					],
 				},
 				{
 					model: Page,
 					as: 'pages',
 					required: false,
-					where: {
-						parentId: null,
-						folderId: null,
-					},
-					include: [
-						{
-							model: Page,
-							as: 'pages',
-							required: false,
-							where: {
-								folderId: null,
-							},
-						},
-					],
 				},
 			],
 		});
