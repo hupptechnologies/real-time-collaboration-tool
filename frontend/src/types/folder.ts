@@ -64,6 +64,8 @@ export interface IFolderListItemProps {
 	handleContextMenu: THandleContextMenuFn;
 	editingPageId?: number | null;
 	onRenamePage?: (_id: number, _newName: string) => void;
+	openPages?: Record<string, boolean>;
+	selectedPageId?: number | null;
 }
 
 export interface IPageListItemProps {
@@ -74,6 +76,8 @@ export interface IPageListItemProps {
 	handleContextMenu: THandleContextMenuFn;
 	editingPageId?: number | null;
 	onRenamePage?: (_id: number, _newName: string) => void;
+	openPages?: Record<string, boolean>;
+	selectedPageId?: number | null;
 }
 
 export interface ISelectedItem {

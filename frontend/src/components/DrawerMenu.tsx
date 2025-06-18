@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import {
 	Box,
 	Drawer,
@@ -58,7 +58,12 @@ import {
 	IPageCreationAttribute,
 	IContextMenuElement
 } from '@/types';
-import { generateDefaultFolderName, restructureFolders } from '@/utils/common';
+import {
+	generateDefaultFolderName,
+	restructureFolders,
+	findPagePathInTree,
+	getParentPagePath
+} from '@/utils/common';
 
 interface UIState {
 	open: boolean;
@@ -74,10 +79,14 @@ interface UIState {
 const DrawerMenu = () => {
 	const params = useParams();
 	const router = useRouter();
+	const searchParams = useSearchParams();
 	const dispatch = useAppDispatch();
 	const { showToaster } = useToaster();
 	const { space } = useAppSelector((state: RootState) => state.space);
 	const spaceId = params?.spaceId as string;
+	const pageId = searchParams?.get('pageId');
+	const pageIdNumber = pageId ? Number(pageId) : null;
+
 	const [uiState, setUiState] = useState<UIState>({
 		open: true,
 		openContent: true,
@@ -88,10 +97,10 @@ const DrawerMenu = () => {
 		deleteItem: null,
 		contextMenu: undefined
 	});
-
 	const [folderData, setFolderData] = useState<IFolder[]>([]);
 	const [rootPages, setRootPages] = useState<IPage[]>([]);
 	const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({});
+	const [openPages, setOpenPages] = useState<Record<string, boolean>>({});
 
 	const memoizedFolderData = useMemo(() => {
 		if (Array.isArray(space?.folders) && space?.folders.length > 0) {
@@ -104,8 +113,46 @@ const DrawerMenu = () => {
 		if (memoizedFolderData) {
 			setFolderData(memoizedFolderData.folders);
 			setRootPages(memoizedFolderData.rootPages);
+
+			// Auto-expand folders and pages if pageId is present
+			if (pageId) {
+				const { folderPath, foundPage } = findPagePathInTree(
+					memoizedFolderData.folders,
+					memoizedFolderData.rootPages,
+					pageIdNumber || 0
+				);
+
+				if (folderPath.length > 0) {
+					setOpenFolders((prev) => {
+						const newOpen = { ...prev };
+						folderPath.forEach((fid) => {
+							newOpen[fid] = true;
+						});
+						return newOpen;
+					});
+					setUiState((prev) => ({ ...prev, open: true }));
+				}
+
+				if (foundPage) {
+					const parentPagePath = getParentPagePath(
+						foundPage,
+						[],
+						memoizedFolderData.folders,
+						memoizedFolderData.rootPages
+					);
+					if (parentPagePath.length > 0) {
+						setOpenPages((prev) => {
+							const newOpen = { ...prev };
+							parentPagePath.forEach((pid) => {
+								newOpen[pid] = true;
+							});
+							return newOpen;
+						});
+					}
+				}
+			}
 		}
-	}, [memoizedFolderData]);
+	}, [memoizedFolderData, pageIdNumber]);
 
 	const getAllFolder = useCallback((): void => {
 		dispatch(fetchSingleSpaceAction({ data: { id: Number(spaceId) } }));
@@ -411,6 +458,8 @@ const DrawerMenu = () => {
 												handleContextMenu={handleContextMenu}
 												editingPageId={uiState.editingPageId}
 												onRenamePage={handleRenamePage}
+												openPages={openPages}
+												selectedPageId={pageIdNumber}
 											/>
 										))}
 									</List>
@@ -430,6 +479,8 @@ const DrawerMenu = () => {
 												onRenameFolder={handleRenameFolder}
 												editingPageId={uiState.editingPageId}
 												onRenamePage={handleRenamePage}
+												openPages={openPages}
+												selectedPageId={pageIdNumber}
 											/>
 										))}
 										<ListItemButton

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
 	Box,
 	Collapse,
@@ -26,11 +26,21 @@ const PageListItem = ({
 	menuItem,
 	handleContextMenu,
 	editingPageId,
-	onRenamePage
+	onRenamePage,
+	openPages = {},
+	selectedPageId = null
 }: IPageListItemProps) => {
-	const [isOpen, setIsOpen] = useState(false);
 	const [isHovered, setIsHovered] = useState(false);
 	const [newTitle, setNewTitle] = useState(page.title);
+	const [isOpen, setIsOpen] = useState(false);
+
+	useEffect(() => {
+		if (page.id && openPages[page.id]) {
+			setIsOpen(true);
+		} else {
+			setIsOpen(false);
+		}
+	}, [openPages, page.id]);
 
 	const handleOpenPage = () => {
 		setIsOpen(!isOpen);
@@ -123,6 +133,8 @@ const PageListItem = ({
 								handleContextMenu={handleContextMenu}
 								editingPageId={editingPageId}
 								onRenamePage={onRenamePage}
+								openPages={openPages}
+								selectedPageId={selectedPageId}
 							/>
 						))}
 				</List>
