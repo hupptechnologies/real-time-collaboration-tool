@@ -41,11 +41,14 @@ export const SpaceTitle: SxProps<Theme> = {
 export const SpaceDescription: SxProps<Theme> = {
 	color: '#5E6C84',
 	display: '-webkit-box',
-	WebkitLineClamp: 2,
+	WebkitLineClamp: 1,
 	WebkitBoxOrient: 'vertical',
 	overflow: 'hidden',
 	fontSize: '0.875rem',
-	lineHeight: 1.5
+	lineHeight: 1.5,
+	'& p': {
+		margin: 0
+	}
 };
 
 export const SpaceActionsContainer: SxProps<Theme> = {

@@ -163,9 +163,13 @@ const SpacePage = () => {
 													<Typography variant="h6" sx={SpaceTitle}>
 														{space.name}
 													</Typography>
-													<Typography variant="body2" sx={SpaceDescription}>
-														{space.description || 'No description'}
-													</Typography>
+													<Typography
+														variant="h6"
+														sx={SpaceDescription}
+														dangerouslySetInnerHTML={{
+															__html: space.description || 'No description'
+														}}
+													/>
 												</Link>
 											)}
 										</Box>
