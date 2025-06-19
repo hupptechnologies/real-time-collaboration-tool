@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import {
 	Box,
 	Collapse,
@@ -17,7 +18,13 @@ import {
 } from '@mui/icons-material';
 import ListItemActionButtons from './ListItemActionButtons';
 import { IPageListItemProps } from '@/types';
-import { DraftStatusBox, FolderMainBox, ListItemTextStyle } from '@/styles';
+import {
+	DraftStatusBox,
+	EditItemText,
+	ListItemTextStyle,
+	MainBoxContent,
+	PageMainBox
+} from '@/styles';
 
 const PageListItem = ({
 	page,
@@ -42,11 +49,6 @@ const PageListItem = ({
 		}
 	}, [openPages, page.id]);
 
-	const handleOpenPage = () => {
-		setIsOpen(!isOpen);
-		openPage(page);
-	};
-
 	const handleRename = (value: string) => {
 		const trimmedValue = value.trim();
 		if (trimmedValue && page.id) {
@@ -55,68 +57,78 @@ const PageListItem = ({
 	};
 
 	const isEditing = editingPageId === page.id;
+	const isSelected = selectedPageId === page.id;
+	const isMenuOpen = menuItem?.id === page.id;
 
 	return (
-		<Box>
-			<Box
-				sx={FolderMainBox}
-				onMouseEnter={() => setIsHovered(true)}
-				onMouseLeave={() => setIsHovered(false)}>
-				<ListItemButton
-					key={page.id}
-					sx={{ gridColumn: 1, gridRow: 1, padding: '0 4px 0 0', pl: level }}
-					onClick={handleOpenPage}>
-					{page.pages && page.pages.length > 0 ? (
-						isOpen ? (
-							<KeyboardArrowDown />
-						) : (
-							<KeyboardArrowRight />
-						)
-					) : (
-						<FiberManualRecord sx={{ height: '8px', width: '8px', mr: 1 }} />
-					)}
-					<ListItemIcon sx={{ minWidth: '36px' }}>
-						<ArticleOutlined />
-					</ListItemIcon>
-					{isEditing ? (
-						<TextField
-							size="small"
-							value={newTitle}
-							onChange={(e) => setNewTitle(e.target.value)}
-							onBlur={() => handleRename(newTitle)}
-							onKeyDown={(e) => {
-								if (e.key === 'Enter') {
-									handleRename(newTitle);
-								}
-							}}
-							autoFocus
-							fullWidth
-							variant="outlined"
-							sx={{ mr: 1 }}
-						/>
-					) : (
-						<Tooltip title={page.title.length > 8 ? page.title : ''} placement="top">
-							<Box sx={{ display: 'flex', alignItems: 'center' }}>
-								<ListItemText
-									primary={page.title || 'Untitled'}
-									sx={ListItemTextStyle(isHovered, menuItem?.id === page.id)}
+		<>
+			<Box sx={{ pl: level }}>
+				<Box
+					sx={PageMainBox(isSelected, isEditing)}
+					onMouseEnter={() => setIsHovered(true)}
+					onMouseLeave={() => setIsHovered(false)}>
+					<Box sx={MainBoxContent}>
+						<Box sx={{ display: 'flex', alignItems: 'center' }} onClick={() => setIsOpen(!isOpen)}>
+							{page.pages && page.pages.length > 0 ? (
+								isOpen ? (
+									<KeyboardArrowDown />
+								) : (
+									<KeyboardArrowRight />
+								)
+							) : (
+								<FiberManualRecord sx={{ height: '8px', width: '8px', ml: 1, mr: 1 }} />
+							)}
+						</Box>
+						<ListItemButton
+							key={page.id}
+							component={Link}
+							disableRipple={true}
+							href={`/home/${page.spaceId}?pageId=${page.id}&edit=${page.status === 'draft'}`}
+							sx={{ padding: '0 4px 0 0' }}>
+							<ListItemIcon sx={{ minWidth: '30px', color: isSelected ? '#1868DB' : 'inherit' }}>
+								<ArticleOutlined sx={{ height: '24px', width: '24px' }} />
+							</ListItemIcon>
+							{isEditing ? (
+								<TextField
+									sx={EditItemText}
+									size="small"
+									value={newTitle}
+									onChange={(e) => setNewTitle(e.target.value)}
+									onBlur={() => handleRename(newTitle)}
+									onKeyDown={(e) => {
+										if (e.key === 'Enter') {
+											handleRename(newTitle);
+										}
+									}}
+									autoFocus
+									fullWidth
+									variant="outlined"
 								/>
-								{page.status === 'draft' && (
-									<Box component="span" sx={DraftStatusBox}>
-										{page.status}
+							) : (
+								<Tooltip title={page.title.length > 8 ? page.title : ''} placement="right-end">
+									<Box sx={{ display: 'flex', alignItems: 'center' }}>
+										<ListItemText
+											primary={page.title || 'Untitled'}
+											sx={ListItemTextStyle(isHovered, isSelected)}
+										/>
+										{page.status === 'draft' && (
+											<Box component="span" sx={DraftStatusBox}>
+												{page.status}
+											</Box>
+										)}
 									</Box>
-								)}
-							</Box>
-						</Tooltip>
+								</Tooltip>
+							)}
+						</ListItemButton>
+					</Box>
+					{(isHovered || isMenuOpen) && !isEditing && (
+						<ListItemActionButtons
+							option={page}
+							menuItem={menuItem}
+							handleContextMenu={handleContextMenu}
+						/>
 					)}
-				</ListItemButton>
-				{(isHovered || menuItem?.id === page?.id) && !isEditing && (
-					<ListItemActionButtons
-						option={page}
-						menuItem={menuItem}
-						handleContextMenu={handleContextMenu}
-					/>
-				)}
+				</Box>
 			</Box>
 
 			<Collapse in={isOpen} timeout="auto" unmountOnExit>
@@ -128,7 +140,7 @@ const PageListItem = ({
 								key={subPage.id}
 								page={subPage}
 								openPage={openPage}
-								level={level + 2}
+								level={level + 1}
 								menuItem={menuItem}
 								handleContextMenu={handleContextMenu}
 								editingPageId={editingPageId}
@@ -139,7 +151,7 @@ const PageListItem = ({
 						))}
 				</List>
 			</Collapse>
-		</Box>
+		</>
 	);
 };
 

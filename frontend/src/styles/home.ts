@@ -119,11 +119,44 @@ export const ContentIconInlineBox: SxProps<Theme> = () => ({
 	flexShrink: 0
 });
 
-export const FolderMainBox: SxProps<Theme> = () => ({
+export const FolderMainBox = (isEditing: boolean) => ({
 	display: 'grid',
 	gridColumn: 1,
 	gridRow: 1,
-	position: 'relative'
+	position: 'relative',
+	cursor: 'pointer',
+	'&:hover': {
+		backgroundColor: '#0065ff14'
+	},
+	'&:focus-within, &:focus-visible': {
+		backgroundColor: isEditing ? 'transparent' : '#0747a614',
+		border: isEditing ? 'none' : '2px solid #1868DB',
+		borderRadius: isEditing ? '0px' : '6px'
+	}
+});
+
+export const PageMainBox = (isSelected: boolean, isEditing: boolean) => ({
+	display: 'grid',
+	gridColumn: 1,
+	gridRow: 1,
+	position: 'relative',
+	cursor: 'pointer',
+	backgroundColor: isSelected ? '#0747a614' : 'transparent',
+	'&:hover': {
+		backgroundColor: '#0065ff14'
+	},
+	'&:focus-within, &:focus-visible': {
+		border: isEditing ? 'none' : '2px solid #1868DB',
+		backgroundColor: isEditing ? 'transparent' : '#0747a614',
+		borderRadius: isEditing ? '0px' : '6px'
+	}
+});
+
+export const MainBoxContent = () => ({
+	gridColumn: 1,
+	gridRow: 1,
+	display: 'flex',
+	alignItems: 'center'
 });
 
 export const AddIconContentBox: SxProps<Theme> = () => ({
@@ -151,6 +184,8 @@ export const AddIconButton: SxProps<Theme> = (theme) => ({
 	minHeight: '24px',
 	minWidth: '24px',
 	width: '24px',
+	cursor: 'pointer',
+	padding: '0 4px',
 	':hover': {
 		backgroundColor: theme.palette.mode === 'dark' ? '#ffffff14' : '#0000000a',
 		textDecoration: 'none'
@@ -177,23 +212,20 @@ export const createBtn: SxProps<Theme> = () => ({
 
 export const ListItemTextStyle = (isHovered: boolean, isSelected: boolean) => ({
 	'& .MuiListItemText-primary': {
-		textOverflow: isHovered || isSelected ? 'ellipsis' : 'clip',
+		textOverflow: isHovered ? 'ellipsis' : 'clip',
 		overflow: 'hidden',
 		whiteSpace: 'nowrap',
-		maxWidth: isHovered || isSelected ? '50px' : '130px',
-		transition: 'text-overflow 0.2s ease'
+		maxWidth: isHovered ? '50px' : '130px',
+		transition: 'text-overflow 0.2s ease',
+		color: isSelected ? '#1868DB' : 'inherit'
 	}
 });
 
-export const EditFolderListItemText: SxProps<Theme> = () => ({
+export const EditItemText: SxProps<Theme> = () => ({
 	width: '180px',
 	'& .MuiOutlinedInput-root': {
 		height: '32px',
 		fontSize: '14px',
-		backgroundColor: 'background.paper',
-		'&.Mui-focused fieldset': {
-			borderColor: 'primary.main',
-			borderWidth: '1px'
-		}
+		padding: '4px 14px'
 	}
 });

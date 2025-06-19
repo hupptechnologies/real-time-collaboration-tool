@@ -27,6 +27,7 @@ const ListItemActionButtons: React.FC<IListItemActionButtonsProps> = ({
 				<Tooltip title="Create" placement="top">
 					<ListItemButton
 						sx={AddIconButton}
+						disableRipple={true}
 						data-type="new"
 						data-active={menuItem?.id === option.id && activeButtonType === 'new'}
 						onClick={(e) => handleButtonClick(e, 'new')}>
@@ -37,6 +38,7 @@ const ListItemActionButtons: React.FC<IListItemActionButtonsProps> = ({
 			<Tooltip title="More actions" placement="top">
 				<ListItemButton
 					sx={AddIconButton}
+					disableRipple={true}
 					data-type="more"
 					data-active={menuItem?.id === option.id && activeButtonType === 'more'}
 					onClick={(e) => handleButtonClick(e, 'more')}>

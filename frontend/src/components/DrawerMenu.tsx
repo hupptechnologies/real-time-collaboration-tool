@@ -115,7 +115,7 @@ const DrawerMenu = () => {
 			setRootPages(memoizedFolderData.rootPages);
 
 			// Auto-expand folders and pages if pageId is present
-			if (pageId) {
+			if (pageIdNumber) {
 				const { folderPath, foundPage } = findPagePathInTree(
 					memoizedFolderData.folders,
 					memoizedFolderData.rootPages,
@@ -152,7 +152,7 @@ const DrawerMenu = () => {
 				}
 			}
 		}
-	}, [memoizedFolderData, pageIdNumber]);
+	}, [memoizedFolderData]);
 
 	const getAllFolder = useCallback((): void => {
 		dispatch(fetchSingleSpaceAction({ data: { id: Number(spaceId) } }));
