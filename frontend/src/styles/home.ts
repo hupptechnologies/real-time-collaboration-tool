@@ -126,7 +126,7 @@ export const FolderMainBox = (isEditing: boolean) => ({
 	position: 'relative',
 	cursor: 'pointer',
 	'&:hover': {
-		backgroundColor: '#0065ff14'
+		backgroundColor: isEditing ? 'transparent' : '#0065ff14'
 	},
 	'&:focus-within, &:focus-visible': {
 		backgroundColor: isEditing ? 'transparent' : '#0747a614',
@@ -143,7 +143,7 @@ export const PageMainBox = (isSelected: boolean, isEditing: boolean) => ({
 	cursor: 'pointer',
 	backgroundColor: isSelected ? '#0747a614' : 'transparent',
 	'&:hover': {
-		backgroundColor: '#0065ff14'
+		backgroundColor: isEditing ? 'transparent' : '#0065ff14'
 	},
 	'&:focus-within, &:focus-visible': {
 		border: isEditing ? 'none' : '2px solid #1868DB',

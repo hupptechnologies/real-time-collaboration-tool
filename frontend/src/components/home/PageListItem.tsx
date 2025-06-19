@@ -28,12 +28,11 @@ import {
 
 const PageListItem = ({
 	page,
-	openPage,
 	level = 0,
 	menuItem,
 	handleContextMenu,
 	editingPageId,
-	onRenamePage,
+	handleRename,
 	openPages = {},
 	selectedPageId = null
 }: IPageListItemProps) => {
@@ -49,17 +48,9 @@ const PageListItem = ({
 		}
 	}, [openPages, page.id]);
 
-	const handleRename = (value: string) => {
-		const trimmedValue = value.trim();
-		if (trimmedValue && page.id) {
-			onRenamePage?.(page.id, trimmedValue);
-		}
-	};
-
 	const isEditing = editingPageId === page.id;
 	const isSelected = selectedPageId === page.id;
 	const isMenuOpen = menuItem?.id === page.id;
-
 	return (
 		<>
 			<Box sx={{ pl: level }}>
@@ -84,7 +75,7 @@ const PageListItem = ({
 							component={Link}
 							disableRipple={true}
 							href={`/home/${page.spaceId}?pageId=${page.id}&edit=${page.status === 'draft'}`}
-							sx={{ padding: '0 4px 0 0' }}>
+							sx={{ padding: '0 4px 0 0', '&:hover': { background: 'transparent' } }}>
 							<ListItemIcon sx={{ minWidth: '30px', color: isSelected ? '#1868DB' : 'inherit' }}>
 								<ArticleOutlined sx={{ height: '24px', width: '24px' }} />
 							</ListItemIcon>
@@ -94,10 +85,10 @@ const PageListItem = ({
 									size="small"
 									value={newTitle}
 									onChange={(e) => setNewTitle(e.target.value)}
-									onBlur={() => handleRename(newTitle)}
+									onBlur={() => handleRename(page, newTitle, 'page')}
 									onKeyDown={(e) => {
 										if (e.key === 'Enter') {
-											handleRename(newTitle);
+											handleRename(page, newTitle, 'page');
 										}
 									}}
 									autoFocus
@@ -139,12 +130,11 @@ const PageListItem = ({
 							<PageListItem
 								key={subPage.id}
 								page={subPage}
-								openPage={openPage}
 								level={level + 1}
 								menuItem={menuItem}
 								handleContextMenu={handleContextMenu}
 								editingPageId={editingPageId}
-								onRenamePage={onRenamePage}
+								handleRename={handleRename}
 								openPages={openPages}
 								selectedPageId={selectedPageId}
 							/>

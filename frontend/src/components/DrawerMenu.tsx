@@ -195,7 +195,7 @@ const DrawerMenu = () => {
 				mouseX: rect.left,
 				mouseY: rect.bottom + 10,
 				type: type,
-				target: (item as IPage)?.title ? 'page' : 'folder',
+				target: (item as IPage)?.status ? 'page' : 'folder',
 				item
 			}
 		}));
@@ -261,23 +261,37 @@ const DrawerMenu = () => {
 		}
 	};
 
-	const handleRenameFolder = (id: number, newName: string) => {
-		if (newName.trim() === '') {
+	const handleRename = (item: IFolder | IPage, name: string, type: 'folder' | 'page') => {
+		if (name.trim() === '') {
+			showToaster('Name cannot be empty', 'error');
 			return;
 		}
-		dispatch(updateFolderAction({ data: { id, name: newName }, callback: renameCallBack }));
-	};
 
-	const handleRenamePage = (id: number, newName: string) => {
-		if (newName.trim() === '') {
+		const originalName = type === 'folder' ? (item as IFolder).name : (item as IPage).title;
+		if (name.trim() === originalName) {
+			setUiState((prev) => ({
+				...prev,
+				editingFolderId: type === 'folder' ? null : prev.editingFolderId,
+				editingPageId: type === 'page' ? null : prev.editingPageId
+			}));
 			return;
 		}
-		dispatch(
-			updatePageAction({
-				data: { id, title: newName },
-				callback: renameCallBack
-			})
-		);
+
+		if (type === 'folder') {
+			dispatch(
+				updateFolderAction({
+					data: { id: item.id, name: name },
+					callback: renameCallBack
+				})
+			);
+		} else {
+			dispatch(
+				updatePageAction({
+					data: { id: item.id, title: name },
+					callback: renameCallBack
+				})
+			);
+		}
 	};
 
 	const renameCallBack = (data: IAPIResponse<IFolder | IPage>) => {
@@ -452,12 +466,11 @@ const DrawerMenu = () => {
 											<PageListItem
 												key={page.id}
 												page={page}
-												openPage={openPage}
 												level={0}
 												menuItem={uiState.contextMenu?.item as IPage}
 												handleContextMenu={handleContextMenu}
 												editingPageId={uiState.editingPageId}
-												onRenamePage={handleRenamePage}
+												handleRename={handleRename}
 												openPages={openPages}
 												selectedPageId={pageIdNumber}
 											/>
@@ -472,13 +485,11 @@ const DrawerMenu = () => {
 												folder={folder}
 												editingFolderId={uiState.editingFolderId}
 												menuItem={uiState.contextMenu?.item}
-												openPage={openPage}
 												openFolder={openFolders}
 												toggleFolder={toggleFolder}
 												handleContextMenu={handleContextMenu}
-												onRenameFolder={handleRenameFolder}
+												handleRename={handleRename}
 												editingPageId={uiState.editingPageId}
-												onRenamePage={handleRenamePage}
 												openPages={openPages}
 												selectedPageId={pageIdNumber}
 											/>

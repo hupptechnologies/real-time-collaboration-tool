@@ -58,24 +58,21 @@ export interface IFolderListItemProps {
 	level?: number;
 	editingFolderId: number | null;
 	menuItem: IFolder | IPage | undefined | null;
-	onRenameFolder: (_id: number, _newName: string) => void;
+	handleRename: (_item: IFolder | IPage, _name: string, _type: 'folder' | 'page') => void;
 	toggleFolder: (_folder: IFolder) => void;
-	openPage: (_page: IPage) => void;
 	handleContextMenu: THandleContextMenuFn;
 	editingPageId?: number | null;
-	onRenamePage?: (_id: number, _newName: string) => void;
 	openPages?: Record<string, boolean>;
 	selectedPageId?: number | null;
 }
 
 export interface IPageListItemProps {
 	page: IPage;
-	openPage: (_page: IPage) => void;
 	level?: number;
 	menuItem: IPage | IFolder;
 	handleContextMenu: THandleContextMenuFn;
 	editingPageId?: number | null;
-	onRenamePage?: (_id: number, _newName: string) => void;
+	handleRename: (_item: IFolder | IPage, _name: string, _type: 'folder' | 'page') => void;
 	openPages?: Record<string, boolean>;
 	selectedPageId?: number | null;
 }

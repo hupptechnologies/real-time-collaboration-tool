@@ -15,10 +15,10 @@ import {
 	TextField,
 	Tooltip
 } from '@mui/material';
-import { IFolder, IFolderListItemProps, IPage } from '@/types';
-import { EditItemText, FolderMainBox, ListItemTextStyle, MainBoxContent } from '@/styles';
 import PageListItem from './PageListItem';
 import ListItemActionButtons from './ListItemActionButtons';
+import { IFolder, IFolderListItemProps, IPage } from '@/types';
+import { EditItemText, FolderMainBox, ListItemTextStyle, MainBoxContent } from '@/styles';
 
 const FolderListItem: React.FC<IFolderListItemProps> = ({
 	folder,
@@ -26,26 +26,17 @@ const FolderListItem: React.FC<IFolderListItemProps> = ({
 	editingFolderId,
 	menuItem,
 	toggleFolder,
-	openPage,
 	handleContextMenu,
-	onRenameFolder,
+	handleRename,
 	level = 0,
 	editingPageId,
-	onRenamePage,
 	openPages = {},
 	selectedPageId = null
 }: IFolderListItemProps) => {
 	const [isHovered, setIsHovered] = useState(false);
-
 	const isOpen = openFolder[folder.id] || false;
 	const isEditing = editingFolderId === folder.id;
 	const isMenuOpen = menuItem?.id === folder.id;
-	const handleRename = (value: string) => {
-		const trimmedValue = value.trim();
-		if (trimmedValue) {
-			onRenameFolder(folder.id, trimmedValue);
-		}
-	};
 
 	return (
 		<>
@@ -75,10 +66,10 @@ const FolderListItem: React.FC<IFolderListItemProps> = ({
 									sx={EditItemText}
 									type="text"
 									defaultValue={folder.name}
-									onBlur={(e) => handleRename(e.target.value)}
+									onBlur={(e) => handleRename(folder, e.target.value, 'folder')}
 									onKeyDown={(e) => {
 										if (e.key === 'Enter') {
-											handleRename((e.target as HTMLInputElement).value);
+											handleRename(folder, (e.target as HTMLInputElement).value, 'folder');
 										}
 									}}
 								/>
@@ -112,12 +103,11 @@ const FolderListItem: React.FC<IFolderListItemProps> = ({
 						<PageListItem
 							key={page.id}
 							page={page}
-							openPage={openPage}
 							level={level + 2}
 							menuItem={menuItem as IPage}
 							handleContextMenu={handleContextMenu}
 							editingPageId={editingPageId}
-							onRenamePage={onRenamePage}
+							handleRename={handleRename}
 							openPages={openPages}
 							selectedPageId={selectedPageId}
 						/>
@@ -131,9 +121,8 @@ const FolderListItem: React.FC<IFolderListItemProps> = ({
 							level={level + 1}
 							openFolder={openFolder}
 							toggleFolder={toggleFolder}
-							openPage={openPage}
 							handleContextMenu={handleContextMenu}
-							onRenameFolder={onRenameFolder}
+							handleRename={handleRename}
 							openPages={openPages}
 							selectedPageId={selectedPageId}
 						/>
