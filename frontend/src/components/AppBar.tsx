@@ -22,7 +22,13 @@ import { Menu as MenuIcon, SearchOutlined, NotificationAddOutlined } from '@mui/
 import { useThemeContext } from '@/context/ThemeContext';
 import { useAuth } from '@/context/AuthContext';
 import ConfirmModal from './ConfirmModal';
-import { appBarStyles, navigationItemText, searchWrapperStyles } from '@/styles';
+import {
+	appBarStyles,
+	navigationItemText,
+	searchWrapperStyles,
+	iconButtonStyles,
+	avatarStyles
+} from '@/styles/appbar';
 
 const Header: React.FC = () => {
 	const theme = useTheme();
@@ -100,7 +106,7 @@ const Header: React.FC = () => {
 					</Box>
 					<Switch checked={themeMode === 'dark'} onChange={toggleThemeMode} color="primary" />
 					<Tooltip title="Notifications">
-						<IconButton color="inherit">
+						<IconButton color="inherit" sx={iconButtonStyles}>
 							<Badge badgeContent={notifications} color="error">
 								<NotificationAddOutlined />
 							</Badge>
@@ -110,14 +116,14 @@ const Header: React.FC = () => {
 						<IconButton
 							onClick={handleProfileClick}
 							size="small"
-							sx={{ ml: 2 }}
+							sx={{ ml: 2, ...iconButtonStyles }}
 							aria-controls={anchorEl ? 'account-menu' : undefined}
 							aria-haspopup="true"
 							aria-expanded={anchorEl ? 'true' : undefined}>
 							<Avatar
 								alt="User Profile"
 								src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
-								sx={{ width: 32, height: 32 }}
+								sx={avatarStyles}
 							/>
 						</IconButton>
 					</Tooltip>
@@ -128,7 +134,14 @@ const Header: React.FC = () => {
 				open={Boolean(menuAnchor)}
 				onClose={handleClose}
 				transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-				anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
+				anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+				PaperProps={{
+					sx: {
+						backgroundColor: theme.palette.background.paper,
+						color: theme.palette.text.primary,
+						borderRadius: '10px'
+					}
+				}}>
 				{navigationItems.map((item) => (
 					<MenuItem key={item.text} onClick={handleClose}>
 						{item.text}
@@ -142,7 +155,10 @@ const Header: React.FC = () => {
 				onClose={handleClose}
 				onClick={handleClose}
 				transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-				anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
+				anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+				PaperProps={{
+					sx: { backgroundColor: theme.palette.background.paper, color: theme.palette.text.primary }
+				}}>
 				<MenuItem onClick={() => router.push('/profile')}>Profile</MenuItem>
 				<MenuItem>My account</MenuItem>
 				<MenuItem onClick={() => setOpenModal(true)}>Logout</MenuItem>

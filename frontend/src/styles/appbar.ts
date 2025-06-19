@@ -1,23 +1,55 @@
 import { SxProps, Theme } from '@mui/material/styles';
 
 export const appBarStyles: SxProps<Theme> = (theme) => ({
-	backgroundColor: theme.palette.primary.main
+	backgroundColor: theme.palette.primary.main,
+	color: theme.palette.text.primary,
+	[theme.breakpoints.down('sm')]: {
+		paddingLeft: theme.spacing(1),
+		paddingRight: theme.spacing(1)
+	}
 });
 
 export const searchWrapperStyles: SxProps<Theme> = (theme) => ({
 	position: 'relative',
-	border: '1px solid',
-	borderRadius: '5px',
+	border: `1px solid ${theme.palette.divider}`,
+	borderRadius: theme.shape.borderRadius,
 	marginRight: theme.spacing(2),
 	marginLeft: theme.spacing(2),
 	width: '200px',
 	maxWidth: '100%',
+	backgroundColor: theme.palette.background.paper,
 	[theme.breakpoints.down('sm')]: {
 		display: 'none'
 	}
 });
 
-export const navigationItemText: SxProps<Theme> = () => ({
+export const navigationItemText: SxProps<Theme> = (theme) => ({
 	mx: 2,
-	cursor: 'pointer'
+	cursor: 'pointer',
+	color: theme.palette.text.primary,
+	transition: 'color 0.2s',
+	'&:hover, &:focus': {
+		color: theme.palette.primary.light
+	},
+	fontWeight: 500,
+	fontSize: '1rem',
+	[theme.breakpoints.down('sm')]: {
+		fontSize: '0.95rem'
+	}
+});
+
+export const iconButtonStyles: SxProps<Theme> = (theme) => ({
+	color: theme.palette.text.primary,
+	[theme.breakpoints.down('sm')]: {
+		padding: theme.spacing(1)
+	}
+});
+
+export const avatarStyles: SxProps<Theme> = (theme) => ({
+	width: 32,
+	height: 32,
+	[theme.breakpoints.down('sm')]: {
+		width: 28,
+		height: 28
+	}
 });
