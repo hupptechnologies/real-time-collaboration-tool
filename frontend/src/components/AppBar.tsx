@@ -143,7 +143,22 @@ const Header: React.FC = () => {
 					}
 				}}>
 				{navigationItems.map((item) => (
-					<MenuItem key={item.text} onClick={handleClose}>
+					<MenuItem
+						key={item.text}
+						onClick={() => {
+							router.push(item.link);
+							handleClose();
+						}}
+						sx={{
+							fontSize: '1.1rem',
+							py: 2,
+							px: 3,
+							color: theme.palette.text.primary,
+							'&:hover': {
+								backgroundColor: theme.palette.action.hover,
+								color: theme.palette.primary.main
+							}
+						}}>
 						{item.text}
 					</MenuItem>
 				))}
