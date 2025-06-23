@@ -381,21 +381,22 @@ const DrawerMenu = () => {
 				);
 			}
 			return items;
+		} else if (uiState.contextMenu?.type === 'more') {
+			return [
+				{
+					label: 'Rename',
+					icon: <EditOutlined fontSize="small" />,
+					handleOnclick: handleEditItem
+				},
+				{ divider: true },
+				{
+					label: 'Delete',
+					icon: <DeleteForeverOutlined fontSize="small" />,
+					handleOnclick: handleDeleteItem
+				}
+			] as IContextMenuElement[];
 		}
-
-		return [
-			{
-				label: 'Rename',
-				icon: <EditOutlined fontSize="small" />,
-				handleOnclick: handleEditItem
-			},
-			{ divider: true },
-			{
-				label: 'Delete',
-				icon: <DeleteForeverOutlined fontSize="small" />,
-				handleOnclick: handleDeleteItem
-			}
-		] as IContextMenuElement[];
+		return [];
 	}, [uiState.contextMenu]);
 
 	return (
