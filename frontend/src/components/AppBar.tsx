@@ -72,7 +72,7 @@ const Header: React.FC = () => {
 	}
 	return (
 		<>
-			<AppBar sx={appBarStyles} position="sticky" elevation={2}>
+			<AppBar sx={appBarStyles} position="sticky" elevation={0}>
 				<Toolbar>
 					{isMobile ? (
 						<IconButton color="inherit" onClick={handleMenuClick} sx={{ ml: 2 }}>
@@ -94,7 +94,7 @@ const Header: React.FC = () => {
 						</Box>
 					)}
 					<Box sx={{ flexGrow: 1 }} />
-					<Box sx={searchWrapperStyles}>
+					{/* <Box sx={searchWrapperStyles}>
 						<InputBase
 							aria-label="Search"
 							placeholder="Search..."
@@ -103,15 +103,15 @@ const Header: React.FC = () => {
 							startAdornment={<SearchOutlined style={{ marginRight: 8 }} />}
 							sx={{ ml: 2, flex: 1 }}
 						/>
-					</Box>
+					</Box> */}
 					<Switch checked={themeMode === 'dark'} onChange={toggleThemeMode} color="primary" />
-					<Tooltip title="Notifications">
+					{/* <Tooltip title="Notifications">
 						<IconButton color="inherit" sx={iconButtonStyles}>
 							<Badge badgeContent={notifications} color="error">
 								<NotificationAddOutlined />
 							</Badge>
 						</IconButton>
-					</Tooltip>
+					</Tooltip> */}
 					<Tooltip title="Account settings">
 						<IconButton
 							onClick={handleProfileClick}
@@ -139,7 +139,8 @@ const Header: React.FC = () => {
 					sx: {
 						backgroundColor: theme.palette.background.paper,
 						color: theme.palette.text.primary,
-						borderRadius: '10px'
+						borderRadius: '10px',
+						boxShadow: theme.shadows[4]
 					}
 				}}>
 				{navigationItems.map((item) => (
@@ -172,7 +173,12 @@ const Header: React.FC = () => {
 				transformOrigin={{ horizontal: 'right', vertical: 'top' }}
 				anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
 				PaperProps={{
-					sx: { backgroundColor: theme.palette.background.paper, color: theme.palette.text.primary }
+					sx: {
+						backgroundColor: theme.palette.background.paper,
+						color: theme.palette.text.primary,
+						borderRadius: '10px',
+						boxShadow: theme.shadows[4]
+					}
 				}}>
 				<MenuItem onClick={() => router.push('/profile')}>Profile</MenuItem>
 				<MenuItem>My account</MenuItem>

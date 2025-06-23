@@ -1,12 +1,10 @@
 import { SxProps, Theme } from '@mui/material/styles';
 
 export const appBarStyles: SxProps<Theme> = (theme) => ({
-	backgroundColor: theme.palette.primary.main,
+	backgroundColor: theme.palette.background.default,
 	color: theme.palette.text.primary,
-	[theme.breakpoints.down('sm')]: {
-		paddingLeft: theme.spacing(1),
-		paddingRight: theme.spacing(1)
-	}
+	boxShadow: theme.shadows[2],
+	borderBottom: `1px solid ${theme.palette.divider}`
 });
 
 export const searchWrapperStyles: SxProps<Theme> = (theme) => ({
@@ -29,7 +27,7 @@ export const navigationItemText: SxProps<Theme> = (theme) => ({
 	color: theme.palette.text.primary,
 	transition: 'color 0.2s',
 	'&:hover, &:focus': {
-		color: theme.palette.primary.light
+		color: theme.palette.primary.main
 	},
 	fontWeight: 500,
 	fontSize: '1rem',
