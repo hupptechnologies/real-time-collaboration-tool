@@ -83,6 +83,25 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Refersh Token",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASEPATH}}/api/auth/refresh-token",
+							"host": [
+								"{{BASEPATH}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"refresh-token"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -90,7 +109,7 @@
 			"name": "Folder",
 			"item": [
 				{
-					"name": "Create Folder",
+					"name": "Create",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -118,26 +137,7 @@
 					"response": []
 				},
 				{
-					"name": "Get All Folder",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{BASEPATH}}/api/folder/list",
-							"host": [
-								"{{BASEPATH}}"
-							],
-							"path": [
-								"api",
-								"folder",
-								"list"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Folder By Id",
+					"name": "Update",
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -165,7 +165,26 @@
 					"response": []
 				},
 				{
-					"name": "Get Folder By Id",
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASEPATH}}/api/folder/{{id}}",
+							"host": [
+								"{{BASEPATH}}"
+							],
+							"path": [
+								"api",
+								"folder",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get One",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -184,19 +203,19 @@
 					"response": []
 				},
 				{
-					"name": "Delete Folder By Id",
+					"name": "Get All",
 					"request": {
-						"method": "DELETE",
+						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{BASEPATH}}/api/folder/{{id}}",
+							"raw": "{{BASEPATH}}/api/folder/list",
 							"host": [
 								"{{BASEPATH}}"
 							],
 							"path": [
 								"api",
 								"folder",
-								"{{id}}"
+								"list"
 							]
 						}
 					},
@@ -327,7 +346,7 @@
 			"name": "Space",
 			"item": [
 				{
-					"name": "Create Space",
+					"name": "Create",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -361,67 +380,7 @@
 					"response": []
 				},
 				{
-					"name": "Get All Spaces",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{BASEPATH}}/api/space/list?field={{field}}&sort={{sort}}",
-							"host": [
-								"{{BASEPATH}}"
-							],
-							"path": [
-								"api",
-								"space",
-								"list"
-							],
-							"query": [
-								{
-									"key": "field",
-									"value": "{{field}}"
-								},
-								{
-									"key": "sort",
-									"value": "{{sort}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Space By Id",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{BASEPATH}}/api/space/{{id}}",
-							"host": [
-								"{{BASEPATH}}"
-							],
-							"path": [
-								"api",
-								"space",
-								"{{id}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Space By Id",
+					"name": "Update",
 					"request": {
 						"method": "PUT",
 						"header": [
@@ -455,7 +414,7 @@
 					"response": []
 				},
 				{
-					"name": "Delete Space By Id",
+					"name": "Delete",
 					"request": {
 						"method": "DELETE",
 						"header": [
@@ -474,6 +433,66 @@
 								"api",
 								"space",
 								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get One",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASEPATH}}/api/space/{{id}}",
+							"host": [
+								"{{BASEPATH}}"
+							],
+							"path": [
+								"api",
+								"space",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASEPATH}}/api/space/list?field={{field}}&sort={{sort}}",
+							"host": [
+								"{{BASEPATH}}"
+							],
+							"path": [
+								"api",
+								"space",
+								"list"
+							],
+							"query": [
+								{
+									"key": "field",
+									"value": "{{field}}"
+								},
+								{
+									"key": "sort",
+									"value": "{{sort}}"
+								}
 							]
 						}
 					},
