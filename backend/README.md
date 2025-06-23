@@ -1,158 +1,171 @@
-# Real-Time Collaboration Tool
+# Real-Time Collaboration Tool – Backend
 
-Building a Real-Time Collaboration Tool: TypeScript + NodeJS + Fastify + Sequelize + Web Socket
+## Overview
 
-## **Overview**
+The **Real-Time Collaboration Tool** backend is a robust Node.js application built with Fastify and Sequelize, designed to provide efficient, scalable APIs for collaborative applications. It features JWT-based authentication, PostgreSQL integration, file uploads, and comprehensive code quality tooling.
 
-This project is a backend service built with **Node.js, Fastify, Typescript, Sequelize and WebSocket**s. This service is optimized for high-performance API responses, real-time communication, and efficient request handling.
+---
 
 ## Table of Contents
 
-- [Installation](#installation)
-- [Configuration](#configuration)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Environment Variables](#environment-variables)
+  - [Running the Project](#running-the-project)
 - [Project Structure](#project-structure)
-- [API Endpoints](#api-endpoints)
-- [WebSocket Events](#websocket-events)
-- [Usage](#usage)
-- [Error Handling](#error-handling)
-- [Security](#security)
-- [Contributing](#contributing)
+- [Database Migrations](#database-migrations)
+- [Code Quality](#code-quality)
 - [License](#license)
 
-## Installation
+---
+
+## Tech Stack
+
+- **Backend Framework:** Fastify (Node.js)
+- **Database:** PostgreSQL (via Sequelize ORM)
+- **Authentication:** JWT (JSON Web Tokens)
+- **File Uploads:** Fastify-Multer & AWS S3
+- **Linting & Formatting:** ESLint
+- **Type Safety:** TypeScript
+
+---
+
+## Getting Started
 
 ### Prerequisites
 
-- **Node.js** (>= 16.x recommended)
-- **NPM** or **Yarn**
+Ensure you have the following installed:
 
-### Steps to Install
+- **Node.js** (v20.0.0 or higher)
+- **NPM** (v10.0.0 or higher)
+- **PostgreSQL**
 
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/hupptechnologies/real-time-collaboration-tool
-   cd backend
-   ```
-2. Install dependencies:
-   ```sh
-   npm install
-   # or
-   yarn install
-   ```
-3. Create a `.env` file in the root directory and add required environment variables (see [Configuration](#configuration)).
+### Installation
 
-## Configuration
+Clone the repository and install dependencies:
 
-Use a `.env` file to define environment variables:
+```sh
+git clone https://github.com/hupptechnologies/real-time-collaboration-tool.git
+cd real-time-collaboration-tool/backend
+npm install
+```
+
+### Environment Variables
+
+Create a `.env` file in the `backend` root directory and configure the following variables:
 
 ```env
-PORT=3000
-DATABASE_URL=mysql://user:password@localhost:3306/dbname
-JWT_SECRET=your_secret_key
-WS_PORT=8080
+PORT=your_project_port
+DB_HOST=your_db_host
+DB_USERNAME=your_db_username
+DB_PASSWORD=your_db_password
+DB_DATABASE=your_db_name
+DB_DIALECT=postgres
+DB_PORT=your_db_port
+
+JWT_SECRET_KEY=your_jwt_secret_key
+REFRESH_JWT_SECRET_KEY=your_refresh_jwt_secret_key
 ```
+
+### Running the Project
+
+**Development Mode:**
+
+```sh
+npm run dev
+```
+
+**Production Mode:**
+
+```sh
+npm run build
+npm run prod
+```
+
+---
 
 ## Project Structure
 
 ```
-iveMind-Lambda/
-│── src/
-│   ├── controllers/
-│   ├── services/
-│   ├── routes/
-│   ├── websocket/
-│   ├── utils/
-│   ├── index.ts
-│── tests/
-│── .env
-│── package.json
-│── README.md
+backend/
+│-- postmen/                # API collection
+│-- src/
+│   ├── config/             # Database configuration
+│   ├── controllers/        # Route handlers
+│   ├── interface/          # TypeScript interfaces & middleware
+│   ├── models/             # Sequelize models
+│   ├── migrations/         # Sequelize migrations
+│   ├── routes/             # Fastify routes
+│   ├── utils/              # Utility functions
+│   └── index.ts            # Application entry point
+│-- dist/                   # Compiled TypeScript (after build)
+│-- .eslintrc               # ESLint configuration
+│-- .sequelizerc            # Sequelize CLI configuration
+│-- tsconfig.json           # TypeScript configuration
+│-- package.json            # Dependencies and scripts
+└── README.md               # Project documentation
 ```
 
-- **controllers/** - Handles HTTP request logic
-- **services/** - Business logic and database interactions
-- **routes/** - Fastify route definitions
-- **websocket/** - WebSocket event handlers
-- **utils/** - Helper functions
-- **app.js** - Entry point for Fastify server
+---
 
-## API Endpoints
+## Database Migrations
 
-### Authentication
-
-#### `POST /auth/login`
-
-- **Request:** `{ email, password }`
-- **Response:** `{ token }`
-
-#### `POST /auth/register`
-
-- **Request:** `{ name, email, password }`
-- **Response:** `{ message: 'User registered' }`
-
-### Orders
-
-#### `GET /orders`
-
-- **Response:** `[{ id, product, quantity, status }]`
-
-#### `POST /orders`
-
-- **Request:** `{ product, quantity }`
-- **Response:** `{ orderId }`
-
-## WebSocket Events
-
-| Event Name     | Description                          |
-| -------------- | ------------------------------------ |
-| `connection`   | Triggered when a client connects     |
-| `orderUpdated` | Sent when an order status is updated |
-| `newMessage`   | Broadcasts a new chat message        |
-
-## Usage
-
-### Start the server
+**Generate a New Model & Migration:**
 
 ```sh
-npm run dev
-# or
-yarn dev
+npx sequelize-cli model:generate --name User --attributes firstName:string,lastName:string,email:string
 ```
 
-### Run tests
+**Create a New Migration:**
 
 ```sh
-npm test
-# or
-yarn test
+npm run create:migrate migration_name
 ```
 
-## Error Handling
+**Run Migrations:**
 
-- Uses Fastify’s built-in error handling.
-- Returns JSON responses with status codes and error messages.
-- Logs errors using Fastify’s logger.
+```sh
+npm run migrate
+```
 
-## Security
+**Undo Last Migration:**
 
-- Uses JWT authentication for protected routes.
-- Input validation to prevent SQL injection & XSS attacks.
-- WebSocket authentication using tokens.
+```sh
+npm run migrate:undo:one --name migration_file
+```
 
-## Contributing
+**Undo All Migrations:**
 
-1. Fork the repository.
-2. Create a new branch: `git checkout -b feature-branch`
-3. Commit your changes: `git commit -m "Add feature"`
-4. Push to the branch: `git push origin feature-branch`
-5. Open a Pull Request.
+```sh
+npm run migrate:undo
+```
+
+---
+
+## Code Quality
+
+**Check for Linting Issues:**
+
+```sh
+npm run lint
+```
+
+**Automatically Fix Linting Issues:**
+
+```sh
+npm run lint:fix
+```
+
+---
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](LICENSE).
 
-### **Want to Contribute?**
+---
 
-Feel free to submit pull requests or issues!
+**For any questions or contributions, please open an issue or submit a pull request.**
 
-🚀 **Happy Coding!**
+🚀 Happy Coding!
