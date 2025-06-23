@@ -7,7 +7,7 @@ import {
 	TableBubbleMenu,
 	type RichTextEditorRef
 } from 'mui-tiptap';
-import { Button, Container, Box, Fade, Typography, TextField } from '@mui/material';
+import { Button, Container, Box, Fade, Typography, TextField, Stack } from '@mui/material';
 import { EditOutlined } from '@mui/icons-material';
 import EditorMenuControls from './EditorMenuControls';
 import useExtensions from './useExtensions';
@@ -134,45 +134,58 @@ const MuiRichTextEditor = () => {
 		<Container sx={EditorContainerBox} maxWidth="lg">
 			<Box sx={EditorWrapperBox}>
 				<Box sx={ButtonBox}>
-					{isEditable ? (
-						page?.status === 'draft' ? (
-							<>
-								<Button
-									variant="contained"
-									sx={{ mr: 1 }}
-									onClick={() => handleUpdatePage('published')}
-									disabled={isUpdating}>
-									{isUpdating ? 'Publishing...' : 'Publish'}
-								</Button>
-								<Button
-									variant="outlined"
-									onClick={() => handleUpdatePage('draft')}
-									disabled={isUpdating}>
-									Close Draft
-								</Button>
-							</>
+					<Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+						{isEditable ? (
+							page?.status === 'draft' ? (
+								<>
+									<Button
+										variant="contained"
+										color="primary"
+										size="small"
+										onClick={() => handleUpdatePage('published')}
+										disabled={isUpdating}>
+										{isUpdating ? 'Publishing...' : 'Publish'}
+									</Button>
+									<Button
+										variant="outlined"
+										color="secondary"
+										size="small"
+										onClick={() => handleUpdatePage('draft')}
+										disabled={isUpdating}>
+										Close Draft
+									</Button>
+								</>
+							) : (
+								<>
+									<Button
+										variant="contained"
+										color="primary"
+										size="small"
+										onClick={() => handleUpdatePage('published')}
+										disabled={isUpdating}>
+										{isUpdating ? 'Updating...' : 'Update'}
+									</Button>
+									<Button
+										variant="text"
+										color="inherit"
+										size="small"
+										onClick={() => setIsEditable(false)}
+										disabled={isUpdating}>
+										Close
+									</Button>
+								</>
+							)
 						) : (
-							<>
-								<Button
-									variant="contained"
-									sx={{ mr: 1 }}
-									onClick={() => handleUpdatePage('published')}
-									disabled={isUpdating}>
-									{isUpdating ? 'Updating...' : 'Update'}
-								</Button>
-								<Button variant="text" onClick={() => setIsEditable(false)} disabled={isUpdating}>
-									Close
-								</Button>
-							</>
-						)
-					) : (
-						<Button
-							variant="outlined"
-							startIcon={<EditOutlined />}
-							onClick={() => setIsEditable(true)}>
-							Edit
-						</Button>
-					)}
+							<Button
+								variant="outlined"
+								color="primary"
+								size="small"
+								startIcon={<EditOutlined />}
+								onClick={() => setIsEditable(true)}>
+								Edit
+							</Button>
+						)}
+					</Stack>
 				</Box>
 				<Fade in={true} timeout={300}>
 					<Box>

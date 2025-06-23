@@ -8,7 +8,8 @@ import {
 	ListItemIcon,
 	ListItemText,
 	Tooltip,
-	TextField
+	TextField,
+	Chip
 } from '@mui/material';
 import {
 	ArticleOutlined,
@@ -19,11 +20,11 @@ import {
 import ListItemActionButtons from './ListItemActionButtons';
 import { IPageListItemProps } from '@/types';
 import {
-	DraftStatusBox,
 	EditItemText,
 	ListItemTextStyle,
 	MainBoxContent,
-	PageMainBox
+	PageMainBox,
+	DraftStatusChip
 } from '@/styles';
 
 const PageListItem = ({
@@ -103,9 +104,13 @@ const PageListItem = ({
 											sx={ListItemTextStyle(isHovered, isSelected)}
 										/>
 										{page.status === 'draft' && (
-											<Box component="span" sx={DraftStatusBox}>
-												{page.status}
-											</Box>
+											<Chip
+												label={page.status}
+												size="small"
+												variant="outlined"
+												color="primary"
+												sx={DraftStatusChip}
+											/>
 										)}
 									</Box>
 								</Tooltip>
