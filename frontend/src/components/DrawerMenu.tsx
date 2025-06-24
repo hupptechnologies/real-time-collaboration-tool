@@ -76,7 +76,17 @@ interface UIState {
 	contextMenu: IContextMenu | undefined;
 }
 
-const DrawerMenu = () => {
+interface DrawerMenuProps {
+	isMobile?: boolean;
+	mobileDrawerOpen?: boolean;
+	onMobileDrawerToggle?: () => void;
+}
+
+const DrawerMenu: React.FC<DrawerMenuProps> = ({
+	isMobile = false,
+	mobileDrawerOpen = false,
+	onMobileDrawerToggle
+}) => {
 	const params = useParams();
 	const router = useRouter();
 	const searchParams = useSearchParams();
@@ -165,8 +175,12 @@ const DrawerMenu = () => {
 	}, [spaceId, getAllFolder]);
 
 	const toggleDrawer = useCallback((): void => {
-		setUiState((prev) => ({ ...prev, open: !prev.open }));
-	}, []);
+		if (isMobile && onMobileDrawerToggle) {
+			onMobileDrawerToggle();
+		} else {
+			setUiState((prev) => ({ ...prev, open: !prev.open }));
+		}
+	}, [isMobile, onMobileDrawerToggle]);
 
 	const toggleMainDocument = useCallback((): void => {
 		router.push(`/home/${spaceId}`);
@@ -401,23 +415,29 @@ const DrawerMenu = () => {
 
 	return (
 		<Box sx={{ display: 'flex' }}>
-			<IconButton
-				onClick={toggleDrawer}
-				aria-label="open drawer"
-				edge="end"
-				sx={ArrowIconStyle(uiState.open)}>
-				{uiState.open ? (
-					<Tooltip title="Collapse">
-						<ChevronLeft />
-					</Tooltip>
-				) : (
-					<Tooltip title="Expand">
-						<ChevronRight />
-					</Tooltip>
-				)}
-			</IconButton>
-			<Drawer variant="permanent" open={uiState.open} sx={DrawerMenuStyle(uiState.open)}>
-				{uiState.open && (
+			{!isMobile && (
+				<IconButton
+					onClick={toggleDrawer}
+					aria-label="open drawer"
+					edge="end"
+					sx={ArrowIconStyle(uiState.open, isMobile)}>
+					{uiState.open ? (
+						<Tooltip title="Collapse">
+							<ChevronLeft />
+						</Tooltip>
+					) : (
+						<Tooltip title="Expand">
+							<ChevronRight />
+						</Tooltip>
+					)}
+				</IconButton>
+			)}
+			<Drawer
+				variant={isMobile ? 'temporary' : 'permanent'}
+				open={isMobile ? mobileDrawerOpen : uiState.open}
+				onClose={isMobile ? onMobileDrawerToggle : undefined}
+				sx={DrawerMenuStyle(isMobile ? mobileDrawerOpen : uiState.open, isMobile)}>
+				{(isMobile ? mobileDrawerOpen : uiState.open) && (
 					<>
 						<Toolbar />
 						<Box onClick={toggleMainDocument} sx={SpaceNameBox}>

@@ -134,7 +134,10 @@ const MuiRichTextEditor = () => {
 		<Container sx={EditorContainerBox} maxWidth="lg">
 			<Box sx={EditorWrapperBox}>
 				<Box sx={ButtonBox}>
-					<Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+					<Stack
+						direction={{ xs: 'row', sm: 'row' }}
+						spacing={1}
+						sx={{ width: '100%', justifyContent: 'flex-end' }}>
 						{isEditable ? (
 							page?.status === 'draft' ? (
 								<>

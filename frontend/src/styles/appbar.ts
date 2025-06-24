@@ -22,6 +22,8 @@ export const searchWrapperStyles: SxProps<Theme> = (theme) => ({
 });
 
 export const navigationItemText: SxProps<Theme> = (theme) => ({
+	display: 'flex',
+	alignItems: 'center',
 	mx: 2,
 	cursor: 'pointer',
 	color: theme.palette.text.primary,

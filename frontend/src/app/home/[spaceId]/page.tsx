@@ -1,14 +1,33 @@
 'use client';
-import React from 'react';
-import { Box } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, IconButton, useMediaQuery, useTheme } from '@mui/material';
+import { Menu } from '@mui/icons-material';
 import DrawerMenu from '@/components/DrawerMenu';
 import MuiRichTextEditor from '@/components/rich-text-editor/MuiRichTextEditor';
+import { MenuIconButtonStyle } from '@/styles/common';
 
 const SpacePage: React.FC = () => {
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+	const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+
+	const handleMobileDrawerToggle = () => {
+		setMobileDrawerOpen(!mobileDrawerOpen);
+	};
+
 	return (
 		<Box sx={{ display: 'flex' }}>
-			<DrawerMenu />
-			<Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+			{isMobile && (
+				<IconButton onClick={handleMobileDrawerToggle} sx={MenuIconButtonStyle}>
+					<Menu />
+				</IconButton>
+			)}
+			<DrawerMenu
+				isMobile={isMobile}
+				mobileDrawerOpen={mobileDrawerOpen}
+				onMobileDrawerToggle={handleMobileDrawerToggle}
+			/>
+			<Box component="main" sx={{ flexGrow: 1, p: 3, mt: 0 }}>
 				<MuiRichTextEditor />
 			</Box>
 		</Box>

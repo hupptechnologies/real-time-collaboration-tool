@@ -1,6 +1,6 @@
 import { SxProps, Theme } from '@mui/material';
 
-export const ArrowIconStyle = (open: boolean) => ({
+export const ArrowIconStyle = (open: boolean, isMobile: boolean = false) => ({
 	position: 'fixed',
 	top: '10%',
 	left: open ? 286 : 20,
@@ -13,6 +13,7 @@ export const ArrowIconStyle = (open: boolean) => ({
 	height: 32,
 	borderRadius: '50%',
 	backgroundColor: 'background.paper',
+	display: isMobile ? 'none' : 'flex',
 	':hover': {
 		backgroundColor: 'primary.main',
 		'& svg': {
@@ -21,17 +22,23 @@ export const ArrowIconStyle = (open: boolean) => ({
 	}
 });
 
-export const DrawerMenuStyle = (open: boolean): SxProps<Theme> => ({
-	width: open ? 300 : 15,
+export const DrawerMenuStyle = (open: boolean, isMobile: boolean = false): SxProps<Theme> => ({
+	width: isMobile ? 300 : open ? 300 : 15,
 	flexShrink: 0,
 	zIndex: 1000,
 	transition: '0.3s all ease-in-out',
 	'& .MuiDrawer-paper': {
 		padding: 2,
 		boxSizing: 'border-box',
-		width: open ? 300 : 15,
+		width: isMobile ? 300 : open ? 300 : 15,
 		overflowX: 'hidden',
-		transition: '0.3s all ease-in-out'
+		transition: '0.3s all ease-in-out',
+		...(isMobile && {
+			position: 'fixed',
+			top: 0,
+			left: 0,
+			height: '100vh'
+		})
 	}
 });
 
