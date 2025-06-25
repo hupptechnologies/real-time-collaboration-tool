@@ -25,7 +25,7 @@ const Header: React.FC = () => {
 	const theme = useTheme();
 	const router = useRouter();
 	const { logout, isAuthenticated } = useAuth();
-	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+	const isMobile = useMediaQuery('(max-width:767px)');
 	const { mode, toggleThemeMode } = useThemeContext();
 	const [themeMode, setThemeMode] = useState<'light' | 'dark'>('light');
 	const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);

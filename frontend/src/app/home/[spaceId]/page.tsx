@@ -1,14 +1,13 @@
 'use client';
 import React, { useState } from 'react';
-import { Box, IconButton, useMediaQuery, useTheme } from '@mui/material';
+import { Box, IconButton, useMediaQuery } from '@mui/material';
 import { Menu } from '@mui/icons-material';
 import DrawerMenu from '@/components/DrawerMenu';
 import MuiRichTextEditor from '@/components/rich-text-editor/MuiRichTextEditor';
 import { MenuIconButtonStyle } from '@/styles/common';
 
 const SpacePage: React.FC = () => {
-	const theme = useTheme();
-	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+	const isMobile = useMediaQuery('(max-width:767px)');
 	const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
 	const handleMobileDrawerToggle = () => {
